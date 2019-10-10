@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content%}
+<div class="feedback-request">
+<div class="decorative-text-wrapper noselect">New Feedback Request</div>
+<div style="margin-top: 50px">
+<form action="/new-feedback-request/" method="POST" id="loginForm">
+    {% csrf_token %}
+    <textarea rows="1" placeholder="Title" name="title"></textarea>
+    <textarea rows="10" placeholder="Description" name="maintext"></textarea>
+    <span class="button noselect button-corner" id="login_button">Submit</span>
+</form>
+<script>
+$('#login_button').click(function() {
+    $("#loginForm").submit();
+});
+</script>
+</div>
+</div>
+</div>
+{% endblock %}

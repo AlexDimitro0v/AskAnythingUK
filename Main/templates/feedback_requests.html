@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content%}
+  {% for feedback_request in requests %}
+    <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
+    <h3> {{ feedback_request.title }}</h3>
+    <p>{{ feedback_request.maintext }}</p>
+    <div class="button noselect button-corner">Show interest</div>
+    </div>
+  {% endfor %}
+{% endblock%}
