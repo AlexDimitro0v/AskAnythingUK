@@ -19,7 +19,6 @@ def login(request):
         'wronglogin' : False,
         'form' : UserRegistrationForm()
     }
-
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -34,7 +33,6 @@ def register(request):
         'wronglogin' : False,
         'form' : UserRegistrationForm()
     }
-
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -45,7 +43,13 @@ def register(request):
     return render(request,'register.html',context)
 
 def profile(request):
-    return render(request,'profile.html')
+    if not request.user.is_authenticated:
+        return redirect('login-page')
+    context = {
+        'user_name' : request.user.username,
+        'my_requests' : FeedbackRequest.objects.filter(feedbackee=request.user)
+    }
+    return render(request,'profile.html',context)
 
 def new_feedback_request(request):
     if not request.user.is_authenticated:
@@ -55,9 +59,20 @@ def new_feedback_request(request):
         if form.is_valid():
             title = form.cleaned_data['title']
             maintext = form.cleaned_data['maintext']
-            feedback_request = FeedbackRequest(title=title,maintext=maintext,feedbackee=request.user)
+            reward = form.cleaned_data['reward']
+            feedback_request = FeedbackRequest(title=title,maintext=maintext,feedbackee=request.user,reward=reward,feedbacker=request.user)
             feedback_request.save()
             return redirect('home-page')
         else:
             print("INVALID")
-    return render(request,'new-feedback-request.html')
+    return render(request,'new_feedback_request.html')
+
+def feedback_request(request):
+    request_id = request.GET.get('request_id','')
+    if request_id != "":
+        context = {
+            'feedback_request' : FeedbackRequest.objects.get(id=request_id)
+        }
+        return render(request,'feedback_request.html',context)
+    else:
+        return redirect('home-page')

@@ -10,5 +10,6 @@ urlpatterns = [
     path('register/',views.register,name="registration-page"),
     path('profile/',views.profile,name="profile-page"),
     path('new-feedback-request/',views.new_feedback_request,name="new-feedback-request-page"),
+    path('feedback-request/',views.feedback_request,name="feedback-request-page"),
 
 ]

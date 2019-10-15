@@ -35,6 +35,10 @@ textarea {
 width: 100%;
 }
 
+h1 {
+  font-size: 40px;
+}
+
 #header {
   width: 100%;
   height: var(--header-height);
@@ -54,6 +58,20 @@ width: 100%;
   display: inline;
 }
 
+.large-area {
+  width: 95%;
+  max-width: 1000px;
+  min-height: 300px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding: 30px;
+  position: relative;
+  margin-bottom: 30px;
+}
+
 .feedback-request {
   width: 95%;
   max-width: 700px;
@@ -66,7 +84,6 @@ width: 100%;
   padding: 30px;
   position: relative;
   margin-bottom: 30px;
-
 }
 
 .photo-circle {
@@ -120,8 +137,6 @@ p {
   transition: 0.3s;
   cursor: pointer;
 }
-
-
 
 
 .button:hover {

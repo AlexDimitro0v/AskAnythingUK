@@ -14,7 +14,8 @@ class UserRegistrationForm(UserCreationForm):
 class NewFeedbackRequestForm(forms.Form):
     title = forms.CharField()
     maintext = forms.CharField()
+    reward = forms.IntegerField()
 
     class Meta:
         model = FeedbackRequest
-        fields = ['title','maintext']
+        fields = ['title','maintext','reward']
