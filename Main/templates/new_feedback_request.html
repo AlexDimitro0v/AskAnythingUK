@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content%}
-<div class="feedback-request">
+<div class="large-area">
 <div class="decorative-text-wrapper noselect">New Feedback Request</div>
 <div style="margin-top: 50px">
 <form action="/new-feedback-request/" method="POST" id="loginForm">
@@ -11,13 +11,31 @@
     <textarea rows="1" placeholder="Title" name="title"></textarea>
     <textarea rows="10" placeholder="Description" name="maintext"></textarea>
     <textarea rows="1" placeholder="Reward" name="reward"></textarea>
-
-    <span class="button noselect button-corner" id="login_button">Submit</span>
 </form>
+<form onsubmit="return false">
+<input id="tag-input"></input>
+</form>
+<span class="button noselect button-corner" id="login_button">Submit</span>
+<div id="tags"></div>
 <script>
+let tags = [];
+
 $('#login_button').click(function() {
+    $("#loginForm").attr("action","/new-feedback-request/?tags="+tags);
     $("#loginForm").submit();
 });
+
+$('#tag-input').keypress(function (e) {
+  if (e.which == 13) {
+    let tagValue = $('#tag-input').val();
+    if(tagValue != "") {
+      tags.push(tagValue);
+      $('#tag-input').val('');
+      $('#tags').append("<span class='tag'>"+tagValue+"</span>");
+    }
+  }
+});
+
 </script>
 </div>
 </div>

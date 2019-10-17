@@ -1,13 +1,32 @@
 {% extends 'base.html' %}
 {% block content%}
-  {% for feedback_request in requests %}
+{% load multifor %}
+
+  {% for feedback_request in requests; curr_tags in tags %}
     <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
+    <div class="tag-container">
+      {% for tag in curr_tags %}
+      <span class='tag' id="{{ tag }}">{{ tag }}</span>
+      {% endfor %}
+    </div>
     <h3> {{ feedback_request.title }}</h3>
     <p>{{ feedback_request.maintext }}</p>
+
     <div class="button noselect button-corner"><a href="feedback-request?request_id={{feedback_request.id}}">Show interest</a></div>
     <div class="button-corner" style="margin-right: 180px; font-size: 1.3em;padding: 10px;">
       £{{ feedback_request.reward }}
     </div>
     </div>
   {% endfor %}
+
+  <!-- Hidden form for tag filtering -->
+  <form action="/" method="POST" id="tagFilterForm">  {% csrf_token %} </form>
+  <script>
+  $('.tag').click(function(e) {
+    let tagValue = e.target.id;
+    $('#tagFilterForm').attr("action","/?tag-filter="+tagValue);
+    $('#tagFilterForm').submit();
+  });
+  </script>
+
 {% endblock%}

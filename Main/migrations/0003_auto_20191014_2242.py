@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('Main', '0002_feedbackrequest_reward'),
+        ('main', '0002_feedbackrequest_reward'),
     ]
 
     operations = [
@@ -50,16 +50,16 @@ class Migration(migrations.Migration):
             name='Tag',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Main.Category')),
-                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Main.FeedbackRequest')),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.Category')),
+                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.FeedbackRequest')),
             ],
         ),
         migrations.CreateModel(
             name='Specialism',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Main.Category')),
-                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Main.FeedbackRequest')),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.Category')),
+                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.FeedbackRequest')),
             ],
         ),
         migrations.CreateModel(
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
             name='FeedbackerCandidate',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Main.FeedbackRequest')),
+                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.FeedbackRequest')),
                 ('feedbacker', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
