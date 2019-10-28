@@ -3,8 +3,10 @@
     <div class="large-area">
     <h1 style="text-align: center">{{ feedback_request.title }}</h1>
     <p>{{ feedback_request.maintext }}</p>
-    <div class="button noselect button-corner">Show interest</div>
-    <div class="button-corner" style="margin-right: 180px; font-size: 1.3em;padding: 10px;">
+    <div class="button noselect button-corner">
+      <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as feedbacker</a>
+    </div>
+    <div class="button-corner" style="margin-right: 250px; font-size: 1.5em;padding: 10px;">
       £{{ feedback_request.reward }}
     </div>
     </div>

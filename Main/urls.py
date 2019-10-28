@@ -11,5 +11,6 @@ urlpatterns = [
     path('profile/',views.profile,name="profile-page"),
     path('new-feedback-request/',views.new_feedback_request,name="new-feedback-request-page"),
     path('feedback-request/',views.feedback_request,name="feedback-request-page"),
+    path('apply-as-feedbacker/',views.apply_as_feedbacker,name="apply-as-feedbacker-page"),
 
 ]

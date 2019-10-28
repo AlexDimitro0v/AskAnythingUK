@@ -1,6 +1,7 @@
 
 {% extends 'base.html' %}
 {% load static %}
+{% load multifor %}
 
 {% block content%}
 <div class="button noselect button-corner" style="position: fixed; z-index: 1"><a href="/new-feedback-request">Ask For Feedback</a></div>
@@ -10,16 +11,43 @@
 <h4 style="font-size: 50px; margin-top:20px">{{ user_name }}</h4>
 </div>
 </div>
+
+{% if my_requests %}
 <div class="feedback-request">
 <div class="decorative-text-wrapper noselect">My Requests</div>
 <div style="margin-top: 50px">
-{% for feedback_request in my_requests %}
+{% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
 <div>
+<div class="small-card">
 {{feedback_request.title}}
+{% if curr_candidates%}
+{% for candidate in curr_candidates%}
+<div> {{candidate}}
+  <div class="status-info" style="background-color: #AC6DFF"><a href="#">Choose as Feedbacker</a></div>
+  <div class="status-info" style="background-color: #AC6DFF"><a href="#">View Profile</a></div>
+
+</div>
+{% endfor %}
+{% endif %}
+</div>
 </div>
 {% endfor %}
 </div>
-
-
 </div>
+{% endif %}
+
+{% if my_applications %}
+<div class="feedback-request">
+<div class="decorative-text-wrapper noselect">My Feedbacker Applications</div>
+<div style="margin-top: 50px">
+{% for application in my_applications %}
+<div class="small-card">
+{{application.title}}
+<div class="status-info">Awaiting reaction</div>
+</div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
 {% endblock %}
