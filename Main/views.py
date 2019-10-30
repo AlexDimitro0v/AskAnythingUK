@@ -4,8 +4,11 @@ from .models import FeedbackRequest
 from .models import FeedbackerCandidate
 from .models import Category
 from .models import Tag
+from .models import Feedbacker
 from .forms import UserRegistrationForm
 from .forms import NewFeedbackRequestForm
+from .forms import FedbackerProfileForm
+
 from django.db import connections
 from django.contrib.auth.models import User
 
@@ -93,7 +96,8 @@ def profile(request):
         'user_name' : request.user.username,
         'my_requests' : my_feedback_requests,
         'my_applications' : my_feedbacker_applications,
-        'feedback_candidates' : feedback_candidates
+        'feedback_candidates' : feedback_candidates,
+        'feedbacker_info' : Feedbacker.objects.filter(user=request.user).first()
     }
     return render(request,'profile.html',context)
 
@@ -155,4 +159,61 @@ def apply_as_feedbacker(request):
     cursor = connections['default'].cursor()
     cursor.execute("INSERT INTO main_feedbackercandidate (feedbacker_id,feedback_id) VALUES( %s , %s )", [request.user.id, feedback_request_id])
     cursor.close()
+    return redirect('profile-page')
+
+def feedbacker_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('login-page')
+    feedbacker_username = request.GET.get('user','')
+    feedback_request_id = request.GET.get('feedback','')
+
+    # Get feedbacker from database
+    feedbacker = User.objects.filter(username=feedbacker_username)
+    if feedbacker:
+        feedbacker = feedbacker[0]
+    else:
+        return redirect('profile-page')
+    my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user,id=feedback_request_id)
+
+    if not my_feedback_requests:
+        return redirect('profile-page')
+
+    feedback_request_info = FeedbackerCandidate.objects.filter(feedback=feedback_request_id)
+
+    if not feedback_request_info or not feedback_request_info[0].feedbacker == feedbacker:
+        return redirect('profile-page')
+
+    context = {
+        'username' : feedbacker.username,
+        'feedbacker_info' : Feedbacker.objects.filter(user=feedbacker).first()
+    }
+    return render(request,'feedbacker-profile.html',context)
+
+def customize_profile(request):
+    if not request.user.is_authenticated:
+        return redirect('login-page')
+
+    if request.method == "POST":
+        form = FedbackerProfileForm(request.POST)
+        if form.is_valid():
+            existing_feedbacker = Feedbacker.objects.filter(user=request.user).first()
+            if existing_feedbacker != None:
+                existing_feedbacker.profile_description = form.cleaned_data['description']
+                existing_feedbacker.save()
+            else:
+                feedbacker = Feedbacker(user=request.user,profile_description=form.cleaned_data['description'])
+                feedbacker.save()
+            return redirect('profile-page')
+
+    return render(request,'customize_profile.html')
+
+def choose_feedbacker(request):
+    if not request.user.is_authenticated:
+        return redirect('login-page')
+
+    feedbacker_username = request.GET.get('user','')
+    feedback_request_id = request.GET.get('feedback','')
+    feedback_request = FeedbackRequest.objects.filter(id=feedback_request_id).first()
+    feedback_request.feedbacker = User.objects.filter(username=feedbacker_username).first()
+    feedback_request.save()
     return redirect('profile-page')

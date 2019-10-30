@@ -9,6 +9,11 @@
 <div class="decorative-text-wrapper noselect">My Profile</div>
 <div>
 <h4 style="font-size: 50px; margin-top:20px">{{ user_name }}</h4>
+{% if feedbacker_info != None %}
+<p >{{ feedbacker_info.profile_description }}</p>
+{% endif %}
+<div class="button noselect button-corner"><a href="/customize-profile">Customize Profile</a></div>
+
 </div>
 </div>
 
@@ -23,11 +28,17 @@
 {% if curr_candidates%}
 {% for candidate in curr_candidates%}
 <div> {{candidate}}
-  <div class="status-info" style="background-color: #AC6DFF"><a href="#">Choose as Feedbacker</a></div>
-  <div class="status-info" style="background-color: #AC6DFF"><a href="#">View Profile</a></div>
+  <div class="status-info" style="background-color: #AC6DFF"><a href="/choose-feedbacker/?user={{candidate}}&feedback={{feedback_request.id}}">Choose as Feedbacker</a></div>
+  <div class="status-info" style="background-color: #AC6DFF"><a href="/feedbacker-profile/?user={{candidate}}&feedback={{feedback_request.id}}">View Profile</a></div>
 
 </div>
 {% endfor %}
+{% elif feedback_request.feedbacker != feedback_request.feedbackee %}
+<div> {{feedback_request.feedbacker}}
+  <div class="status-info" style="background-color: #AC6DFF">Your Feedbacker</div>
+
+</div>
+
 {% endif %}
 </div>
 </div>

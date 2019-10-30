@@ -34,3 +34,7 @@ class Tag(models.Model):
 class Specialism(models.Model):
     feedback = models.ForeignKey(FeedbackRequest,on_delete=models.CASCADE)
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
+
+class Feedbacker(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    profile_description = models.TextField()

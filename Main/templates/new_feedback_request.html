@@ -15,12 +15,12 @@
 <form onsubmit="return false">
 <input id="tag-input"></input>
 </form>
-<span class="button noselect button-corner" id="login_button">Submit</span>
+<span class="button noselect button-corner" id="submit_button">Submit</span>
 <div id="tags"></div>
 <script>
 let tags = [];
 
-$('#login_button').click(function() {
+$('#submit_button').click(function() {
     $("#loginForm").attr("action","/new-feedback-request/?tags="+tags);
     $("#loginForm").submit();
 });

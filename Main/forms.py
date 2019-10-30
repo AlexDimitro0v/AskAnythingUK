@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import FeedbackRequest
+from .models import Feedbacker
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -20,3 +21,10 @@ class NewFeedbackRequestForm(forms.Form):
     class Meta:
         model = FeedbackRequest
         fields = ['title','maintext','reward']
+
+class FedbackerProfileForm(forms.Form):
+    description = forms.CharField()
+
+    class Meta:
+        model = Feedbacker
+        fields = ['description']

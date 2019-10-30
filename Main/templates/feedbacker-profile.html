@@ -1,0 +1,16 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% load multifor %}
+
+{% block content%}
+<div class="feedback-request">
+<div class="decorative-text-wrapper noselect">{{ username }}</div>
+<div style="margin-top:50px">
+{% if feedbacker_info != None %}
+<p >{{ feedbacker_info.profile_description }}</p>
+{% endif %}
+</div>
+</div>
+
+{% endblock %}

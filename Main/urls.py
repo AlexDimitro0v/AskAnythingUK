@@ -11,4 +11,8 @@ urlpatterns = [
     path('new-feedback-request/', views.new_feedback_request, name="new-feedback-request-page"),
     path('feedback-request/', views.feedback_request, name="feedback-request-page"),
     path('apply-as-feedbacker/', views.apply_as_feedbacker, name="apply-as-feedbacker-page"),
+    path('feedbacker-profile/', views.feedbacker_profile, name="feedbacker-profile-page"),
+    path('customize-profile/', views.customize_profile, name="customize-profile-page"),
+    path('choose-feedbacker/', views.choose_feedbacker, name="choose-feedbacker-page"),
+
 ]
