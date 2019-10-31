@@ -3,9 +3,20 @@
     <div class="large-area">
     <h1 style="text-align: center">{{ feedback_request.title }}</h1>
     <p>{{ feedback_request.maintext }}</p>
+    {% if user_is_candidate %}
+    <div class="noselect button-corner">
+      <div class="status-info">Awaiting reaction</div>
+    </div>
+    {% elif user_is_feedbacker %}
+    <div class="noselect button-corner">
+      <div class="status-info" style="background-color: #48EB9E">Application Accepted</div>
+    </div>
+    {% else %}
     <div class="button noselect button-corner">
       <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as feedbacker</a>
     </div>
+    {% endif %}
+
     <div class="button-corner" style="margin-right: 250px; font-size: 1.5em;padding: 10px;">
       £{{ feedback_request.reward }}
     </div>

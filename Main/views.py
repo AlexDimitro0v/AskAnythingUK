@@ -8,6 +8,7 @@ from .models import Feedbacker
 from .forms import UserRegistrationForm
 from .forms import NewFeedbackRequestForm
 from .forms import FedbackerProfileForm
+from django.db.models import F
 
 from django.db import connections
 from django.contrib.auth.models import User
@@ -19,11 +20,11 @@ def home(request):
 
     tag_filter = request.GET.get('tag-filter','')
     if tag_filter == "":
-        feedback_requests = FeedbackRequest.objects.all()
+        # Get all requests that do not have an assigned feedbacker
+        feedback_requests = FeedbackRequest.objects.filter(feedbacker=F('feedbackee'))
     else:
-        feedback_requests = FeedbackRequest.objects.raw('SELECT main_tag.feedback_id AS id FROM main_tag INNER JOIN main_category ON main_tag.category_id = main_category.id WHERE main_category.name=%s',[tag_filter])
-        #category_record = Category.objects.get(name=tag_filter)
-    #    feedback_requests = Tag.objects.filter(category=category_record).feedback
+        feedback_requests = FeedbackRequest.objects.raw('SELECT main_tag.feedback_id AS id FROM main_tag INNER JOIN main_category ON main_tag.category_id = main_category.id INNER JOIN main_feedbackrequest ON main_tag.feedback_id = main_feedbackrequest.id  WHERE main_category.name=%s AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id',[tag_filter])
+
     # Create a list of tags for each feedback request
     tags = []
     for feedback_request in feedback_requests:
@@ -93,7 +94,7 @@ def profile(request):
         feedback_candidates.append(curr_request_candidates)
 
     context = {
-        'user_name' : request.user.username,
+        'user' : request.user,
         'my_requests' : my_feedback_requests,
         'my_applications' : my_feedbacker_applications,
         'feedback_candidates' : feedback_candidates,
@@ -141,10 +142,18 @@ def feedback_request(request):
         return redirect('login-page')
 
     request_id = request.GET.get('request_id','')
+    user_is_feedbacker = False
+    user_is_candidate = False
+    if FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
+        user_is_feedbacker = True
+    elif FeedbackerCandidate.objects.filter(feedbacker=request.user,feedback_id=request_id).first():
+        user_is_candidate = True
     if request_id != "":
         context = {
             'feedback_request' : FeedbackRequest.objects.get(id=request_id),
-            'request_id' : request_id
+            'request_id' : request_id,
+            'user_is_candidate' : user_is_candidate,
+            'user_is_feedbacker' : user_is_feedbacker
         }
         return render(request,'feedback_request.html',context)
     else:
