@@ -6,7 +6,7 @@
 <div style="margin-top: 50px">
 <form action="/customize-profile/" method="POST" id="customizeProfileForm">
     {% csrf_token %}
-    <textarea rows="10" placeholder="Description" name="description"></textarea>
+    PROFILE DESCRIPTION:<textarea rows="10" name="description">{{ prev_description }}</textarea>
 </form>
 <span class="button noselect button-corner" id="submit_button">Submit</span>
 <div id="tags"></div>

@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('', views.home, name="home-page"),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name="login-page"),
@@ -16,3 +17,7 @@ urlpatterns = [
     path('choose-feedbacker/', views.choose_feedbacker, name="choose-feedbacker-page"),
 
 ]
+
+# We cannot use this in production, serving static files with Django is not efficient
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

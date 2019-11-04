@@ -6,21 +6,19 @@
 {% block content%}
 <div class="button noselect button-corner" style="position: fixed; z-index: 1"><a href="/new-feedback-request">Ask For Feedback</a></div>
 <div class="feedback-request">
-<div class="decorative-text-wrapper noselect">My Profile</div>
-<div>
-<h4 style="font-size: 50px; margin-top:20px">{{ user.username }}</h4>
+<div class="decorative-text-wrapper noselect">My Profile Description</div>
+<div class="cardbody">
 {% if feedbacker_info != None %}
 <p >{{ feedbacker_info.profile_description }}</p>
 {% endif %}
-<div class="button noselect button-corner"><a href="/customize-profile">Customize Profile</a></div>
-
 </div>
+<div class="button noselect button-corner"><a href="/customize-profile">Customize Profile</a></div>
 </div>
 
 {% if my_requests %}
 <div class="feedback-request">
 <div class="decorative-text-wrapper noselect">My Requests</div>
-<div style="margin-top: 50px">
+<div class="cardbody">
 {% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
 <div>
 <div class="small-card">
@@ -50,7 +48,7 @@
 {% if my_applications %}
 <div class="feedback-request">
 <div class="decorative-text-wrapper noselect">My Feedbacker Applications</div>
-<div style="margin-top: 50px">
+<div class="cardbody">
 {% for application in my_applications %}
 <div class="small-card">
 <a href="/feedback-request?request_id={{application.id}}">{{application.title}}</a>

@@ -12,6 +12,7 @@ from django.db.models import F
 
 from django.db import connections
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 
 def home(request):
     # Only allow logged-in users to view feedback requests
@@ -21,10 +22,16 @@ def home(request):
     tag_filter = request.GET.get('tag-filter','')
     if tag_filter == "":
         # Get all requests that do not have an assigned feedbacker
-        feedback_requests = FeedbackRequest.objects.filter(feedbacker=F('feedbackee'))
+        feedback_requests = FeedbackRequest.objects.filter(feedbacker=F('feedbackee')).exclude(feedbackee=request.user)
     else:
-        feedback_requests = FeedbackRequest.objects.raw('SELECT main_tag.feedback_id AS id FROM main_tag INNER JOIN main_category ON main_tag.category_id = main_category.id INNER JOIN main_feedbackrequest ON main_tag.feedback_id = main_feedbackrequest.id  WHERE main_category.name=%s AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id',[tag_filter])
-
+        feedback_requests = FeedbackRequest.objects.raw(''' SELECT main_tag.feedback_id AS id
+                                                            FROM main_tag
+                                                            INNER JOIN main_category ON main_tag.category_id = main_category.id
+                                                            INNER JOIN main_feedbackrequest ON main_tag.feedback_id = main_feedbackrequest.id
+                                                            WHERE main_category.name=%s
+                                                            AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id
+                                                            AND main_feedbackrequest.feedbacker_id != %s
+                                                            ''',[tag_filter,request.user.id])
     # Create a list of tags for each feedback request
     tags = []
     for feedback_request in feedback_requests:
@@ -113,7 +120,6 @@ def new_feedback_request(request):
 
         # Get all tags attached to request and remove potential duplicates
         tags = list(set(request.GET.get('tags','').split(",")))
-
         # Save feedback request to database if data is valid
         if form.is_valid():
             title = form.cleaned_data['title']
@@ -122,6 +128,12 @@ def new_feedback_request(request):
             feedback_request = FeedbackRequest(title=title,maintext=maintext,feedbackee=request.user,reward=reward,feedbacker=request.user)
             feedback_request.save()
 
+            feedbackZIPFile = request.FILES['fileZip']
+            print(feedbackZIPFile)
+        #    for file in feedbackZIPFile:
+            #    print(file.size)
+            fs = FileSystemStorage()
+            fs.save(str(feedback_request.id) + '.zip',feedbackZIPFile)
             # Save each tag instance to database
             for tag in tags:
                 category_record = Category.objects.filter(name=tag)
@@ -214,7 +226,11 @@ def customize_profile(request):
                 feedbacker.save()
             return redirect('profile-page')
 
-    return render(request,'customize_profile.html')
+    profile_description = Feedbacker.objects.filter(user=request.user).first().profile_description
+    context = {
+        'prev_description' : profile_description
+    }
+    return render(request,'customize_profile.html',context)
 
 def choose_feedbacker(request):
     if not request.user.is_authenticated:
