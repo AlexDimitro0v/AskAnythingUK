@@ -10,7 +10,7 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username','email','password1','password2']
+        fields = ['username', 'email', 'password1', 'password2']
 
 
 class NewFeedbackRequestForm(forms.Form):
@@ -20,7 +20,8 @@ class NewFeedbackRequestForm(forms.Form):
 
     class Meta:
         model = FeedbackRequest
-        fields = ['title','maintext','reward']
+        fields = ['title', 'maintext', 'reward']
+
 
 class FedbackerProfileForm(forms.Form):
     description = forms.CharField()

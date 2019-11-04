@@ -10,23 +10,24 @@
 </head>
 
 <body>
-<div id="header" class="noselect" style="display: table">
-    <span style="position: absolute">
-      <h2 class="header-menu-text noselect"><a href="/">AskAnything</a></h2>
-      <h2 class="header-menu-text noselect"><a href="/">AskAnything</a></h2>
+    <div id="header" class="noselect" style="display: table">
+        <span style="position: absolute">
+          <h2 class="header-menu-text noselect"><a href="/">AskAnything</a></h2>
+          <h2 class="header-menu-text noselect"><a href="/">AskAnything</a></h2>
+        </span>
 
-    </span>
-    <span style="position:absolute; float: right; right:10px;">
-      {%if user.is_authenticated %}
-      <a class="header-menu-text noselect" href="/profile/">
-        <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/></a>
-      {% endif %}
-    </span>
-</div>
-<div id="main-container">
-    {%block content %} {% endblock%}
-</div>
-<div id="footer" class="noselect" style="display: table">
-</div>
+        <span style="position:absolute; float: right; right:10px;">
+          {%if user.is_authenticated %}
+          <a class="header-menu-text noselect" href="/profile/">
+            <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
+          </a>
+          {% endif %}
+        </span>
+    </div>
+    <div id="main-container">
+        {%block content %} {% endblock%}
+    </div>
+    <div id="footer" class="noselect" style="display: table">
+    </div>
 </body>
 </html>

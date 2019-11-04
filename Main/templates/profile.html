@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 {% load multifor %}
@@ -6,64 +5,66 @@
 {% block content%}
 <div class="button noselect button-corner" style="position: fixed; z-index: 1"><a href="/new-feedback-request">Ask For Feedback</a></div>
 <div class="feedback-request">
-<div class="decorative-text-wrapper noselect">My Profile</div>
-<div>
-<h4 style="font-size: 50px; margin-top:20px">{{ user.username }}</h4>
-{% if feedbacker_info != None %}
-<p >{{ feedbacker_info.profile_description }}</p>
-{% endif %}
-<div class="button noselect button-corner"><a href="/customize-profile">Customize Profile</a></div>
-
-</div>
+    <div class="decorative-text-wrapper noselect">My Profile</div>
+    <div>
+        <h4 style="font-size: 50px; margin-top:20px">{{ user.username }}</h4>
+        {% if feedbacker_info != None %}
+        <p>{{ feedbacker_info.profile_description }}</p>
+        {% endif %}
+        <div class="button noselect button-corner"><a href="/customize-profile">Customize Profile</a></div>
+    </div>
 </div>
 
 {% if my_requests %}
 <div class="feedback-request">
-<div class="decorative-text-wrapper noselect">My Requests</div>
-<div style="margin-top: 50px">
-{% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
-<div>
-<div class="small-card">
-{{feedback_request.title}}
-{% if curr_candidates%}
-{% for candidate in curr_candidates%}
-<div> {{candidate}}
-  <div class="status-info" style="background-color: #AC6DFF"><a href="/choose-feedbacker/?user={{candidate}}&feedback={{feedback_request.id}}">Choose as Feedbacker</a></div>
-  <div class="status-info" style="background-color: #AC6DFF"><a href="/feedbacker-profile/?user={{candidate}}&feedback={{feedback_request.id}}">View Profile</a></div>
+    <div class="decorative-text-wrapper noselect">My Requests</div>
+    <div style="margin-top: 50px">
 
-</div>
-{% endfor %}
-{% elif feedback_request.feedbacker != feedback_request.feedbackee %}
-<div> {{feedback_request.feedbacker}}
-  <div class="status-info" style="background-color: #AC6DFF">Your Feedbacker</div>
+        {% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
+        <div>
+            <div class="small-card">
+                {{feedback_request.title}}
+                {% if curr_candidates%}
+                {% for candidate in curr_candidates%}
+                <div> {{candidate}}
+                    <div class="status-info" style="background-color: #AC6DFF">
+                        <a href="/choose-feedbacker/?user={{candidate}}&feedback={{feedback_request.id}}">Choose as Feedbacker</a>
+                    </div>
+                    <div class="status-info" style="background-color: #AC6DFF">
+                        <a href="/feedbacker-profile/?user={{candidate}}&feedback={{feedback_request.id}}">View Profile</a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% elif feedback_request.feedbacker != feedback_request.feedbackee %}
+                <div> {{feedback_request.feedbacker}}
+                    <div class="status-info" style="background-color: #AC6DFF">Your Feedbacker</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
 
-</div>
-
-{% endif %}
-</div>
-</div>
-{% endfor %}
-</div>
+    </div>
 </div>
 {% endif %}
 
 {% if my_applications %}
 <div class="feedback-request">
-<div class="decorative-text-wrapper noselect">My Feedbacker Applications</div>
-<div style="margin-top: 50px">
-{% for application in my_applications %}
-<div class="small-card">
-<a href="/feedback-request?request_id={{application.id}}">{{application.title}}</a>
-{% if application.feedbacker == user %}
-<div class="status-info" style="background-color: #48EB9E">Application Accepted</div>
-{% elif application.feedbacker == application.feedbackee %}
-<div class="status-info">Awaiting reaction</div>
-{% else %}
-<div class="status-info" style="background-color: #FF6571">Application rejected</div>
-{% endif %}
-</div>
-{% endfor %}
-</div>
+    <div class="decorative-text-wrapper noselect">My Feedbacker Applications</div>
+    <div style="margin-top: 50px">
+        {% for application in my_applications %}
+        <div class="small-card">
+            <a href="/feedback-request?request_id={{application.id}}">{{application.title}}</a>
+            {% if application.feedbacker == user %}
+            <div class="status-info" style="background-color: #48EB9E">Application Accepted</div>
+            {% elif application.feedbacker == application.feedbackee %}
+            <div class="status-info">Awaiting reaction</div>
+            {% else %}
+            <div class="status-info" style="background-color: #FF6571">Application rejected</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endif %}
 

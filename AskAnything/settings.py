@@ -15,9 +15,11 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-STATIC_URL = '/static/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+STATIC_URL = '/static/'
+LOGIN_REDIRECT_URL = 'home-page'
+LOGOUT_REDIRECT_URL = 'login-page'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^m5ounntw1@bdo&07@o85^ia68iqod++@=hah95#ypaljj8w&0'
@@ -27,10 +29,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-LOGIN_REDIRECT_URL = 'home-page'
-LOGOUT_REDIRECT_URL = 'login-page'
 # Application definition
-
+# By default Django looks for a template subdir in each of our installed aps !!!
+# That's why anytime we create a new app we should add it to the list, so that Django can correctly search for templates
+# and modules (which deal with the databases)
 INSTALLED_APPS = [
     'main.apps.MainConfig',
     'django.contrib.admin',
@@ -78,7 +80,6 @@ WSGI_APPLICATION = 'AskAnything.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -93,7 +94,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -112,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -126,5 +125,3 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'

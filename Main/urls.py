@@ -14,5 +14,4 @@ urlpatterns = [
     path('feedbacker-profile/', views.feedbacker_profile, name="feedbacker-profile-page"),
     path('customize-profile/', views.customize_profile, name="customize-profile-page"),
     path('choose-feedbacker/', views.choose_feedbacker, name="choose-feedbacker-page"),
-
 ]

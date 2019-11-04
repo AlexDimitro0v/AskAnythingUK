@@ -2,23 +2,21 @@
 {% load static %}
 {% block content%}
 <div class="large-area">
-<div class="decorative-text-wrapper noselect">Customize Profile</div>
-<div style="margin-top: 50px">
-<form action="/customize-profile/" method="POST" id="customizeProfileForm">
-    {% csrf_token %}
-    <textarea rows="10" placeholder="Description" name="description"></textarea>
-</form>
-<span class="button noselect button-corner" id="submit_button">Submit</span>
-<div id="tags"></div>
-<script>
-let tags = [];
+    <div class="decorative-text-wrapper noselect">Customize Profile</div>
+    <div style="margin-top: 50px">
+        <form action="/customize-profile/" method="POST" id="customizeProfileForm">
+            {% csrf_token %}
+            <textarea rows="10" placeholder="Description" name="description"></textarea>
+        </form>
+        <span class="button noselect button-corner" id="submit_button">Submit</span>
+        <div id="tags"></div>
+        <script>
+            let tags = [];
 
-$('#submit_button').click(function() {
-    $("#customizeProfileForm").submit();
-});
-
-</script>
-</div>
-</div>
+            $('#submit_button').click(function() {
+                $("#customizeProfileForm").submit();
+            });
+        </script>
+    </div>
 </div>
 {% endblock %}
