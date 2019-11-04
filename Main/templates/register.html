@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -6,7 +5,7 @@
   <div  class='center_content'>
       <div class="card">
           {% if wronglogin %}
-              <div class="incorrect">Oops! Incorrect username or password.</div>
+            <div class="incorrect">Oops! Incorrect username or password.</div>
           {% endif %}
           <img src="{% static 'img/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
           <h4 style="margin-bottom: 10px">Create Account</h4>
@@ -19,9 +18,9 @@
               <span class="button noselect" id="login_button">SIGN UP</span>
           </form>
           <script>
-          $('#login_button').click(function() {
-              $("#loginForm").submit();
-          });
+              $('#login_button').click(function() {
+                  $("#loginForm").submit();
+              });
           </script>
       </div>
   </div>

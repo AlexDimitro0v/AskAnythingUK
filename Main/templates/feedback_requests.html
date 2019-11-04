@@ -2,31 +2,32 @@
 {% block content%}
 {% load multifor %}
 
-  {% for feedback_request in requests; curr_tags in tags %}
-    <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
+{% for feedback_request in requests; curr_tags in tags %}
+<div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
     <div class="tag-container">
-      {% for tag in curr_tags %}
-      <span class='tag' id="{{ tag }}">{{ tag }}</span>
-      {% endfor %}
+        {% for tag in curr_tags %}
+        <span class='tag' id="{{ tag }}">{{ tag }}</span>
+        {% endfor %}
     </div>
     <h3> {{ feedback_request.title }}</h3>
     <p>{{ feedback_request.maintext }}</p>
 
-    <div class="button noselect button-corner"><a href="feedback-request?request_id={{feedback_request.id}}">More information</a></div>
+    <div class="button noselect button-corner">
+        <a href="feedback-request?request_id={{feedback_request.id}}">More information</a>
+    </div>
     <div class="button-corner" style="margin-right: 220px; font-size: 1.3em;padding: 10px;">
-      £{{ feedback_request.reward }}
+        £{{ feedback_request.reward }}
     </div>
-    </div>
-  {% endfor %}
+</div>
+{% endfor %}
 
-  <!-- Hidden form for tag filtering -->
-  <form action="/" method="POST" id="tagFilterForm">  {% csrf_token %} </form>
-  <script>
+<!-- Hidden form for tag filtering -->
+<form action="/" method="POST" id="tagFilterForm"> {% csrf_token %}</form>
+<script>
   $('.tag').click(function(e) {
     let tagValue = e.target.id;
     $('#tagFilterForm').attr("action","/?tag-filter="+tagValue);
     $('#tagFilterForm').submit();
   });
-  </script>
-
+</script>
 {% endblock%}

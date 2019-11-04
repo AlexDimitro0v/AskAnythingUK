@@ -1,27 +1,26 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content%}
-  <div  class='center_content'>
-      <div class="card">
-          {% if wronglogin %}
-              <div class="incorrect">Oops! Incorrect username or password.</div>
-          {% endif %}
-          <img src="{% static 'img/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
-          <h4 style="margin-bottom: 10px">Login</h4>
-          <form action="/login/" method="POST" id="loginForm">
-              {% csrf_token %}
-              <input class="loginform" type="text" placeholder="User Name" name="username"><br>
-              <input class="loginform" type="password" placeholder="Password" name="password" style="margin-bottom: 40px"><br>
-              <span class="button noselect" id="login_button">LOGIN</span>
-              <span class="button noselect"><a href="/register">SIGN UP</a></span>
-          </form>
-          <script>
+<div class='center_content'>
+    <div class="card">
+        {% if wronglogin %}
+        <div class="incorrect">Oops! Incorrect username or password.</div>
+        {% endif %}
+        <img src="{% static 'img/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
+        <h4 style="margin-bottom: 10px">Login</h4>
+        <form action="/login/" method="POST" id="loginForm">
+            {% csrf_token %}
+            <input class="loginform" type="text" placeholder="User Name" name="username"><br>
+            <input class="loginform" type="password" placeholder="Password" name="password" style="margin-bottom: 40px"><br>
+            <span class="button noselect" id="login_button">LOGIN</span>
+            <span class="button noselect"><a href="/register">SIGN UP</a></span>
+        </form>
+        <script>
           $('#login_button').click(function() {
               $("#loginForm").submit();
           });
-          </script>
-      </div>
-  </div>
+        </script>
+    </div>
+</div>
 {% endblock %}

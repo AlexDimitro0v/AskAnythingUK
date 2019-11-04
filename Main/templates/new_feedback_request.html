@@ -1,9 +1,9 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content%}
 <div class="large-area">
+<<<<<<< HEAD
 <div class="decorative-text-wrapper noselect">New Feedback Request</div>
 <div class="cardbody">
 <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
@@ -93,5 +93,41 @@ $("body").on("click", ".tag", function(){
 </script>
 </div>
 </div>
+=======
+    <div class="decorative-text-wrapper noselect">New Feedback Request</div>
+    <div style="margin-top: 50px">
+        <form action="/new-feedback-request/" method="POST" id="loginForm">
+            {% csrf_token %}
+            <textarea rows="1" placeholder="Title" name="title"></textarea>
+            <textarea rows="10" placeholder="Description" name="maintext"></textarea>
+            <textarea rows="1" placeholder="Reward" name="reward"></textarea>
+        </form>
+        <form onsubmit="return false">
+            <input id="tag-input"></input>
+        </form>
+        <span class="button noselect button-corner" id="submit_button">Submit</span>
+        <div id="tags"></div>
+        <script>
+            let tags = [];
+
+            $('#submit_button').click(function() {
+                $("#loginForm").attr("action","/new-feedback-request/?tags="+tags);
+                $("#loginForm").submit();
+            });
+
+            // When enter is pressed, new tag is added
+            $('#tag-input').keypress(function (e) {
+              if (e.which == 13) {
+                let tagValue = $('#tag-input').val();
+                if(tagValue != "") {
+                  tags.push(tagValue);
+                  $('#tag-input').val('');
+                  $('#tags').append("<span class='tag'>"+tagValue+"</span>");
+                }
+              }
+            });
+        </script>
+    </div>
+>>>>>>> ad3354fc1576b287331a6b7ae7aafe8e9f96857d
 </div>
 {% endblock %}
