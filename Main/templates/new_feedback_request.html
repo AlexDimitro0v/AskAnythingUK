@@ -3,131 +3,94 @@
 
 {% block content%}
 <div class="large-area">
-<<<<<<< HEAD
-<div class="decorative-text-wrapper noselect">New Feedback Request</div>
-<div class="cardbody">
-<form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
-    {% csrf_token %}
-    TITLE:<br> <textarea  name="title" class="onelineform" maxlength="50"></textarea> <br><br>
-    DESCRIPTION:<br> <textarea rows="15" name="maintext"></textarea> <br><br>
-    REWARD (£):<br> <input rows="1"  name="reward" class="onelineform" style="max-width: 100px" maxlength="5" type="number"></input>
-  <br>  <br>FEEDBACK FILES:<br><br>
-  <label for="file-upload" class="button noselect" style="margin-top: 50px">
-      Upload Files
-  </label>
-  <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
-</form><br>
-<form onsubmit="return false">
-TAGS:<br>
-<input rows="1" id="tag-input" class="onelineform" ></input>
-</form>
-<div>
-<div id="tags" style="margin-top: 20px; height: 1px"></div>
-</div>
-<span class="button noselect button-corner" id="submit_button">Submit</span>
-
-<script>
-let tags = [];
-let numOfTags = 0;
-$(document).ready(function () {
-
-$('#submit_button').click(function() {
-    // Create an array of all selected files
-    let selectedFiles = Array.from(document.getElementById("file-upload").files);
-
-    var zip = new JSZip();
-
-     // Add all uploaded files to ZIP
-     function addFileToZip(n) {
-         if(n >= selectedFiles.length) {
-            zip.generateAsync({type:"blob"}).then(function(content) {
-                var files = new File([content], "feedbackFiles.zip");
-                var formData = new FormData(document.querySelector('#newFeedbackForm'));
-                formData.append('fileZip', files);
-                formData.delete('feedbackfiles');
-
-                let xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if(xhr.readyState == 4 && xhr.status == 200) {
-                      window.location.href = "/profile";
-                    }
-                }
-                xhr.open('POST', "/new-feedback-request/?tags="+tags, true);
-                xhr.send(formData);
-          });
-        }
-        else {
-          let fileReader = new FileReader();
-          fileReader.onload = function() {
-              zip.file(selectedFiles[n].name, this.result);
-              addFileToZip(n + 1);
-          };
-          fileReader.readAsArrayBuffer(selectedFiles[n]);
-        }
-    }
-    addFileToZip(0);
-
-});
-
-// When enter is pressed, new tag is added
-$('#tag-input').keypress(function (e) {
-    if (e.which == 13 ) {
-      let tagValue = $('#tag-input').val();
-      if(tagValue != "" && numOfTags < 5) {
-        numOfTags++;
-        tags.push(tagValue);
-        $('#tag-input').val('');
-        $('#tags').append("<span class='tag' id='tagtag'>"+tagValue+"</span>");
-      }
-    }
-
-});
-
-$("body").on("click", ".tag", function(){
-  tags.pop($(this).val);
-  $(this).remove();
-  numOfTags--;
- });
-
-});
-</script>
-</div>
-</div>
-=======
-    <div class="decorative-text-wrapper noselect">New Feedback Request</div>
-    <div style="margin-top: 50px">
-        <form action="/new-feedback-request/" method="POST" id="loginForm">
-            {% csrf_token %}
-            <textarea rows="1" placeholder="Title" name="title"></textarea>
-            <textarea rows="10" placeholder="Description" name="maintext"></textarea>
-            <textarea rows="1" placeholder="Reward" name="reward"></textarea>
-        </form>
-        <form onsubmit="return false">
-            <input id="tag-input"></input>
-        </form>
-        <span class="button noselect button-corner" id="submit_button">Submit</span>
-        <div id="tags"></div>
-        <script>
-            let tags = [];
-
-            $('#submit_button').click(function() {
-                $("#loginForm").attr("action","/new-feedback-request/?tags="+tags);
-                $("#loginForm").submit();
-            });
-
-            // When enter is pressed, new tag is added
-            $('#tag-input').keypress(function (e) {
-              if (e.which == 13) {
-                let tagValue = $('#tag-input').val();
-                if(tagValue != "") {
-                  tags.push(tagValue);
-                  $('#tag-input').val('');
-                  $('#tags').append("<span class='tag'>"+tagValue+"</span>");
-                }
-              }
-            });
-        </script>
+  <div class="decorative-text-wrapper noselect">New Feedback Request</div>
+  <div class="cardbody">
+    <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
+      {% csrf_token %}
+      TITLE:<br><textarea name="title" class="onelineform" maxlength="50"></textarea> <br><br>
+      DESCRIPTION:<br><textarea rows="15" name="maintext"></textarea> <br><br>
+      REWARD (£):<br><input rows="1"  name="reward" class="onelineform" style="max-width: 100px" maxlength="5" type="number"></input>
+      <br><br>FEEDBACK FILES:<br><br>
+      <label for="file-upload" class="button noselect" style="margin-top: 50px">
+            Upload Files
+      </label>
+      <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
+    </form>
+    <br>
+    <form onsubmit="return false">
+      TAGS:<br>
+      <input rows="1" id="tag-input" class="onelineform" ></input>
+    </form>
+    <div>
+      <div id="tags" style="margin-top: 20px; height: 1px"></div>
     </div>
->>>>>>> ad3354fc1576b287331a6b7ae7aafe8e9f96857d
+    <span class="button noselect button-corner" id="submit_button">Submit</span>
+
+    <script>
+    let tags = [];
+    let numOfTags = 0;
+    $(document).ready(function () {
+
+    $('#submit_button').click(function() {
+        // Create an array of all selected files
+        let selectedFiles = Array.from(document.getElementById("file-upload").files);
+
+        var zip = new JSZip();
+
+         // Add all uploaded files to ZIP
+         function addFileToZip(n) {
+             if(n >= selectedFiles.length) {
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    var files = new File([content], "feedbackFiles.zip");
+                    var formData = new FormData(document.querySelector('#newFeedbackForm'));
+                    formData.append('fileZip', files);
+                    formData.delete('feedbackfiles');
+
+                    let xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if(xhr.readyState == 4 && xhr.status == 200) {
+                          window.location.href = "/profile";
+                        }
+                    }
+                    xhr.open('POST', "/new-feedback-request/?tags="+tags, true);
+                    xhr.send(formData);
+              });
+            }
+            else {
+              let fileReader = new FileReader();
+              fileReader.onload = function() {
+                  zip.file(selectedFiles[n].name, this.result);
+                  addFileToZip(n + 1);
+              };
+              fileReader.readAsArrayBuffer(selectedFiles[n]);
+            }
+        }
+        addFileToZip(0);
+
+    });
+
+    // When enter is pressed, new tag is added
+    $('#tag-input').keypress(function (e) {
+        if (e.which == 13 ) {
+          let tagValue = $('#tag-input').val();
+          if(tagValue != "" && numOfTags < 5) {
+            numOfTags++;
+            tags.push(tagValue);
+            $('#tag-input').val('');
+            $('#tags').append("<span class='tag' id='tagtag'>"+tagValue+"</span>");
+          }
+        }
+
+    });
+
+    $("body").on("click", ".tag", function(){
+      tags.pop($(this).val);
+      $(this).remove();
+      numOfTags--;
+     });
+
+    });
+    </script>
+  </div>
 </div>
 {% endblock %}
