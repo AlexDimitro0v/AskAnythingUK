@@ -1,24 +1,27 @@
 {% extends 'base.html' %}
 {% block content%}
 <div class="large-area">
-    <h1 style="text-align: center">{{ feedback_request.title }}</h1>
-    <p>{{ feedback_request.maintext }}</p>
-    {% if user_is_candidate %}
-    <div class="noselect button-corner">
-        <div class="status-info">Awaiting reaction</div>
-    </div>
-    {% elif user_is_feedbacker %}
-    <div class="noselect button-corner">
-        <div class="status-info" style="background-color: #48EB9E">Application Accepted</div>
-    </div>
-    {% else %}
-    <div class="button noselect button-corner">
-        <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as feedbacker</a>
-    </div>
-    {% endif %}
+  <span class="status-info noselect" style="font-size: 1.3em;">
+      £{{ feedback_request.reward }}
+  </span>
+  {% if user_is_candidate %}
+  <span class="status-info noselect" style="background-color: #FFB580; font-size: 1.3em;">Application Submitted</span>
+  {% elif user_is_feedbacker %}
+  <span class="status-info noselect" style="background-color: #48EB9E; font-size: 1.3em;">Application Accepted</span>
+  {% endif %}
+  <div style="margin-top: 10px; margin-bottom: 10px">
+  <h1 style="text-align: center">{{ feedback_request.title }}</h1>
+  <p>{{ feedback_request.maintext }}</p>
+  {% if user_is_feedbacker %}
+  <div class="button noseect" style="display: inline-block; margin-top: 20px;">
+        <a href="{{ feedback_files_link }}">Download Feedback Files</a>
+  </div>
+  </div>
+  {% elif not user_is_candidate %}
+  <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+      <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as Feedbacker</a>
+  </div>
+  {% endif %}
 
-    <div class="button-corner" style="margin-right: 250px; font-size: 1.5em;padding: 10px;">
-        £{{ feedback_request.reward }}
-    </div>
 </div>
 {% endblock%}

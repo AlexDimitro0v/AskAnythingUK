@@ -167,8 +167,14 @@ def feedback_request(request):
     request_id = request.GET.get('request_id', '')
     user_is_feedbacker = False
     user_is_candidate = False
+
+    feedback_files_link = None
+
     if FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
         user_is_feedbacker = True
+        fs = FileSystemStorage()
+        feedback_files_link = fs.url(request_id+".zip")
+
     elif FeedbackerCandidate.objects.filter(feedbacker=request.user, feedback_id=request_id).first():
         user_is_candidate = True
     if request_id != "":
@@ -176,7 +182,8 @@ def feedback_request(request):
             'feedback_request': FeedbackRequest.objects.get(id=request_id),
             'request_id': request_id,
             'user_is_candidate': user_is_candidate,
-            'user_is_feedbacker': user_is_feedbacker
+            'user_is_feedbacker': user_is_feedbacker,
+            'feedback_files_link' : feedback_files_link
         }
         return render(request, 'feedback_request.html', context)
     else:

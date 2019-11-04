@@ -55,11 +55,11 @@
         <div class="small-card">
             <a href="/feedback-request?request_id={{application.id}}">{{application.title}}</a>
             {% if application.feedbacker == user %}
-            <div class="status-info" style="background-color: #48EB9E">Application Accepted</div>
+            <div class="status-info status-info-profile" style="background-color: #48EB9E">Application Accepted</div>
             {% elif application.feedbacker == application.feedbackee %}
-            <div class="status-info">Awaiting reaction</div>
+            <div class="status-info status-info-profile" style="background-color: #FFB580;">Application Submitted</div>
             {% else %}
-            <div class="status-info" style="background-color: #FF6571">Application rejected</div>
+            <div class="status-info status-info-profile" style="background-color: #FF6571">Application rejected</div>
             {% endif %}
         </div>
         {% endfor %}

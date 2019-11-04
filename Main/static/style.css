@@ -294,10 +294,8 @@ textarea {
 }
 
 .status-info {
-  right: 0;
-  float: right;
   font-size: 1em;
-  background-color: #FFB580;
+  background-color: var(--bg-color);
   height: 40px;
   margin-top: 10px;
   line-height: 40px;
@@ -306,6 +304,19 @@ textarea {
   padding-right: 10px;
   color: white;
   margin-right: 10px;
+  width: auto;
+  display: inline-block;
+
+}
+
+p {
+  line-height: 1.8em;
+  margin-top: 10px;
+}
+
+.status-info-profile {
+  float: right;
+  right: 0;
 }
 
 .status-info a {
