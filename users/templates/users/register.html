@@ -7,7 +7,7 @@
           {% if wronglogin %}
             <div class="incorrect">Oops! Incorrect username or password.</div>
           {% endif %}
-          <img src="{% static 'img/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
+          <img src="{% static 'users/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
           <h4 style="margin-bottom: 10px">Create Account</h4>
           <form action="/register/" method="POST" id="loginForm">
               {% csrf_token %}

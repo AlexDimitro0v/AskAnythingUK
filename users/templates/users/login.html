@@ -5,9 +5,9 @@
 <div class='center_content'>
     <div class="card">
         {% if wronglogin %}
-        <div class="incorrect">Oops! Incorrect username or password.</div>
+            <div class="incorrect">Oops! Incorrect username or password.</div>
         {% endif %}
-        <img src="{% static 'img/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
+        <img src="{% static 'users/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
         <h4 style="margin-bottom: 10px">Login</h4>
         <form action="/login/" method="POST" id="loginForm">
             {% csrf_token %}

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 # That's why anytime we create a new app we should add it to the list, so that Django can correctly search for templates
 # and modules (which deal with the databases)
 INSTALLED_APPS = [
+    'users.apps.UsersConfig',
     'main.apps.MainConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -125,8 +126,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-
 MEDIA_URL = '/media/'

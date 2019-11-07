@@ -1,13 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import FeedbackRequest
-from .models import FeedbackerCandidate
-from .models import Category
-from .models import Tag
-from .models import Feedbacker
-from .forms import UserRegistrationForm
-from .forms import NewFeedbackRequestForm
-from .forms import FedbackerProfileForm
+from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Feedbacker
+from .forms import NewFeedbackRequestForm, FedbackerProfileForm
 from django.db.models import F
 
 from django.db import connections
@@ -32,7 +25,7 @@ def home(request):
                                                             WHERE main_category.name=%s
                                                             AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id
                                                             AND main_feedbackrequest.feedbacker_id != %s
-                                                            ''',[tag_filter,request.user.id])
+                                                            ''', [tag_filter, request.user.id])
     # Create a list of tags for each feedback request
     tags = []
     for feedback_request in feedback_requests:
@@ -45,44 +38,6 @@ def home(request):
         'tags': tags
     }
     return render(request, 'feedback_requests.html', context)
-
-
-def login(request):
-    # Logged-in users cannot access login page
-    if request.user.is_authenticated:
-        return redirect('home-page')
-
-    context = {
-        'wronglogin': False,
-        'form': UserRegistrationForm()
-    }
-
-    # If login POST request sent
-    if request.method == "POST":
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home-page')
-        else:
-            context['wronglogin'] = True
-    return render(request, 'login.html', context)
-
-
-def register(request):
-    context = {
-        'wronglogin': False,
-        'form': UserRegistrationForm()
-    }
-
-    # If registration POST request just sent
-    if request.method == "POST":
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home-page')
-        else:
-            context['wronglogin'] = True
-    return render(request, 'register.html', context)
 
 
 def profile(request):
