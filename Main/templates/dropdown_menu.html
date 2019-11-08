@@ -4,8 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Emoji CSS -->
-    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <!-- Emoji Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Isolated Bootsrap -->
@@ -21,9 +20,11 @@
               <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
           </a>
           <ul class="dropdown-menu">
-            <li><a href="#">Settings <span class="em em-gear" style="height: 13px; right: 10px;"></span></a></li>
+            <li><a href="/profile/">Profile <span class="fa fa-user-circle" style="height: 13px; right: 10px;"></span></a></li>
             <li class="divider"></li>
-            <li><a href="/logout/">Sign Out <span class="fa fa-sign-out" style="height: 13px; left: 3px;"></span></a></li>
+            <li><a href="#">Settings <span class="fa fa-gear" style="height: 13px; right: 10px;"></span></a></li>
+            <li class="divider"></li>
+            <li><a href="/logout/">Sign Out <span class="fa fa-sign-out" style="height: 13px; right: 10px;"></span></a></li>
           </ul>
         </li>
       </ul>
