@@ -19,7 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home-page'
-LOGOUT_REDIRECT_URL = 'login-page'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^m5ounntw1@bdo&07@o85^ia68iqod++@=hah95#ypaljj8w&0'
@@ -127,5 +126,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

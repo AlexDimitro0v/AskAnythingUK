@@ -98,7 +98,7 @@ def new_feedback_request(request):
         #    for file in feedbackZIPFile:
             #    print(file.size)
             fs = FileSystemStorage()
-            fs.save(str(feedback_request.id) + '.zip',feedbackZIPFile)
+            fs.save(str(feedback_request.id) + '.zip', feedbackZIPFile)
             # Save each tag instance to database
             for tag in tags:
                 category_record = Category.objects.filter(name=tag)
