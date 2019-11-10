@@ -9,9 +9,11 @@
       {% csrf_token %}
       TITLE:<br><textarea name="title" class="onelineform" maxlength="50"></textarea> <br><br>
       DESCRIPTION:<br><textarea rows="15" name="maintext"></textarea> <br><br>
-      REWARD (£):<br><input rows="1"  name="reward" class="onelineform" style="max-width: 100px" maxlength="5" type="number"></input>
+      REWARD (£):<br><input rows="1"  name="reward" class="onelineform" style="max-width: 100px" type="number" min="1"></input>
+      <br><br>
+      TIME LIMIT (days):<br><input rows="1"  name="timelimit" class="onelineform" style="max-width: 100px" type="number" min="1"></input>
       <br><br>FEEDBACK FILES:<br><br>
-      <label for="file-upload" class="button noselect" style="margin-top: 50px">
+      <label for="file-upload" class="button noselect" style="padding: 8px; margin-top: 5px">
             Upload Files
       </label>
       <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
@@ -19,7 +21,7 @@
     <br>
     <form onsubmit="return false">
       TAGS:<br>
-      <input rows="1" id="tag-input" class="onelineform" ></input>
+      <input rows="1" id="tag-input" class="onelineform" maxlength="20"></input>
     </form>
     <div>
       <div id="tags" style="margin-top: 20px; height: 1px"></div>

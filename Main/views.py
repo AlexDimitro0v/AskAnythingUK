@@ -89,14 +89,13 @@ def new_feedback_request(request):
             title = form.cleaned_data['title']
             maintext = form.cleaned_data['maintext']
             reward = form.cleaned_data['reward']
+            time_limit = form.cleaned_data['timelimit']
             feedback_request = FeedbackRequest(title=title, maintext=maintext, feedbackee=request.user, reward=reward,
-                                               feedbacker=request.user)
+                                               feedbacker=request.user, time_limit=time_limit)
             feedback_request.save()
 
             feedbackZIPFile = request.FILES['fileZip']
-            print(feedbackZIPFile)
-        #    for file in feedbackZIPFile:
-            #    print(file.size)
+
             fs = FileSystemStorage()
             fs.save(str(feedback_request.id) + '.zip', feedbackZIPFile)
             # Save each tag instance to database
@@ -122,10 +121,15 @@ def feedback_request(request):
     request_id = request.GET.get('request_id', '')
     user_is_feedbacker = False
     user_is_candidate = False
+    user_is_feedbackee = False
 
     feedback_files_link = None
 
-    if FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
+    if FeedbackRequest.objects.get(id=request_id).feedbackee == request.user:
+        user_is_feedbackee = True
+        fs = FileSystemStorage()
+        feedback_files_link = fs.url(request_id+".zip")
+    elif FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
         user_is_feedbacker = True
         fs = FileSystemStorage()
         feedback_files_link = fs.url(request_id+".zip")
@@ -138,7 +142,8 @@ def feedback_request(request):
             'request_id': request_id,
             'user_is_candidate': user_is_candidate,
             'user_is_feedbacker': user_is_feedbacker,
-            'feedback_files_link' : feedback_files_link
+            'feedback_files_link' : feedback_files_link,
+            'user_is_feedbackee' : user_is_feedbackee
         }
         return render(request, 'feedback_request.html', context)
     else:
