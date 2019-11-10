@@ -1,16 +1,15 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
 
-
-# Create your views here.
 def login(request):
+    print("HEY")
     # Logged-in users cannot access login page
     if request.user.is_authenticated:
         return redirect('home-page')
-
     context = {
-        'wronglogin': False,
-        'form': UserRegistrationForm()
+        'form': UserRegistrationForm(),
+        'invalid_username' : None,
+        'invalid_password' : None
     }
 
     # If login POST request sent
@@ -20,14 +19,20 @@ def login(request):
             form.save()
             return redirect('home-page')
         else:
-            context['wronglogin'] = True
+            print("HERE")
+            context['invalid_username'] = form["username"].errors
+            context['invalid_password'] = form["password"].errors
+
     return render(request, 'users/login.html', context)
 
 
 def register(request):
     context = {
-        'wronglogin': False,
-        'form': UserRegistrationForm()
+        'form': UserRegistrationForm(),
+        'invalid_username' : None,
+        'invalid_email' : None,
+        'invalid_password1' : None,
+        'invalid_password2' : None
     }
 
     # If registration POST request just sent
@@ -37,5 +42,9 @@ def register(request):
             form.save()
             return redirect('login-page')
         else:
-            context['wronglogin'] = True
+            context['invalid_username'] = form["username"].errors
+            context['invalid_email'] = form["email"].errors
+            context['invalid_password1'] = form["password1"].errors
+            context['invalid_password2'] = form["password2"].errors
+
     return render(request, 'users/register.html', context)

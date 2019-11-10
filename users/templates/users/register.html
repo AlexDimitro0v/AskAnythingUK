@@ -2,24 +2,47 @@
 {% load static %}
 
 {% block content%}
-  <div  class='center_content'>
-      <div class="card">
-          {% if wronglogin %}
-            <div class="incorrect">Oops! Incorrect username or password.</div>
-          {% endif %}
-          <img src="{% static 'users/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
-          <h4 style="margin-bottom: 10px">Create Account</h4>
-          <form action="/register/" method="POST" id="loginForm">
+<div class="large-area" style="max-width: 600px">
+  <div class="decorative-text-wrapper noselect">Create Account</div>
+  <div class="cardbody">
+          <form action="/register/" method="POST" id="registrationForm">
               {% csrf_token %}
-              <input class="loginform" type="text" placeholder="User Name" name="username"><br>
-              <input class="loginform" type="text" placeholder="Email" name="email" ><br>
-              <input class="loginform" type="password" placeholder="Password" name="password1"><br>
-              <input class="loginform" type="password" placeholder="Repeat Password" name="password2" style="margin-bottom: 40px"><br>
-              <span class="button noselect" id="login_button">SIGN UP</span>
+              <input class="onelineform" type="text" placeholder="User Name" name="username" {% if invalid_username %} style="border: 2px solid #FF6571;" {% endif %}>
+              {% if invalid_username%}
+                   {% for error in invalid_username %}
+                   <span style="color: #FF6571" >{{error}}</span>
+                    {% endfor %}
+              {% endif %}
+              <br>
+              <input class="onelineform" type="text" placeholder="Email" name="email" {% if invalid_email %} style="border: 2px solid #FF6571;" {% endif %}>
+              {% if invalid_email %}
+                   {% for error in invalid_email %}
+                   <span style="color: #FF6571">{{error}}</span>
+                    {% endfor %}
+              {% endif %}
+              <br>
+              <input class="onelineform" type="password" placeholder="Password" name="password1" {% if invalid_password1 %} style="border: 2px solid #FF6571;" {% endif %}>
+              {% if invalid_password1 %}
+                   {% for error in invalid_password1 %}
+                   <span style="color: #FF6571">{{error}}</span>
+                    {% endfor %}
+              {% endif %}
+              <br>
+              <input class="onelineform" type="password" placeholder="Repeat Password" name="password2" {% if invalid_password2 %} style="border: 2px solid #FF6571;" {% endif %}>
+              {% if invalid_password2 %}
+                   {% for error in invalid_password2 %}
+                   <span style="color: #FF6571" >{{error}}</span>
+                    {% endfor %}
+              {% endif %}
+              <br>
           </form>
+          <div class="button-corner">
+          <span class="button noselect" style="margin-top: 20px"><a href="/login">LOG IN</a></span>
+        <span class="button noselect" id="register_button" style="margin-top: 20px">SIGN UP</span>
+        </div>
           <script>
-              $('#login_button').click(function() {
-                  $("#loginForm").submit();
+              $('#register_button').click(function() {
+                  $("#registrationForm").submit();
               });
           </script>
       </div>

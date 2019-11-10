@@ -15,20 +15,31 @@
   <span class="status-info noselect" style="background-color: #FFB580; font-size: 1.3em;">Application Submitted</span>
   {% elif user_is_feedbacker %}
   <span class="status-info noselect" style="background-color: #48EB9E; font-size: 1.3em;">Application Accepted</span>
+  {% elif user_was_rejected %}
+  <span class="status-info noselect" style="background-color: #FF6571; font-size: 1.3em;">Application Rejected</span>
   {% endif %}
   <div style="margin-top: 10px; margin-bottom: 10px">
-  <h1 style="text-align: center">{{ feedback_request.title }}</h1>
-  <p>{{ feedback_request.maintext }}</p>
-  {% if user_is_feedbacker or user_is_feedbackee%}
-  <div class="button noseect" style="display: inline-block; margin-top: 20px;">
-        <a href="{{ feedback_files_link }}">Download Feedback Files</a>
-  </div>
+    <h1 style="text-align: center">{{ feedback_request.title }}</h1>
+    <p>{{ feedback_request.maintext }}</p>
+    {% if user_is_feedbacker or user_is_feedbackee%}
+    <div class="button noseect" style="display: inline-block; margin-top: 20px;">
+          <a href="{{ feedback_files_link }}">Download Feedbackee's Files</a>
+    </div>
+    {% if user_is_feedbacker %}
+    <br>  <br>
+    <form action="/upload-feedback-files/" method="POST" id="uploadFilesForm" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="file-upload" class="button noselect" style="display: inline-block;">
+            Upload Feedback Files
+      </label>
+      <input id="file-upload" type="file" name="feedbackerfiles" style="display: none" multiple>
+    </form>
+    {% endif %}
   </div>
   {% elif not user_is_candidate %}
   <div class="button noselect" style="display: inline-block; margin-top: 20px;">
       <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as Feedbacker</a>
   </div>
   {% endif %}
-
 </div>
 {% endblock%}

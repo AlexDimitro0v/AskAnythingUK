@@ -2,25 +2,34 @@
 {% load static %}
 
 {% block content%}
-<div class='center_content'>
-    <div class="card">
-        {% if wronglogin %}
-            <div class="incorrect">Oops! Incorrect username or password.</div>
-        {% endif %}
-        <img src="{% static 'users/user.png' %}" style='width: 30%; margin-bottom: 10px'/>
-        <h4 style="margin-bottom: 10px">Login</h4>
+<div class="large-area" style="max-width: 600px">
+  <div class="decorative-text-wrapper noselect">Log In</div>
+  <div class="cardbody">
         <form action="/login/" method="POST" id="loginForm">
             {% csrf_token %}
-            <input class="loginform" type="text" placeholder="User Name" name="username"><br>
-            <input class="loginform" type="password" placeholder="Password" name="password" style="margin-bottom: 40px"><br>
-            <span class="button noselect" id="login_button">LOGIN</span>
-            <span class="button noselect"><a href="/register">SIGN UP</a></span>
+            <input class="onelineform"type="text" placeholder="User Name" name="username"><br>
+            {% if invalid_username %}
+                 {% for error in invalid_username %}
+                 <span style="color: #FF6571">{{error}}</span>
+                  {% endfor %}
+            {% endif %}
+            <input class="onelineform" type="password" placeholder="Password" name="password">
+            {% if invalid_password %}
+                 {% for error in invalid_password %}
+                 <span style="color: #FF6571">{{error}}</span>
+                  {% endfor %}
+            {% endif %}
         </form>
+        <div class="button-corner">
+          <span class="button noselect"><a href="/register">SIGN UP</a></span>
+          <span class="button noselect" id="login_button">LOGIN</span>
+        </div>
         <script>
           $('#login_button').click(function() {
               $("#loginForm").submit();
           });
         </script>
     </div>
-</div>
+  </div>
+
 {% endblock %}
