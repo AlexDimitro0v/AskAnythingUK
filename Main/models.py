@@ -13,6 +13,7 @@ class FeedbackRequest(models.Model):
     feedbackee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='request_feedbackee')
     feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker')
     reward = models.IntegerField(default=0)
+    feedbacker_comments = models.TextField(default="")
 
 
 class Rating(models.Model):
@@ -45,3 +46,6 @@ class Specialism(models.Model):
 class Feedbacker(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile_description = models.TextField()
+
+class FeedbackerComments(models.Model):
+    feedbacker_comments = models.TextField(default="")

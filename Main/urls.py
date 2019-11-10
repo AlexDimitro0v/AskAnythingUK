@@ -13,6 +13,8 @@ urlpatterns = [
     path('feedbacker-profile/', views.feedbacker_profile, name="feedbacker-profile-page"),
     path('customize-profile/', views.customize_profile, name="customize-profile-page"),
     path('choose-feedbacker/', views.choose_feedbacker, name="choose-feedbacker-page"),
+    path('submit-feedback/', views.submit_feedback, name="submit-feedback-page"),
+
 ]
 
 # We cannot use this in production, serving static files with Django is not efficient

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Feedbacker
-from .forms import NewFeedbackRequestForm, FedbackerProfileForm
+from .forms import NewFeedbackRequestForm, FedbackerProfileForm, FeedbackerCommentsForm
 from django.db.models import F
 
 from django.db import connections
@@ -212,7 +212,9 @@ def customize_profile(request):
                 feedbacker.save()
             return redirect('profile-page')
 
-    profile_description = Feedbacker.objects.filter(user=request.user).first().profile_description
+    profile_description = str()
+    if Feedbacker.objects.filter(user=request.user).first():
+        profile_description = Feedbacker.objects.filter(user=request.user).first().profile_description
     context = {
         'prev_description' : profile_description
     }
@@ -229,3 +231,33 @@ def choose_feedbacker(request):
     feedback_request.feedbacker = User.objects.filter(username=feedbacker_username).first()
     feedback_request.save()
     return redirect('profile-page')
+
+
+def submit_feedback(request):
+    if not request.user.is_authenticated:
+        return redirect('login-page')
+
+    if request.method == "POST":
+        request_id = request.GET.get('request_id', '')
+        form = FeedbackerCommentsForm(request.POST)
+
+        if form.is_valid():
+            comments = form.cleaned_data['comments']
+
+            feedback_request = FeedbackRequest.objects.get(id=request_id)
+
+            if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
+                return redirect('home-page')
+
+            feedback_request.feedbacker_comments = comments
+            feedback_request.save()
+
+            feedbackZIPFile = request.FILES['fileZip']
+            fs = FileSystemStorage()
+            fs.save(str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
+            return redirect('profile-page')
+
+    context = {
+        'request_id': request.GET.get('request_id', '')
+    }
+    return render(request, 'submit_feedback.html',context)

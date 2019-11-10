@@ -34,6 +34,9 @@
     $(document).ready(function () {
 
     $('#submit_button').click(function() {
+      console.log("CLICKED");
+        // Disable button to prevent multiple clicks
+        $("#submit_button").attr("disabled", true);
         // Create an array of all selected files
         let selectedFiles = Array.from(document.getElementById("file-upload").files);
 

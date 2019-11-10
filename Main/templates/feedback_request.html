@@ -26,14 +26,10 @@
           <a href="{{ feedback_files_link }}">Download Feedbackee's Files</a>
     </div>
     {% if user_is_feedbacker %}
-    <br>  <br>
-    <form action="/upload-feedback-files/" method="POST" id="uploadFilesForm" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label for="file-upload" class="button noselect" style="display: inline-block;">
-            Upload Feedback Files
-      </label>
-      <input id="file-upload" type="file" name="feedbackerfiles" style="display: none" multiple>
-    </form>
+    <br> 
+    <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+      <a href="/submit-feedback/?request_id={{ request_id  }}">Submit Feedback</a>
+    </div>
     {% endif %}
   </div>
   {% elif not user_is_candidate %}

@@ -22,14 +22,13 @@
         <div>
             <div class="small-card" style="padding: 20px">
                 <a href="/feedback-request?request_id={{feedback_request.id}}"><p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p></a>
-                <hr style="width: 50%">
+                <hr style="width: 50%; margin-top: 20px; margin-bottom: 20px">
                 {% if curr_candidates%}
                 <div>
-                <p style="text-align: center">Feedbacker Candidates</p>
                 {% for candidate in curr_candidates%}
                 <div>
                   <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
-                  <span style="margin-left: 10px">{{candidate}}</span>
+                  <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
                   <a href="/choose-feedbacker/?user={{candidate}}&feedback={{feedback_request.id}}">
                     <div class="status-info-button status-info-profile">
                         Choose as Feedbacker
@@ -46,7 +45,7 @@
                 {% elif feedback_request.feedbacker != feedback_request.feedbackee %}
                 <div>
                   <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
-                  <span style="margin-left: 10px">{{feedback_request.feedbacker}}</span>
+                  <span style="margin-left: 10px; font-weight: 600">{{feedback_request.feedbacker}}</span>
                   <div class="status-info status-info-profile noselect" style="background-color: #AC6DFF; font-size: 1em;">Your Feedbacker</div>
                 </div>
                 {% else %}
