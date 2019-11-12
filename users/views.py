@@ -1,31 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
 
-def login(request):
-    print("HEY")
-    # Logged-in users cannot access login page
-    if request.user.is_authenticated:
-        return redirect('home-page')
-    context = {
-        'form': UserRegistrationForm(),
-        'invalid_username' : None,
-        'invalid_password' : None
-    }
-
-    # If login POST request sent
-    if request.method == "POST":
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home-page')
-        else:
-            print("HERE")
-            context['invalid_username'] = form["username"].errors
-            context['invalid_password'] = form["password"].errors
-
-    return render(request, 'users/login.html', context)
-
-
 def register(request):
     context = {
         'form': UserRegistrationForm(),

@@ -10,28 +10,28 @@
               <input class="onelineform" type="text" placeholder="User Name" name="username" {% if invalid_username %} style="border: 2px solid #FF6571;" {% endif %}>
               {% if invalid_username%}
                    {% for error in invalid_username %}
-                   <span style="color: #FF6571" >{{error}}</span>
+                   <br><span style="color: #FF6571" >{{error}}</span>
                     {% endfor %}
               {% endif %}
               <br>
               <input class="onelineform" type="text" placeholder="Email" name="email" {% if invalid_email %} style="border: 2px solid #FF6571;" {% endif %}>
               {% if invalid_email %}
                    {% for error in invalid_email %}
-                   <span style="color: #FF6571">{{error}}</span>
+                   <br><span style="color: #FF6571">{{error}}</span>
                     {% endfor %}
               {% endif %}
               <br>
               <input class="onelineform" type="password" placeholder="Password" name="password1" {% if invalid_password1 %} style="border: 2px solid #FF6571;" {% endif %}>
               {% if invalid_password1 %}
                    {% for error in invalid_password1 %}
-                   <span style="color: #FF6571">{{error}}</span>
+                   <br><span style="color: #FF6571">{{error}}</span>
                     {% endfor %}
               {% endif %}
               <br>
               <input class="onelineform" type="password" placeholder="Repeat Password" name="password2" {% if invalid_password2 %} style="border: 2px solid #FF6571;" {% endif %}>
               {% if invalid_password2 %}
                    {% for error in invalid_password2 %}
-                   <span style="color: #FF6571" >{{error}}</span>
+                   <br><span style="color: #FF6571" >{{error}}</span>
                     {% endfor %}
               {% endif %}
               <br>

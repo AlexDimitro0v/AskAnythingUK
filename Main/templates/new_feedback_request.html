@@ -40,14 +40,14 @@
         // Create an array of all selected files
         let selectedFiles = Array.from(document.getElementById("file-upload").files);
 
-        var zip = new JSZip();
+        let zip = new JSZip();
 
          // Add all uploaded files to ZIP
          function addFileToZip(n) {
              if(n >= selectedFiles.length) {
                 zip.generateAsync({type:"blob"}).then(function(content) {
-                    var files = new File([content], "feedbackFiles.zip");
-                    var formData = new FormData(document.querySelector('#newFeedbackForm'));
+                    let files = new File([content], "feedbackFiles.zip");
+                    let formData = new FormData(document.querySelector('#newFeedbackForm'));
                     formData.append('fileZip', files);
                     formData.delete('feedbackfiles');
 
