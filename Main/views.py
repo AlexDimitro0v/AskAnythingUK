@@ -124,16 +124,24 @@ def feedback_request(request):
     user_is_feedbackee = False
     user_was_rejected = False
 
-    feedback_files_link = None
+    feedbackee_files_link = None
+    feedbacker_files_link = None
 
+    fs = FileSystemStorage()
+
+    # User is feedbackee for this request
     if FeedbackRequest.objects.get(id=request_id).feedbackee == request.user:
         user_is_feedbackee = True
-        fs = FileSystemStorage()
-        feedback_files_link = fs.url(request_id+".zip")
+        feedbackee_files_link = fs.url(request_id+".zip")
+        if fs.exists(request_id+"_feedbacker.zip"):
+            feedbacker_files_link = fs.url(request_id+"_feedbacker.zip")
+    # User is feednacker for this request
     elif FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
         user_is_feedbacker = True
-        fs = FileSystemStorage()
-        feedback_files_link = fs.url(request_id+".zip")
+        feedbackee_files_link = fs.url(request_id+".zip")
+        if fs.exists(request_id+"_feedbacker.zip"):
+            feedbacker_files_link = fs.url(request_id+"_feedbacker.zip")
+    # User is candidate for this request
     elif FeedbackerCandidate.objects.filter(feedbacker=request.user, feedback_id=request_id).first():
         if FeedbackRequest.objects.get(id=request_id).feedbackee != FeedbackRequest.objects.get(id=request_id).feedbacker:
             user_was_rejected = True
@@ -145,7 +153,8 @@ def feedback_request(request):
             'request_id': request_id,
             'user_is_candidate': user_is_candidate,
             'user_is_feedbacker': user_is_feedbacker,
-            'feedback_files_link' : feedback_files_link,
+            'feedbackee_files_link' : feedbackee_files_link,
+            'feedbacker_files_link' : feedbacker_files_link,
             'user_is_feedbackee' : user_is_feedbackee,
             'user_was_rejected' : user_was_rejected
         }

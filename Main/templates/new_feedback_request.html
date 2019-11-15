@@ -7,21 +7,27 @@
   <div class="cardbody">
     <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
       {% csrf_token %}
-      TITLE:<br><textarea name="title" class="onelineform" maxlength="50"></textarea> <br><br>
-      DESCRIPTION:<br><textarea rows="15" name="maintext"></textarea> <br><br>
-      REWARD (£):<br><input rows="1"  name="reward" class="onelineform" style="max-width: 100px" type="number" min="1"></input>
-      <br><br>
-      TIME LIMIT (days):<br><input rows="1"  name="timelimit" class="onelineform" style="max-width: 100px" type="number" min="1"></input>
-      <br><br>FEEDBACK FILES:<br><br>
+      TITLE:<br><textarea id="title" name="title" class="onelineform" maxlength="50"></textarea> <br>
+      <div style="color: red; display: none" id="title-prompt">You must specify a title.</div> <br>
+      DESCRIPTION:<br><textarea rows="15" id="description" name="maintext"></textarea> <br>
+      <div style="color: red; display: none" id="description-prompt">You must specify a description.</div> <br>
+      REWARD (£):<br><input rows="1"  id="reward" name="reward" class="onelineform" style="max-width: 100px; margin: 0 auto" type="number" min="1"></input>
+      <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
+
+      <br><br>TIME LIMIT (days):<br><input rows="1" id="limit" name="timelimit" class="onelineform" style="max-width: 100px; margin: 0 auto" type="number" min="1"></input>
+      <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
+
+      <br><br>FEEDBACK FILES:<br>
       <label for="file-upload" class="button noselect" style="padding: 8px; margin-left: 0px">
             Upload Files
       </label>
       <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
     </form>
+    <div style="color: red; display: none" id="file-upload-prompt">You must upload at least one file to submit feedback request.</div>
     <br>
     <form onsubmit="return false">
       TAGS:<br>
-      <input rows="1" id="tag-input" class="onelineform" maxlength="20"></input>
+      <input rows="1" id="tag-input" class="onelineform" maxlength="20" style="margin: 0 auto"></input>
     </form>
     <div>
       <div id="tags" style="margin-top: 20px; height: 1px"></div>
@@ -34,7 +40,6 @@
     $(document).ready(function () {
 
     $('#submit_button').click(function() {
-      console.log("CLICKED");
         // Disable button to prevent multiple clicks
         $("#submit_button").attr("disabled", true);
         // Create an array of all selected files
@@ -50,6 +55,39 @@
                     let formData = new FormData(document.querySelector('#newFeedbackForm'));
                     formData.append('fileZip', files);
                     formData.delete('feedbackfiles');
+
+                    $("#title-prompt").css("display","none");
+                    $("#description-prompt").css("display","none");
+                    $("#reward-prompt").css("display","none");
+                    $("#limit-prompt").css("display","none");
+
+                    let formValid = true;
+
+                    // Check that form data valid before sending request
+                    if($("#title").val().trim()=="") {
+                        $("#title-prompt").css("display","block");
+                        formValid = false;
+                    }
+                    if($("#description").val().trim()=="") {
+                        $("#description-prompt").css("display","block");
+                        formValid = false;
+                    }
+                    if($("#reward").val().trim()=="") {
+                        $("#reward-prompt").css("display","block");
+                        formValid = false;
+                    }
+                    if($("#limit").val().trim()=="") {
+                        $("#limit-prompt").css("display","block");
+                        formValid = false;
+                    }
+                    if(selectedFiles.length < 1) {
+                        $("#file-upload-prompt").css("display","block");
+                        formValid = false;
+                    }
+
+                    if(!formValid) {
+                      return;
+                    }
 
                     let xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function() {
@@ -71,14 +109,13 @@
             }
         }
         addFileToZip(0);
-
     });
 
     // When enter is pressed, new tag is added
     $('#tag-input').keypress(function (e) {
         if (e.which == 13 ) {
-          let tagValue = $('#tag-input').val();
-          if(tagValue != "" && numOfTags < 5) {
+          let tagValue = $('#tag-input').val().trim();
+          if(tagValue != "" && numOfTags < 5 && !tags.includes(tagValue)) {
             numOfTags++;
             tags.push(tagValue);
             $('#tag-input').val('');

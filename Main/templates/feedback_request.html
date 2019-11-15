@@ -22,11 +22,17 @@
     <h1 style="text-align: center">{{ feedback_request.title }}</h1>
     <p>{{ feedback_request.maintext }}</p>
     {% if user_is_feedbacker or user_is_feedbackee%}
-    <div class="button noseect" style="display: inline-block; margin-top: 20px;">
-          <a href="{{ feedback_files_link }}">Download Feedbackee's Files</a>
+    <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+          <a href="{{ feedbackee_files_link }}">Download Feedbackee's Files</a>
     </div>
-    {% if user_is_feedbacker %}
-    <br> 
+    {% if feedbacker_files_link != None %}
+    <br>
+    <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+          <a href="{{ feedbacker_files_link }}">Download Feedbacker's Files</a>
+    </div>
+    {% endif %}
+    {% if user_is_feedbacker and feedbacker_files_link == None %}
+    <br>
     <div class="button noselect" style="display: inline-block; margin-top: 20px;">
       <a href="/submit-feedback/?request_id={{ request_id  }}">Submit Feedback</a>
     </div>
