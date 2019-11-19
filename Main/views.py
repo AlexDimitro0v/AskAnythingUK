@@ -193,11 +193,15 @@ def feedbacker_profile(request):
     if not my_feedback_requests:
         return redirect('profile-page')
 
-    feedback_request_info = FeedbackerCandidate.objects.filter(feedback=feedback_request_id)
+    candidates = FeedbackerCandidate.objects.filter(feedback=feedback_request_id)
 
-    if not feedback_request_info or not feedback_request_info[0].feedbacker == feedbacker:
-        return redirect('profile-page')
+    if not candidates: return redirect('profile-page')
+    feedbacker_is_candidate = False
+    for candidate in candidates:
+         if candidate.feedbacker == feedbacker: feedbacker_is_candidate = True
 
+    if not feedbacker_is_candidate: return redirect('profile-page')
+    
     context = {
         'username': feedbacker.username,
         'feedbacker_info': Feedbacker.objects.filter(user=feedbacker).first()
