@@ -16,11 +16,11 @@ class NewFeedbackRequestForm(forms.Form):
 
 
 class FedbackerProfileForm(forms.Form):
-    description = forms.CharField()
 
     class Meta:
         model = Feedbacker
         fields = ['description']
+
 
 class FeedbackerCommentsForm(forms.Form):
     comments = forms.CharField()

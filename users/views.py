@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
 
+
 def register(request):
     context = {
         'form': UserRegistrationForm(),

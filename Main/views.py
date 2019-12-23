@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Feedbacker
 from .forms import NewFeedbackRequestForm, FedbackerProfileForm, FeedbackerCommentsForm
-from django.db.models import F
+from django.db.models import F   # used to compare 2 instances or fields of the same model
+# https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
 
 from django.db import connections
 from django.contrib.auth.models import User
@@ -13,11 +14,19 @@ def home(request):
     if not request.user.is_authenticated:
         return redirect('login-page')
 
-    tag_filter = request.GET.get('tag-filter', '')
+    # Get the tag filter, return an empty string if not found:
+    tag_filter = request.GET.get('tag-filter', '')      # https://stackoverflow.com/a/49872199
     if tag_filter == "":
-        # Get all requests that do not have an assigned feedbacker
-        feedback_requests = FeedbackRequest.objects.filter(feedbacker=F('feedbackee')).exclude(feedbackee=request.user)
+        # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
+        # (excluding the requests from the currently logged in user)
+        feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker')).exclude(feedbackee=request.user)
     else:
+        # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
+        # {tag-filter: Writing} and all the requests
+        #
+        # https://stackoverflow.com/a/49872199
+        
+        # https://docs.djangoproject.com/en/3.0/topics/db/sql/ - useful explanation of raw
         feedback_requests = FeedbackRequest.objects.raw(''' SELECT main_tag.feedback_id AS id
                                                             FROM main_tag
                                                             INNER JOIN main_category ON main_tag.category_id = main_category.id
@@ -273,4 +282,4 @@ def submit_feedback(request):
     context = {
         'request_id': request.GET.get('request_id', '')
     }
-    return render(request, 'submit_feedback.html',context)
+    return render(request, 'submit_feedback.html', context)
