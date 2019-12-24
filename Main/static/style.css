@@ -126,13 +126,13 @@ input {
 }
 
 .decorative-text-wrapper {
-  background-color: var(--bg-color);
+  background-color: #1F4D8A;;
   position: absolute;
   margin-left: -30px;
   margin-top: -10px;
-  padding: 12px;
-  border-bottom-right-radius: 20px;
-  border-top-right-radius: 20px;
+  padding: 8px;
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
   color: white;
   font-size: 20px;
   padding-left: 50px;
@@ -159,7 +159,7 @@ p {
   padding-left: 15px;
   padding-right: 15px;
   font-size: 1.3em;
-  border: 2px solid var(--bg-color);
+  border: 2px solid #43C2F0;
   transition: 0.3s;
   cursor: pointer;
   height: 40px;
@@ -171,7 +171,7 @@ p {
 
 .button:hover {
   transition: 0.3s;
-  background-color: var(--bg-color);
+  background-color: #43C2F0;
   color: #eeeeee;
 }
 
@@ -194,7 +194,6 @@ p {
 .button-filled:hover {
   color: black;
   background-color: #eeeeee;
-z
 }
 
 .noselect {
@@ -390,3 +389,80 @@ form {
   margin-top: 50px;
   margin-bottom: 50px;
 }
+
+.asteriskField {
+    display: none;
+}
+
+#div_id_username{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#id_username{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#div_id_email{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#id_email{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#div_id_password1{
+  margin-bottom: 20px;
+}
+
+#id_password1{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#hint_id_password1{
+  margin-left: 15px;
+}
+
+#id_password2{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#register_button{
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
+}
+
+#login_button{
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
+}
+
+#div_id_username{
+  margin-bottom: 20px;
+}
+
+
+#id_password{
+  margin-top: 0px;
+}
+
+.textinput textInput form-control{
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
+}
+/*
+Logo Colours
+#43C2F0  - light
+#1F4D8A  - dark
+*/
