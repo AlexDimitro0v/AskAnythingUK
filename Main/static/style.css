@@ -455,12 +455,6 @@ form {
   margin-top: 0px;
 }
 
-.textinput textInput form-control{
-  border-bottom-right-radius: 25px;
-  border-top-right-radius: 25px;
-  border-bottom-left-radius: 25px;
-  border-top-left-radius: 25px;
-}
 /*
 Logo Colours
 #43C2F0  - light
