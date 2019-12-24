@@ -12,17 +12,29 @@
         {% endfor %}
     </div>
     {% endif %}
-    <h3> {{ feedback_request.title }}</h3>
-    <p>{{ feedback_request.maintext }}</p>
+    <h3> {{ feedback_request.title }} </h3>
+    <p> {{ feedback_request.maintext }} </p>
     <div style="margin-top: 5px">
-      <div class="button noselect button-corner">
-          <a href="feedback-request?request_id={{feedback_request.id}}">More information</a>
+      <div class="button noselect button-corner" style="
+           border-bottom-right-radius: 25px;
+           border-top-right-radius: 25px;
+           border-bottom-left-radius: 25px;
+           border-top-left-radius: 25px;">
+          <a href="feedback-request?request_id={{feedback_request.id}}" style="text-decoration: none;">More information</a>
       </div>
-      <span class="status-info noselect">
+      <span class="status-info noselect" style="
+           border-bottom-right-radius: 25px;
+           border-top-right-radius: 25px;
+           border-bottom-left-radius: 25px;
+           border-top-left-radius: 25px;">
         <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
           {{ feedback_request.reward }}
       </span>
-      <span class="status-info noselect" style="background: #FFCF7D ">
+      <span class="status-info noselect" style="background: #FFCF7D;
+            border-bottom-right-radius: 25px;
+            border-top-right-radius: 25px;
+            border-bottom-left-radius: 25px;
+            border-top-left-radius: 25px;">
         <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
         {{ feedback_request.time_limit }} days
       </span>

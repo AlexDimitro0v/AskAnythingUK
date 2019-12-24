@@ -165,10 +165,10 @@ def feedback_request(request):
             'request_id': request_id,
             'user_is_candidate': user_is_candidate,
             'user_is_feedbacker': user_is_feedbacker,
-            'feedbackee_files_link' : feedbackee_files_link,
-            'feedbacker_files_link' : feedbacker_files_link,
-            'user_is_feedbackee' : user_is_feedbackee,
-            'user_was_rejected' : user_was_rejected
+            'feedbackee_files_link': feedbackee_files_link,
+            'feedbacker_files_link': feedbacker_files_link,
+            'user_is_feedbackee': user_is_feedbackee,
+            'user_was_rejected': user_was_rejected
         }
         return render(request, 'feedback_request.html', context)
     else:

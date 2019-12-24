@@ -55,7 +55,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.category.name
-
+    
 
 class Specialism(models.Model):
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
@@ -65,7 +65,7 @@ class Specialism(models.Model):
 class Feedbacker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)     # One-to-one relationship
     profile_description = models.TextField()
-    # blah = models.TextField()                 # adding more fields is restricted - to be determined why?
+    # image = models.ImageField(default='default.jpg', upload_to='profile_pics')  # the dir where the images get uploaded to
 
     def __str__(self):
         return self.user.username
