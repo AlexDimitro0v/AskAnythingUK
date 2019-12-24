@@ -18,7 +18,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = 'home-page'
+LOGIN_REDIRECT_URL = 'home-page'    # By default when logged in Django looks for a route in accounts/profile
+
 # LOGOUT_REDIRECT_URL = 'logout-page'
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -34,6 +35,8 @@ ALLOWED_HOSTS = ['*']
 # That's why anytime we create a new app we should add it to the list, so that Django can correctly search for templates
 # and modules (which deal with the databases)
 INSTALLED_APPS = [
+    'crispy_forms',
+    'django_cleanup',           # to auto-delete old media files (like old profile images)
     'users.apps.UsersConfig',
     'main.apps.MainConfig',
     'django.contrib.admin',
@@ -127,5 +130,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'     # Crispy Forms will be using Bootstrap for styling
+
+# In order to website can find the media when we try to view them from within the browser, adjust:
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    # where Django will store uploaded files (in the base dir -> media dir)
+MEDIA_URL = '/media/'                           # how we will access our media through the browser

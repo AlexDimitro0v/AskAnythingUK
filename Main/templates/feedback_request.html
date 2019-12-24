@@ -3,45 +3,45 @@
 {% load static %}
 
 <div class="large-area">
-  <span class="status-info noselect" style="font-size: 1.3em;">
-    <img src = "{% static 'img/pound_icon.png'%}" style="vertical-align: middle; height: 25px" />
-      {{ feedback_request.reward }}
-  </span>
-  <span class="status-info noselect" style="font-size: 1.3em; background: #FFCF7D">
-    <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
-      {{ feedback_request.time_limit }} days
-  </span>
-  {% if user_is_candidate %}
-  <span class="status-info noselect" style="background-color: #FFB580; font-size: 1.3em;">Application Submitted</span>
-  {% elif user_is_feedbacker %}
-  <span class="status-info noselect" style="background-color: #48EB9E; font-size: 1.3em;">Application Accepted</span>
-  {% elif user_was_rejected %}
-  <span class="status-info noselect" style="background-color: #FF6571; font-size: 1.3em;">Application Rejected</span>
-  {% endif %}
-  <div style="margin-top: 10px; margin-bottom: 10px">
-    <h1 style="text-align: center">{{ feedback_request.title }}</h1>
-    <p>{{ feedback_request.maintext }}</p>
-    {% if user_is_feedbacker or user_is_feedbackee%}
-    <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-          <a href="{{ feedbackee_files_link }}" download="Feedbackee Files">Download Feedbackee's Files</a>
-    </div>
-    {% if feedbacker_files_link != None %}
-    <br>
-    <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-          <a href="{{ feedbacker_files_link }}" download="Feedbacker Files">Download Feedbacker's Files</a>
-    </div>
+    <span class="status-info noselect" style="font-size: 1.3em;">
+        <img src = "{% static 'img/pound_icon.png'%}" style="vertical-align: middle; height: 25px" />
+        {{ feedback_request.reward }}
+    </span>
+    <span class="status-info noselect" style="font-size: 1.3em; background: #FFCF7D">
+        <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
+        {{ feedback_request.time_limit }} days
+    </span>
+    {% if user_is_candidate %}
+        <span class="status-info noselect" style="background-color: #FFB580; font-size: 1.3em;">Application Submitted</span>
+    {% elif user_is_feedbacker %}
+        <span class="status-info noselect" style="background-color: #48EB9E; font-size: 1.3em;">Application Accepted</span>
+    {% elif user_was_rejected %}
+        <span class="status-info noselect" style="background-color: #FF6571; font-size: 1.3em;">Application Rejected</span>
     {% endif %}
-    {% if user_is_feedbacker and feedbacker_files_link == None %}
-    <br>
-    <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-      <a href="/submit-feedback/?request_id={{ request_id  }}">Submit Feedback</a>
+    <div style="margin-top: 10px; margin-bottom: 10px">
+        <h1 style="text-align: center">{{ feedback_request.title }}</h1>
+        <p>{{ feedback_request.maintext }}</p>
+        {% if user_is_feedbacker or user_is_feedbackee%}
+            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+                <a href="{{ feedbackee_files_link }}" download="Feedbackee Files">Download Feedbackee's Files</a>
+            </div>
+        {% if feedbacker_files_link != None %}
+            <br>
+            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+                <a href="{{ feedbacker_files_link }}" download="Feedbacker Files">Download Feedbacker's Files</a>
+            </div>
+        {% endif %}
+        {% if user_is_feedbacker and feedbacker_files_link == None %}
+            <br>
+            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+                <a href="/submit-feedback/?request_id={{ request_id  }}">Submit Feedback</a>
+            </div>
+        {% endif %}
     </div>
+    {% elif not user_is_candidate %}
+        <div class="button noselect" style="display: inline-block; margin-top: 20px;">
+            <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as Feedbacker</a>
+        </div>
     {% endif %}
-  </div>
-  {% elif not user_is_candidate %}
-  <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-      <a href="/apply-as-feedbacker/?request_id={{ request_id  }}">Apply as Feedbacker</a>
-  </div>
-  {% endif %}
 </div>
 {% endblock%}

@@ -1,35 +1,18 @@
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- Emoji Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <!-- Isolated Bootsrap -->
-    <link rel="stylesheet" href="https://toert.github.io/Isolated-Bootstrap/versions/3.3.7/iso_bootstrap3.3.7min.css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-</head>
-<body>
-    <div class="bootstrap">
-    <!-- Any HTML here will be styled with Bootstrap CSS -->
-      <ul class="nav navbar-default">
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-              <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="/profile/"><span class="fa fa-user-circle" style="height: 13px; right: 10px;"></span> Profile</a></li>
-            <li class="divider"></li>
-            <li><a href="#"><span class="fa fa-gear" style="height: 13px; right: 10px;"></span> Settings</a></li>
-            <li class="divider"></li>
-            <li><a href="/logout/"><span class="fa fa-sign-out" style="height: 13px; right: 10px;"></span> Sign Out</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-
-</body>
-</html>
+            <!-- Any HTML here will be styled with Bootstrap CSS -->
+            <div class="bootstrap">
+              <ul class="nav navbar-default">
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                      <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/profile/"><span class="fa fa-user-circle" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Profile</strong></a></li>
+                    <li class="divider"></li>
+                    <li><a href="#"><span class="fa fa-gear" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Settings</strong></a></li>
+                    <li class="divider"></li>
+                    <li><a href="/logout/"><span class="fa fa-sign-out" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Sign Out</strong></a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>

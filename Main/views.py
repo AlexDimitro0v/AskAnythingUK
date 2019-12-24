@@ -5,6 +5,7 @@ from django.db.models import F   # used to compare 2 instances or fields of the 
 # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
 
 from django.db import connections
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
@@ -22,11 +23,13 @@ def home(request):
         feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker')).exclude(feedbackee=request.user)
     else:
         # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
-        # {tag-filter: Writing} and all the requests
+        # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
         #
         # https://stackoverflow.com/a/49872199
         
         # https://docs.djangoproject.com/en/3.0/topics/db/sql/ - useful explanation of raw
+        # Get all requests that have the selected tag-filter only,
+        # excluding the requests from the currently logged in user:
         feedback_requests = FeedbackRequest.objects.raw(''' SELECT main_tag.feedback_id AS id
                                                             FROM main_tag
                                                             INNER JOIN main_category ON main_tag.category_id = main_category.id
@@ -36,11 +39,12 @@ def home(request):
                                                             AND main_feedbackrequest.feedbacker_id != %s
                                                             ''', [tag_filter, request.user.id])
     # Create a list of tags for each feedback request
-    tags = []
+    tags = []   # will contain nested lists of tag names
     for feedback_request in feedback_requests:
-        request_tag_ids = Tag.objects.filter(feedback=feedback_request)
-        request_tags = [tag.category for tag in request_tag_ids]
-        tags.append([tag.name for tag in request_tags])
+        # Note: Have a look at the models folder to have a clear idea about the entities below:
+        request_tag_ids = Tag.objects.filter(feedback=feedback_request)   # get all tags from the feedback requests list
+        request_tags = [tag.category for tag in request_tag_ids]          # get all tag categories instances
+        tags.append([tag.name for tag in request_tags])                   # finally store the name of those categories
 
     context = {
         'requests': feedback_requests,
@@ -72,7 +76,6 @@ def profile(request):
         feedback_candidates.append(curr_request_candidates)
 
     context = {
-        'user': request.user,
         'my_requests': my_feedback_requests,
         'my_applications': my_feedbacker_applications,
         'feedback_candidates': feedback_candidates,

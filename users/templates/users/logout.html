@@ -1,11 +1,9 @@
 {% extends "base.html"%}
 {% block content %}
     <div class='center_content'>
-        <div class="bootstrap">
-            <h1>You have been logged out</h1>
-            <p>
-                <a href="{% url 'login-page'%}" style="color: red;">Login Again</a>
-            </p>
-        </div>
+        <h1>You have been logged out</h1>
+            <small class="text-muted">
+                <a href="{% url 'login-page'%}" style="color: #1F4D8A;">Login Again</a>
+            </small>
     </div>
 {% endblock content%}

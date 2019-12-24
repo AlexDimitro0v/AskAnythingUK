@@ -8,7 +8,7 @@
     {% if curr_tags.0 %}
     <div class="tag-container">
         {% for tag in curr_tags %}
-        <span class='tag' id="{{ tag }}">{{ tag }}</span>
+            <span class='tag' id="{{ tag }}" title="Click to filter by tag">{{ tag }}</span>
         {% endfor %}
     </div>
     {% endif %}

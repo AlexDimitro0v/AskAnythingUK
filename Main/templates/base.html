@@ -6,7 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>AskAnything</title>
+    {% if title %}
+        <title>AskAnything {{ title }}</title>
+    {%else%}
+        <title>AskAnything</title>
+    {%endif%}
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- CSS (Stepan)-->
     <link rel="stylesheet" href="{% static 'style.css' %}" type="text/css">
 
@@ -20,20 +26,20 @@
     <script src="{% static 'jszip.min.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-    {% if title %}
-    <title>AskAnything {{ title }}</title>
-    {%else%}
-    <title>AskAnything</title>
-    {%endif%}
+    <!-- Isolated Bootsrap -->
+    <link rel="stylesheet" href="https://toert.github.io/Isolated-Bootstrap/versions/3.3.7/iso_bootstrap3.3.7min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
 </head>
 
 <body>
     <div id="header" class="noselect" style="display: table">
         <span style="position: absolute">
-            <a class="header-menu-text noselect" href="/">
+            <a class="header-menu-text noselect" href="/" style="text-decoration: none">
                 <img class="photo-circle" src="{% static 'img/logo.png' %}"/>
             </a>
-            <h2 class="header-menu-text noselect">AskAnything</h2>
+            <h2 class="header-menu-text noselect"> <strong>AskAnything</strong></h2>
         </span>
 
         <span style="position:absolute; float: right; right:90px;">
@@ -43,13 +49,13 @@
         </span>
     </div>
     <div id="main-container">
-        {%if messages%}
-            {%for message in messages%}
-                <div class="alert alert-{{message.tags}}">
-                    {{message}}
-                </div>
-            {%endfor%}
-        {%endif%}
+            {%if messages%}
+                {%for message in messages%}
+                    <div class="alert alert-{{message.tags}}" role="alert">
+                        {{message}}
+                    </div>
+                {%endfor%}
+            {%endif%}
         {%block content %} {% endblock%}
     </div>
     <div id="footer" class="noselect" style="display: table">

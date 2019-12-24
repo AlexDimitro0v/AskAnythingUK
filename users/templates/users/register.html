@@ -1,50 +1,24 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags%}
 
 {% block content%}
 <div class="large-area" style="max-width: 600px">
   <div class="decorative-text-wrapper noselect">Create Account</div>
-  <div class="cardbody">
+    <div class="cardbody">
           <form action="/register/" method="POST" id="registrationForm">
               {% csrf_token %}
-              <input class="onelineform" type="text" placeholder="User Name" name="username" {% if invalid_username %} style="border: 2px solid #FF6571;" {% endif %}>
-              {% if invalid_username%}
-                   {% for error in invalid_username %}
-                   <br><span style="color: #FF6571" >{{error}}</span>
-                    {% endfor %}
-              {% endif %}
-              <br>
-              <input class="onelineform" type="text" placeholder="Email" name="email" {% if invalid_email %} style="border: 2px solid #FF6571;" {% endif %}>
-              {% if invalid_email %}
-                   {% for error in invalid_email %}
-                   <br><span style="color: #FF6571">{{error}}</span>
-                    {% endfor %}
-              {% endif %}
-              <br>
-              <input class="onelineform" type="password" placeholder="Password" name="password1" {% if invalid_password1 %} style="border: 2px solid #FF6571;" {% endif %}>
-              {% if invalid_password1 %}
-                   {% for error in invalid_password1 %}
-                   <br><span style="color: #FF6571">{{error}}</span>
-                    {% endfor %}
-              {% endif %}
-              <br>
-              <input class="onelineform" type="password" placeholder="Repeat Password" name="password2" {% if invalid_password2 %} style="border: 2px solid #FF6571;" {% endif %}>
-              {% if invalid_password2 %}
-                   {% for error in invalid_password2 %}
-                   <br><span style="color: #FF6571" >{{error}}</span>
-                    {% endfor %}
-              {% endif %}
-              <br>
+              {{ form|crispy }}  <!-- Crispy Forms do the design for us -->
           </form>
           <div class="button-corner">
-          <span class="button noselect" style="margin-top: 20px"><a href="/login">LOG IN</a></span>
-        <span class="button noselect" id="register_button" style="margin-top: 20px">SIGN UP</span>
-        </div>
+            <span class="button noselect" id="register_button" style="margin-top: 20px">SIGN UP</span>
+            <span class="button noselect" style="margin-top: 20px"><a href="/login" style="text-decoration: none">LOG IN</a></span>
+          </div>
           <script>
               $('#register_button').click(function() {
                   $("#registrationForm").submit();
               });
           </script>
-      </div>
+    </div>
   </div>
 {% endblock %}
