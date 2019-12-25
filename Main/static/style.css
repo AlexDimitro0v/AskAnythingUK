@@ -394,6 +394,7 @@ form {
     display: none;
 }
 
+
 #div_id_username{
   margin-top: 0px;
   margin-bottom: 0px;
@@ -462,6 +463,25 @@ form {
     border-top-left-radius: 25px;
 }
 
+#id_first_name{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#id_last_name{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#div_id_first_name{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#div_id_last_name{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 /*
 Logo Colours
 #43C2F0  - light

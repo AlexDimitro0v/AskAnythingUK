@@ -123,7 +123,7 @@ def new_feedback_request(request):
                 tag_record.save()
 
             return redirect('home-page')
-    return render(request, 'main/new_feedback_request.html')
+    return render(request, 'new_feedback_request.html')
 
 
 def feedback_request(request):
