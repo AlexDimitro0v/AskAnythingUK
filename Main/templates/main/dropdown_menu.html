@@ -1,17 +1,16 @@
-{% load static %}
             <!-- Any HTML here will be styled with Bootstrap CSS -->
             <div class="bootstrap">
               <ul class="nav navbar-default" style="background-color:transparent;">
                 <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" style="background-color:transparent;" href="#">
-                      <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
+                      <img class="photo-circle" src="{{ user.userprofile.image.url }}"/>
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a href="/profile/"><span class="fa fa-user-circle" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Profile</strong></a></li>
+                    <li><a href="{% url 'profile-page'%}"><span class="fa fa-user-circle" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Profile</strong></a></li>
                     <li class="divider"></li>
                     <li><a href="#"><span class="fa fa-gear" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Settings</strong></a></li>
                     <li class="divider"></li>
-                    <li><a href="/logout/"><span class="fa fa-sign-out" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Sign Out</strong></a></li>
+                    <li><a href="{% url 'logout-page'%}"><span class="fa fa-sign-out" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Sign Out</strong></a></li>
                   </ul>
                 </li>
               </ul>

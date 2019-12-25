@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Feedbacker
-from .forms import NewFeedbackRequestForm, FedbackerProfileForm, FeedbackerCommentsForm
+from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm
 from django.db.models import F   # used to compare 2 instances or fields of the same model
 # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
 
@@ -20,6 +20,7 @@ def home(request):
     if tag_filter == "":
         # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
         # (excluding the requests from the currently logged in user)
+        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
         feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker')).exclude(feedbackee=request.user)
     else:
         # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
@@ -50,7 +51,7 @@ def home(request):
         'requests': feedback_requests,
         'tags': tags
     }
-    return render(request, 'feedback_requests.html', context)
+    return render(request, 'main/feedback_requests.html', context)
 
 
 def profile(request):
@@ -62,8 +63,8 @@ def profile(request):
         feedbacker=request.user)
     my_feedbacker_applications = FeedbackRequest.objects.filter(pk__in=set(my_feedbacker_applications_ids))
     my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user)
-    feedback_candidates = []
 
+    feedback_candidates = []
     for my_request in my_feedback_requests:
         curr_request_candidates = []
         # Feedbacker not assigned yet
@@ -79,9 +80,9 @@ def profile(request):
         'my_requests': my_feedback_requests,
         'my_applications': my_feedbacker_applications,
         'feedback_candidates': feedback_candidates,
-        'feedbacker_info': Feedbacker.objects.filter(user=request.user).first()
+        # 'feedbacker_info': Feedbacker.objects.filter(user=request.user).first()
     }
-    return render(request, 'profile.html', context)
+    return render(request, 'main/profile.html', context)
 
 
 def new_feedback_request(request):
@@ -122,7 +123,7 @@ def new_feedback_request(request):
                 tag_record.save()
 
             return redirect('home-page')
-    return render(request, 'new_feedback_request.html')
+    return render(request, 'main/new_feedback_request.html')
 
 
 def feedback_request(request):
@@ -170,7 +171,7 @@ def feedback_request(request):
             'user_is_feedbackee': user_is_feedbackee,
             'user_was_rejected': user_was_rejected
         }
-        return render(request, 'feedback_request.html', context)
+        return render(request, 'main/feedback_request.html', context)
     else:
         return redirect('home-page')
 
@@ -218,32 +219,32 @@ def feedbacker_profile(request):
         'username': feedbacker.username,
         'feedbacker_info': Feedbacker.objects.filter(user=feedbacker).first()
     }
-    return render(request, 'feedbacker-profile.html', context)
+    return render(request, 'main/feedbacker-profile.html', context)
 
 
-def customize_profile(request):
-    if not request.user.is_authenticated:
-        return redirect('login-page')
-
-    if request.method == "POST":
-        form = FedbackerProfileForm(request.POST)
-        if form.is_valid():
-            existing_feedbacker = Feedbacker.objects.filter(user=request.user).first()
-            if existing_feedbacker != None:
-                existing_feedbacker.profile_description = form.cleaned_data['description']
-                existing_feedbacker.save()
-            else:
-                feedbacker = Feedbacker(user=request.user, profile_description=form.cleaned_data['description'])
-                feedbacker.save()
-            return redirect('profile-page')
-
-    profile_description = str()
-    if Feedbacker.objects.filter(user=request.user).first():
-        profile_description = Feedbacker.objects.filter(user=request.user).first().profile_description
-    context = {
-        'prev_description' : profile_description
-    }
-    return render(request, 'customize_profile.html', context)
+# def customize_profile(request):
+#     if not request.user.is_authenticated:
+#         return redirect('login-page')
+#
+#     if request.method == "POST":
+#         form = FedbackerProfileForm(request.POST)
+#         if form.is_valid():
+#             existing_feedbacker = Feedbacker.objects.filter(user=request.user).first()
+#             if existing_feedbacker != None:
+#                 existing_feedbacker.profile_description = form.cleaned_data['description']
+#                 existing_feedbacker.save()
+#             else:
+#                 feedbacker = Feedbacker(user=request.user, profile_description=form.cleaned_data['description'])
+#                 feedbacker.save()
+#             return redirect('profile-page')
+#
+#     profile_description = str()
+#     if Feedbacker.objects.filter(user=request.user).first():
+#         profile_description = Feedbacker.objects.filter(user=request.user).first().profile_description
+#     context = {
+#         'prev_description': profile_description
+#     }
+#     return render(request, 'customize_profile.html', context)
 
 
 def choose_feedbacker(request):
@@ -285,4 +286,4 @@ def submit_feedback(request):
     context = {
         'request_id': request.GET.get('request_id', '')
     }
-    return render(request, 'submit_feedback.html', context)
+    return render(request, 'main/submit_feedback.html', context)

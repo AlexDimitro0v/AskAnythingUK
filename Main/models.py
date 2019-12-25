@@ -19,8 +19,8 @@ class FeedbackRequest(models.Model):
     premium = models.BooleanField(default=False)
     # Why would you delete the feedbackee when you delete a feedback request? models.CASCADE --into-> PROTECT
     feedbackee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbackee')
-    # By default there should not be a feedbacker
-    feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker', default=None)
+    # Initially the feedbacker is set to the author (i.e. feedbackee = feedbacker)
+    feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker')
     reward = models.IntegerField(default=0)
     feedbacker_comments = models.TextField(default="")
 
@@ -47,6 +47,9 @@ class FeedbackerCandidate(models.Model):
     feedbacker = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.feedbacker} - {self.feedback}"
+
 
 class Tag(models.Model):
     # Why would you delete the FeedbackRequest when you delete a tag or category? models.CASCADE --into-> PROTECT
@@ -55,7 +58,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.category.name
-    
+
 
 class Specialism(models.Model):
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
@@ -65,7 +68,6 @@ class Specialism(models.Model):
 class Feedbacker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)     # One-to-one relationship
     profile_description = models.TextField()
-    # image = models.ImageField(default='default.jpg', upload_to='profile_pics')  # the dir where the images get uploaded to
 
     def __str__(self):
         return self.user.username

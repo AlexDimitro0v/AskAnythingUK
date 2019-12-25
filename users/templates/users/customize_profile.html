@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content%}
+    <div class="large-area">
+      <div class="decorative-text-wrapper noselect">Customize Profile</div>
+      <div class="cardbody">
+        <!-- FORM HERE -->
+        <form action="/customize-profile/" method="POST" id="customizeProfileForm" enctype="multipart/form-data">
+            <!--Without the encoding tge image will not be saving-->
+            {% csrf_token %}    <!-- Added Security token that Django requires-->
+            <!-- Make is it looks like as one form-->
+            {{ u_form|crispy }}  <!-- Crispy Forms do the design for us -->
+            {{ p_form|crispy }}  <!-- Crispy Forms do the design for us -->
+        </form>
+        <span class="button noselect button-corner" id="submit_button">Update</span>
+        <div id="tags"></div>
+            <script>
+                let tags = [];
+                $('#submit_button').click(function() {
+                    $("#customizeProfileForm").submit();
+                });
+            </script>
+        </div>
+    </div>
+{% endblock %}

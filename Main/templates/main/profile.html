@@ -1,20 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 {% load static %}
 {% load multifor %}
 
 {% block content%}
-<div class="button noselect button-corner" style="position: fixed; z-index: 1"><a href="/new-feedback-request">Ask For Feedback</a></div>
+<div class="button noselect button-corner" style="position: fixed; z-index: 1"><a href="/new-feedback-request" style="text-decoration: none;">Ask For Feedback</a></div>
 <div class="feedback-request">
     <div class="decorative-text-wrapper noselect">My Profile</div>
     <div class="cardbody">
-        {% if feedbacker_info != None %}
         <!--
         There is no need to pass the user variable as a context in the template, it is built-in and represents
         the current logged in user !!!!!!
         <!--https://stackoverflow.com/questions/54182179/how-to-display-the-user-avatar-on-all-templates-django-i-use-base-html-->
-        <p>{{ user.feedbacker.profile_description }}</p>
-        {% endif %}
-        <div class="button noselect button-corner"><a href="/customize-profile">Customize Profile</a></div>
+        <p>{{ user.userprofile.description }}</p>
+        <div class="rounded button noselect button-corner"><a href="{% url 'customize-profile-page' %}" style="text-decoration: none;">Customize Profile</a></div>
     </div>
 </div>
 
@@ -70,7 +68,7 @@
     <div class="decorative-text-wrapper noselect">My Feedbacker Applications</div>
     <div class="cardbody" style="margin-bottom: 0">
         {% for application in my_applications %}
-        <a href="/feedback-request?request_id={{application.id}}">
+        <a href="/feedback-request?request_id={{application.id}}" style="text-decoration: none;">
         <div class="small-card small-card-hover">
             {{application.title}}
             {% if application.feedbacker == user %}

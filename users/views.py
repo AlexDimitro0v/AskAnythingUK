@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages              # Django built-in message alerts
 from .forms import UserRegistrationForm
+from django.contrib.auth.decorators import login_required
+from .forms import EditProfileForm, EditUserForm
 
 
 def register(request):
@@ -24,3 +26,25 @@ def register(request):
     context['form'] = form
 
     return render(request, 'users/register.html', context)
+
+
+@login_required
+def customize_user_profile(request):
+    if request.method == 'POST':
+        u_form = EditUserForm(request.POST, instance=request.user)
+        # will populate the form with the current user information by passing an instance parameter
+        p_form = EditProfileForm(request.POST, request.FILES,  instance=request.user.userprofile)
+        if u_form.is_valid() and p_form.is_valid():        # check whether both forms are valid
+            u_form.save()
+            p_form.save()
+            messages.success(request, f"Your account has been updated!")
+            return redirect('profile-page')  # redirects the user to the profile page to avoid POST-GET-REDIRECT PATTERN
+            # https://stackoverflow.com/questions/10827242/understanding-the-post-redirect-get-pattern
+    else:
+        u_form = EditUserForm(instance=request.user)
+        p_form = EditProfileForm(instance=request.user.userprofile)
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+    }
+    return render(request, 'users/customize_profile.html', context=context)

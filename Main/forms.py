@@ -12,14 +12,14 @@ class NewFeedbackRequestForm(forms.Form):
 
     class Meta:
         model = FeedbackRequest
-        fields = ['title', 'maintext', 'reward','timelimit']
+        fields = ['title', 'maintext', 'reward', 'timelimit']
 
 
-class FedbackerProfileForm(forms.Form):
-
-    class Meta:
-        model = Feedbacker
-        fields = ['description']
+# class FedbackerProfileForm(forms.Form):
+#
+#     class Meta:
+#         model = Feedbacker
+#         fields = ['description']
 
 
 class FeedbackerCommentsForm(forms.Form):
