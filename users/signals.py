@@ -20,4 +20,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 # (receiver being the function below)
 def save_user_profile(sender, instance, **kwargs):
     # The function saves the user profile every time the user object gets saved
-    instance.profile.save()     # save the user profile
+    instance.userprofile.save()     # save the user profile

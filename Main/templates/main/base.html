@@ -57,7 +57,7 @@
     <div id="main-container">
             {%if messages%}
                 {%for message in messages%}
-                    <div class="alert alert-{{message.tags}}" role="alert">
+                    <div class="alert alert-{{message.tags}}" role="alert" style="max-width: 600px;">
                         {{message}}
                     </div>
                 {%endfor%}

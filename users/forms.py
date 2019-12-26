@@ -23,6 +23,8 @@ class EditUserForm(forms.ModelForm):
 
 
 class EditProfileForm(forms.ModelForm):
+    image = forms.ImageField(label='Profile Image', required=False, error_messages={'invalid': "Image files only"}, widget=forms.FileInput)
+
     class Meta:
         model = UserProfile
         fields = ['city', 'description', 'image']

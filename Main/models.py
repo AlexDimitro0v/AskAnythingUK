@@ -65,12 +65,12 @@ class Specialism(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
-class Feedbacker(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)     # One-to-one relationship
-    profile_description = models.TextField()
-
-    def __str__(self):
-        return self.user.username
+# class Feedbacker(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)     # One-to-one relationship
+#     # profile_description = models.TextField()
+#
+#     def __str__(self):
+#         return self.user.username
 
 
 class FeedbackerComments(models.Model):

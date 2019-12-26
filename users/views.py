@@ -3,6 +3,7 @@ from django.contrib import messages              # Django built-in message alert
 from .forms import UserRegistrationForm
 from django.contrib.auth.decorators import login_required
 from .forms import EditProfileForm, EditUserForm
+from django.contrib.auth.models import User
 
 
 def register(request):
@@ -48,3 +49,21 @@ def customize_user_profile(request):
         'p_form': p_form,
     }
     return render(request, 'users/customize_profile.html', context=context)
+
+
+@login_required
+def view_profile(request):
+
+    # Main purpose of separate apps is reuseability
+    # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
+    username = request.GET.get('user', '')
+
+    # Get user from database (establishing the independence of the app again)
+    user_to_view = User.objects.filter(username=username).first()
+    if not user_to_view:
+        user_to_view = request.user         # get the the currently logged in user
+
+    context = {
+        'user_to_view': user_to_view,
+    }
+    return render(request, 'users/view-profile.html', context)

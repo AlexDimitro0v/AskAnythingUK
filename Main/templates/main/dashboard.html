@@ -11,16 +11,20 @@
         There is no need to pass the user variable as a context in the template, it is built-in and represents
         the current logged in user !!!!!!
         <!--https://stackoverflow.com/questions/54182179/how-to-display-the-user-avatar-on-all-templates-django-i-use-base-html-->
-        <p>{{ user.userprofile.description }}</p>
+        {% if user.userprofile.description %}
+            <p>{{ user.userprofile.description }}</p>
+        {% else %}
+            <p>No profile description.</p>
+        {% endif %}
         <div class="rounded button noselect button-corner"><a href="{% url 'customize-profile-page' %}" style="text-decoration: none;">Customize Profile</a></div>
     </div>
 </div>
 
-{% if my_requests %}
 <div class="feedback-request">
   <div class="decorative-text-wrapper noselect">My Requests</div>
   <div class="cardbody" style="margin-bottom: 0">
-  {% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
+  {% if my_requests %}
+        {% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
         <div>
             <div class="small-card" style="padding: 20px">
                 <a href="/feedback-request?request_id={{feedback_request.id}}"><p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p></a>
@@ -29,14 +33,14 @@
                 <div>
                 {% for candidate in curr_candidates%}
                 <div>
-                  <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
+                  <img class="photo-circle" src="{{ candidate.userprofile.image.url }}"/>
                   <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
                   <a href="/choose-feedbacker/?user={{candidate}}&feedback={{feedback_request.id}}">
                     <div class="status-info-button status-info-profile">
                         Choose as Feedbacker
                     </div>
                   </a>
-                  <a href="/feedbacker-profile/?user={{candidate}}&feedback={{feedback_request.id}}">
+                  <a href="/profile-page/?user={{candidate}}&feedback={{feedback_request.id}}">
                     <div class="status-info-button status-info-profile">
                         View Profile
                     </div>
@@ -46,7 +50,7 @@
               </div>
                 {% elif feedback_request.feedbacker != feedback_request.feedbackee %}
                 <div>
-                  <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
+                  <img class="photo-circle" src="{{ feedback_request.feedbacker.userprofile.image.url }}"/>
                   <span style="margin-left: 10px; font-weight: 600">{{feedback_request.feedbacker}}</span>
                   <div class="status-info status-info-profile noselect" style="background-color: #AC6DFF; font-size: 1em;">Your Feedbacker</div>
                 </div>
@@ -56,17 +60,18 @@
               </div>
         </div>
         {% endfor %}
+  {% else%}
+        <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Posted Requests</p>
+  {% endif %}
 
-    </div>
+  </div>
 </div>
 
-{% endif %}
 
-
-{% if my_applications %}
 <div class="feedback-request">
     <div class="decorative-text-wrapper noselect">My Feedbacker Applications</div>
     <div class="cardbody" style="margin-bottom: 0">
+    {% if my_applications %}
         {% for application in my_applications %}
         <a href="/feedback-request?request_id={{application.id}}" style="text-decoration: none;">
         <div class="small-card small-card-hover">
@@ -81,8 +86,10 @@
         </div>
         </a>
         {% endfor %}
+    {% else%}
+        <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Submitted Requests</p>
+    {% endif %}
     </div>
 </div>
-{% endif %}
 
 {% endblock %}

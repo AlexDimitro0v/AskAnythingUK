@@ -394,53 +394,25 @@ form {
     display: none;
 }
 
-
-#div_id_username{
+#div_id_username, #id_username, #id_email, #id_password1, #id_password2, #id_last_name, #id_city, #id_first_name{
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-#id_username{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-
-#div_id_email{
+#div_id_email, #div_id_first_name, #div_id_last_name, #div_id_image{
   margin-top: 20px;
   margin-bottom: 20px;
-}
-
-#id_email{
-  margin-top: 0px;
-  margin-bottom: 0px;
 }
 
 #div_id_password1{
   margin-bottom: 20px;
 }
 
-#id_password1{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-
 #hint_id_password1{
   margin-left: 15px;
 }
 
-#id_password2{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-
-#register_button{
-  border-bottom-right-radius: 25px;
-  border-top-right-radius: 25px;
-  border-bottom-left-radius: 25px;
-  border-top-left-radius: 25px;
-}
-
-#login_button{
+#register_button, #login_button, #rounded{
   border-bottom-right-radius: 25px;
   border-top-right-radius: 25px;
   border-bottom-left-radius: 25px;
@@ -451,37 +423,16 @@ form {
   margin-bottom: 20px;
 }
 
-
 #id_password{
   margin-top: 0px;
 }
 
-#rounded{
-    border-bottom-right-radius: 25px;
-    border-top-right-radius: 25px;
-    border-bottom-left-radius: 25px;
-    border-top-left-radius: 25px;
-}
-
-#id_first_name{
+#id_image{
   margin-top: 0px;
   margin-bottom: 0px;
+  border-style: none;
 }
 
-#id_last_name{
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
-
-#div_id_first_name{
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-#div_id_last_name{
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
 /*
 Logo Colours
 #43C2F0  - light
