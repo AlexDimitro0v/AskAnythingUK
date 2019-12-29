@@ -1,3 +1,6 @@
+"""
+Used to automatically create a user profile for each new registered user
+"""
 from django.contrib.auth.models import User
 from .models import UserProfile
 from django.db.models.signals import post_save
@@ -5,7 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver    # a function that gets the signal and performs a specific task
 
 
-# In order to tie the functionality of creating a user profile upon each new user together, user a receiver decorator:
+# In order to tie the functionality of creating a user profile upon each new user together, use a receiver decorator:
 @receiver(post_save, sender=User)   # when a user is saved, then send a signal to the receiver
 # (receiver being the function below)
 def create_user_profile(sender, instance, created, **kwargs):

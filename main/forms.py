@@ -5,6 +5,10 @@ from .models import FeedbackerComments
 
 
 class NewFeedbackRequestForm(forms.Form):
+    title = forms.CharField()
+    maintext = forms.CharField()
+    reward = forms.IntegerField()
+    timelimit = forms.IntegerField()
 
     class Meta:
         model = FeedbackRequest
@@ -12,6 +16,7 @@ class NewFeedbackRequestForm(forms.Form):
 
 
 # class FedbackerProfileForm(forms.Form):
+#    description = forms.CharField()
 #
 #     class Meta:
 #         model = Feedbacker

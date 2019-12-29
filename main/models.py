@@ -17,8 +17,7 @@ class FeedbackRequest(models.Model):
     date_completed = models.DateTimeField(default=timezone.now)
     time_limit = models.IntegerField(default=7)
     premium = models.BooleanField(default=False)
-    # Why would you delete the feedbackee when you delete a feedback request? models.CASCADE --into-> PROTECT
-    feedbackee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbackee')
+    feedbackee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='request_feedbackee')
     # Initially the feedbacker is set to the author (i.e. feedbackee = feedbacker)
     feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker')
     reward = models.IntegerField(default=0)
@@ -52,7 +51,6 @@ class FeedbackerCandidate(models.Model):
 
 
 class Tag(models.Model):
-    # Why would you delete the FeedbackRequest when you delete a tag or category? models.CASCADE --into-> PROTECT
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
@@ -60,6 +58,7 @@ class Tag(models.Model):
         return self.category.name
 
 
+# Why we are using this model (Tag model does the same work)?
 class Specialism(models.Model):
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

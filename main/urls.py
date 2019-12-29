@@ -16,7 +16,3 @@ urlpatterns = [
     path('submit-feedback/', views.submit_feedback, name="submit-feedback-page"),
 
 ]
-
-# We cannot use this in production, serving static files with Django is not efficient
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

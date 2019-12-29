@@ -2,39 +2,52 @@
 {% load static %}
 
 {% block content%}
-<div class="large-area">
-  <div class="decorative-text-wrapper noselect">New Feedback Request</div>
-  <div class="cardbody">
-    <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
-      {% csrf_token %}
-      TITLE:<br><textarea id="title" name="title" class="onelineform" maxlength="50"></textarea> <br>
-      <div style="color: red; display: none" id="title-prompt">You must specify a title.</div> <br>
-      DESCRIPTION:<br><textarea rows="15" id="description" name="maintext"></textarea> <br>
-      <div style="color: red; display: none" id="description-prompt">You must specify a description.</div> <br>
-      REWARD (£):<br><input rows="1"  id="reward" name="reward" class="onelineform" style="max-width: 100px; margin: 0 auto" type="number" min="1"></input>
-      <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
+<div class="large-area" style="max-width: 750px">
+    <div class="decorative-text-wrapper noselect">New Feedback Request</div>
+    <div class="cardbody">
+        <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            TITLE:<br><textarea rows='1' id="title" name="title" maxlength="50" style="max-width: 400px;"></textarea> <br>
+            <div style="color: red; display: none" id="title-prompt">You must specify a title.</div>
+            <br>
 
-      <br><br>TIME LIMIT (days):<br><input rows="1" id="limit" name="timelimit" class="onelineform" style="max-width: 100px; margin: 0 auto" type="number" min="1"></input>
-      <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
 
-      <br><br>FEEDBACK FILES:<br>
-      <label for="file-upload" class="button noselect" style="padding: 8px; margin-left: 0px">
-            Upload Files
-      </label>
-      <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
-    </form>
-    <div style="color: red; display: none" id="file-upload-prompt">You must upload at least one file to submit feedback request.</div>
-    <br>
-    <form onsubmit="return false">
-      TAGS:<br>
-      <input rows="1" id="tag-input" class="onelineform" maxlength="20" style="margin: 0 auto"></input>
-    </form>
-    <div>
-      <div id="tags" style="margin-top: 20px; height: 1px"></div>
-    </div>
-    <span class="button noselect button-corner" id="submit_button">Submit</span>
+            DESCRIPTION:<br><textarea rows="15" id="description" name="maintext"></textarea> <br>
+            <div style="color: red; display: none" id="description-prompt">You must specify a description.</div>
+            <br>
 
-    <script>
+
+            REWARD (£):<br><input id="reward" name="reward" class="onelineform" style="max-width: 100px; margin: 0 auto"
+                                  type="number" min="1">
+            <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
+
+
+            <br><br>TIME LIMIT (days):<br><input id="limit" name="timelimit" class="onelineform"
+                                                 style="max-width: 100px; margin: 0 auto" type="number" min="1">
+            <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
+
+
+            <br><br>FEEDBACK FILES:<br>
+            <label for="file-upload" class="button noselect" style="margin-left: 0px">
+                Upload Files
+            </label>
+            <input id="file-upload" type="file" name="feedbackfiles" style="display: none" multiple>
+        </form>
+        <div style="color: red; display: none" id="file-upload-prompt">You must upload at least one file to submit
+            feedback request.
+        </div>
+
+        <form onsubmit="return false" style="margin-top: 15px;">
+            TAGS:<br>
+            <input id="tag-input" class="onelineform" maxlength="20" style="margin: 0 auto">
+        </form>
+
+        <div>
+            <div id="tags" style="margin-top: 20px; height: 1px"></div>
+        </div>
+        <span class="button noselect button-corner" id="submit_button">Submit</span>
+
+        <script>
     let tags = [];
     let numOfTags = 0;
     $(document).ready(function () {
@@ -92,7 +105,7 @@
                     let xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function() {
                         if(xhr.readyState == 4 && xhr.status == 200) {
-                          window.location.href = "/profile";
+                          window.location.href = "/dashboard";
                         }
                     }
                     xhr.open('POST', "/new-feedback-request/?tags="+tags, true);
@@ -132,7 +145,8 @@
      });
 
     });
-    </script>
-  </div>
+
+        </script>
+    </div>
 </div>
 {% endblock %}

@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 def register(request):
     context = {
+
         'title': 'Register',
     }
 

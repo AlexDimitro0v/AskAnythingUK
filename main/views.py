@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm
-from django.db.models import F   # used to compare 2 instances or fields of the same model
+from django.contrib import messages   # Django built-in message alerts
+from django.db.models import F        # used to compare 2 instances or fields of the same model
 # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
 
 from django.db import connections
@@ -79,9 +80,9 @@ def dashboard(request):
         feedback_candidates.append(curr_request_candidates)
 
     context = {
-        'my_requests': my_feedback_requests,
-        'my_applications': my_feedbacker_applications,
-        'feedback_candidates': feedback_candidates,
+        'my_requests': my_feedback_requests,            # Feedback Request instances
+        'my_applications': my_feedbacker_applications,  # Feedback Request instances
+        'feedback_candidates': feedback_candidates,     # User instances
         # 'feedbacker_info': Feedbacker.objects.filter(user=request.user).first()
     }
     return render(request, 'main/dashboard.html', context)
@@ -111,9 +112,9 @@ def new_feedback_request(request):
             feedback_request.save()
 
             feedbackZIPFile = request.FILES['fileZip']
-
             fs = FileSystemStorage()
-            fs.save(str(feedback_request.id) + '.zip', feedbackZIPFile)
+            fs.save('zip_files/' + str(feedback_request.id) + '.zip', feedbackZIPFile)
+
             # Save each tag instance to database
             for tag in tags:
                 category_record = Category.objects.filter(name=tag)
@@ -124,8 +125,8 @@ def new_feedback_request(request):
                     category_record = category_record[0]
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
-
             return redirect('home-page')
+
     return render(request, 'main/new_feedback_request.html')
 
 
@@ -149,15 +150,15 @@ def feedback_request(request):
     # User is feedbackee for this request
     if FeedbackRequest.objects.get(id=request_id).feedbackee == request.user:
         user_is_feedbackee = True
-        feedbackee_files_link = fs.url(request_id+".zip")
-        if fs.exists(request_id+"_feedbacker.zip"):
-            feedbacker_files_link = fs.url(request_id+"_feedbacker.zip")
-    # User is feednacker for this request
+        feedbackee_files_link = fs.url('zip_files/' + request_id+".zip")
+        if fs.exists('zip_files/' + request_id+"_feedbacker.zip"):
+            feedbacker_files_link = fs.url('zip_files/' + request_id+"_feedbacker.zip")
+    # User is feedbacker for this request
     elif FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
         user_is_feedbacker = True
-        feedbackee_files_link = fs.url(request_id+".zip")
-        if fs.exists(request_id+"_feedbacker.zip"):
-            feedbacker_files_link = fs.url(request_id+"_feedbacker.zip")
+        feedbackee_files_link = fs.url('zip_files/' + request_id+".zip")
+        if fs.exists('zip_files/' + request_id+"_feedbacker.zip"):
+            feedbacker_files_link = fs.url('zip_files/' + request_id+"_feedbacker.zip")
     # User is candidate for this request
     elif FeedbackerCandidate.objects.filter(feedbacker=request.user, feedback_id=request_id).first():
         if FeedbackRequest.objects.get(id=request_id).feedbackee != FeedbackRequest.objects.get(id=request_id).feedbacker:
@@ -191,7 +192,7 @@ def apply_as_feedbacker(request):
     cursor.execute("INSERT INTO main_feedbackercandidate (feedbacker_id,feedback_id) VALUES( %s , %s )",
                    [request.user.id, feedback_request_id])
     cursor.close()
-    return redirect('profile-page')
+    return redirect('dashboard')
 
 
 # @login_required
@@ -208,7 +209,7 @@ def apply_as_feedbacker(request):
 #     if feedbacker:
 #         feedbacker = feedbacker[0]
 #     else:
-#         return redirect('profile-page')
+#         return redirect('profile-page')       # change to redirect to dashboard if in use again !!!!!!!!!!!!!
 #     my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user, id=feedback_request_id)
 #
 #     if not my_feedback_requests:
@@ -246,7 +247,7 @@ def apply_as_feedbacker(request):
 #             else:
 #                 feedbacker = Feedbacker(user=request.user, profile_description=form.cleaned_data['description'])
 #                 feedbacker.save()
-#             return redirect('profile-page')
+#             return redirect('profile-page')       # change to redirect to dashboard if in use again !!!!!!!!!!!!!
 #
 #     profile_description = str()
 #     if Feedbacker.objects.filter(user=request.user).first():
@@ -267,7 +268,8 @@ def choose_feedbacker(request):
     feedback_request = FeedbackRequest.objects.filter(id=feedback_request_id).first()
     feedback_request.feedbacker = User.objects.filter(username=feedbacker_username).first()
     feedback_request.save()
-    return redirect('profile-page')
+    messages.success(request, f"Feedbacker has been chosen successfully!")
+    return redirect('dashboard')
 
 
 def submit_feedback(request):
@@ -291,8 +293,8 @@ def submit_feedback(request):
 
             feedbackZIPFile = request.FILES['fileZip']
             fs = FileSystemStorage()
-            fs.save(str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
-            return redirect('profile-page')
+            fs.save('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
+            return redirect('dashboard')
 
     context = {
         'request_id': request.GET.get('request_id', '')
