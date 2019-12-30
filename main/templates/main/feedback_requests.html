@@ -20,7 +20,7 @@
            border-top-right-radius: 25px;
            border-bottom-left-radius: 25px;
            border-top-left-radius: 25px;">
-          <a href="feedback-request?request_id={{feedback_request.id}}" style="text-decoration: none;">More information</a>
+          <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration: none;">More information</a>
       </div>
       <span class="status-info noselect" style="
            border-bottom-right-radius: 25px;

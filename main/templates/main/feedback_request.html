@@ -28,19 +28,19 @@
         {% if feedbacker_files_link != None %}
             <br>
             <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-                <a href="{{ feedbacker_files_link }}" download="Feedbacker Files">Download Feedbacker's Files</a>
+                <a href="{{ feedbacker_files_link }}" download="Feedbacker Files" style="text-decoration:none;">Download Feedbacker's Files</a>
             </div>
         {% endif %}
         {% if user_is_feedbacker and feedbacker_files_link == None %}
             <br>
             <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-                <a href="/submit-feedback/?request_id={{ request_id }}" style="text-decoration:none; ">Submit Feedback</a>
+                <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}" style="text-decoration:none; ">Submit Feedback</a>
             </div>
         {% endif %}
     </div>
     {% elif not user_is_candidate %}
         <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-            <a href="/apply-as-feedbacker/?request_id={{ request_id }}" style="text-decoration:none;">Apply as Feedbacker</a>
+            <a href="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none;">Apply as Feedbacker</a>
         </div>
     {% endif %}
 </div>

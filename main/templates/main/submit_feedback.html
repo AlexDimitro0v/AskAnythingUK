@@ -9,12 +9,12 @@
     <form action="/new-feedback-request/" method="POST" id="submitFeedbackForm" enctype="multipart/form-data">
       {% csrf_token %}
       FEEDBACK FILES:<br>
-      <label for="file-upload" class="button noselect" style="padding: 8px; margin-left: 0px">
+      <label for="file-upload" class="button noselect" style="margin-left: 0px;">
             Upload Files
       </label>
       <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple><br><br>
       COMMENTS (OPTIONAL):<br><textarea rows="15" name="comments"></textarea> <br><br>
-        </form>
+    </form>
     <span class="button noselect button-corner" id="submit_button">Submit</span>
 
     <script>
@@ -42,7 +42,7 @@
                     let xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function() {
                         if(xhr.readyState == 4 && xhr.status == 200) {
-                          window.location.href = "/profile/";
+                          window.location.href = "/dashboard/";
                         }
                     }
                     xhr.open('POST', "/submit-feedback/?request_id={{request_id}}", true);

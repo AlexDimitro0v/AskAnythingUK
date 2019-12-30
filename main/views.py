@@ -101,8 +101,8 @@ def new_feedback_request(request):
         # Get all tags attached to request and remove potential duplicates
         tags = list(set(request.GET.get('tags', '').split(",")))
 
-        # Save feedback request to database if data is valid
         if form.is_valid():
+            # Save feedback request to database if data is valid
             title = form.cleaned_data['title']
             maintext = form.cleaned_data['maintext']
             reward = form.cleaned_data['reward']
@@ -111,6 +111,7 @@ def new_feedback_request(request):
                                                feedbacker=request.user, time_limit=time_limit)
             feedback_request.save()
 
+            # Save each attached zip file
             feedbackZIPFile = request.FILES['fileZip']
             fs = FileSystemStorage()
             fs.save('zip_files/' + str(feedback_request.id) + '.zip', feedbackZIPFile)
@@ -192,6 +193,7 @@ def apply_as_feedbacker(request):
     cursor.execute("INSERT INTO main_feedbackercandidate (feedbacker_id,feedback_id) VALUES( %s , %s )",
                    [request.user.id, feedback_request_id])
     cursor.close()
+    messages.success(request, f"Your application has been processed!")
     return redirect('dashboard')
 
 
@@ -285,7 +287,9 @@ def submit_feedback(request):
 
             feedback_request = FeedbackRequest.objects.get(id=request_id)
 
+            # Capping an error (just in case)
             if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
+                messages.error(request, "An error has occurred!")
                 return redirect('home-page')
 
             feedback_request.feedbacker_comments = comments
@@ -294,6 +298,7 @@ def submit_feedback(request):
             feedbackZIPFile = request.FILES['fileZip']
             fs = FileSystemStorage()
             fs.save('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
+            messages.success(request, "Feedback submitted!")
             return redirect('dashboard')
 
     context = {
