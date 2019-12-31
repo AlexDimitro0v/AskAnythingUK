@@ -33,6 +33,7 @@ a {
 textarea {
   resize: none;
   width: 100%;
+  font-family: 'Raleway';
 }
 
 h1 {
@@ -431,6 +432,24 @@ form {
   margin-top: 0px;
   margin-bottom: 0px;
   border-style: none;
+}
+
+div#modalCrop {
+    padding-top: 100px;
+}
+
+div#modalCrop {
+  background-color: rgba(0,0,0,0.4);    /* Black w/ opacity */
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+}
+
+.modal-header .close{
+    font-size: 27px;
 }
 
 /*
