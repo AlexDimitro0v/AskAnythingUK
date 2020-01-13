@@ -30,7 +30,7 @@ LOGIN_URL = 'login-page'          # Useful when login_required decorator is used
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['DJANGO_SECRET_KEY']
+SECRET_KEY = "^m5ounntw1@bdo&07@o85^ia68iqod++@=hah95#ypaljj8w&0"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -97,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ask_anything',
         'USER': 'postgres',
-        'PASSWORD': config["DATABASE_PASS"],
+        'PASSWORD': 1234,                           # Note that you should use the password you set for your DB !!!!!!!
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -149,5 +149,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = config.get('EMAIL_PASS')
+EMAIL_HOST_USER = "teamalpha050@gmail.com"
+EMAIL_HOST_PASSWORD = "AlphaTeam123"
