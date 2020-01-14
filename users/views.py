@@ -52,6 +52,10 @@ def register(request):
 
 
 def activate(request, uidb64, token):
+    """
+    Sets the user to active after email confirmation upon registering.
+    Active users are able to log in and use the website.
+    """
 
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -101,9 +105,8 @@ def view_profile(request):
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
     username = request.GET.get('user', '')
 
-    # Get user from database (establishing the independence of the app again)
     user_to_view = User.objects.filter(username=username).first()
-    if not user_to_view:
+    if not user_to_view:                    # establish the independence of the app again
         user_to_view = request.user         # get the the currently logged in user
 
     context = {

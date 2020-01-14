@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
 from .models import UserProfile
 from PIL import Image
 
@@ -83,3 +83,12 @@ class EditProfileForm(forms.ModelForm):
             resized_image.save(photo.image.path)
 
             return photo
+
+
+class EmailValidationOnForgotPassword(PasswordResetForm):
+    # Make sure the email is in the database
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not User.objects.filter(email__iexact=email, is_active=True).exists():
+            raise forms.ValidationError("There is no user registered with the specified E-Mail address.")
+        return email

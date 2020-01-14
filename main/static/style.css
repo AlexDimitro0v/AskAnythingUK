@@ -169,6 +169,18 @@ p {
   margin-left: 10px;
 }
 
+.btn-outline-info{
+  padding-left: 20px;
+  padding-right: 20px;
+  boarder-color: #43C2F0;
+  color: #43C2F0;
+}
+
+.btn-outline-info:hover{
+  transition: 0.3s;
+  background-color: #43C2F0;
+  color: #eeeeee;
+}
 
 .button:hover {
   transition: 0.3s;
@@ -395,7 +407,8 @@ form {
     display: none;
 }
 
-#div_id_username, #id_username, #id_email, #id_password1, #id_password2, #id_last_name, #id_city, #id_first_name{
+#div_id_username, #id_username, #id_email, #id_password1, #id_password2, #id_last_name, #id_city, #id_first_name,
+#id_new_password1, #id_new_password2{
   margin-top: 0px;
   margin-bottom: 0px;
 }
@@ -409,7 +422,7 @@ form {
   margin-bottom: 20px;
 }
 
-#hint_id_password1{
+#hint_id_password1, #hint_id_new_password1{
   margin-left: 15px;
 }
 
@@ -450,6 +463,14 @@ div#modalCrop {
 
 .modal-header .close{
     font-size: 27px;
+}
+
+.btn-link{
+color: #1F4D8A;
+}
+
+.btn-link:hover{
+color: #1F4D8A;
 }
 
 /*
