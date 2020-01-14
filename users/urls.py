@@ -9,4 +9,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name="logout-page"),
     path('profile-page/', views.view_profile, name="profile-page"),
     path('customize-profile/', views.customize_user_profile, name="customize-profile-page"),
+    path('activate/<slug:uidb64>/<slug:token>)/', views.activate, name='activate'),
+
 ]

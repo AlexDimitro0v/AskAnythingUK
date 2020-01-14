@@ -14,6 +14,20 @@ class UserRegistrationForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
+    def clean_email(self):
+        # Get the email
+        email = self.cleaned_data.get('email')
+
+        # Check to see if any users already exist with this email.
+        try:
+            match = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Unable to find a user, this is fine
+            return email
+
+        # A user was found with this email, raise an error.
+        raise forms.ValidationError('This email address is already in use.')
+
 
 class EditUserForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -21,6 +35,25 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email']
+
+    def __init__(self, *args, **kwargs):
+        # Disable users to edit the username field
+        super(EditUserForm, self).__init__(*args, **kwargs)
+        self.fields['username'].disabled = True
+
+    def clean_email(self):
+        # Get the email
+        email = self.cleaned_data.get('email')
+        logged_in_user_username = self.cleaned_data.get('username')
+        print(logged_in_user_username)
+
+        # Check to see if any users already exist with this email.
+        if User.objects.filter(email=email, is_active=True).exclude(username=logged_in_user_username).exists():
+            # A user was found with this as a username, raise an error.
+            raise forms.ValidationError('This email address is already in use.')
+
+        # Unable to find a user, this is fine - return the email.
+        return email
 
 
 class EditProfileForm(forms.ModelForm):
@@ -36,8 +69,8 @@ class EditProfileForm(forms.ModelForm):
 
     def save(self):
         photo = super(EditProfileForm, self).save()
-        if (self.cleaned_data.get('x') and self.cleaned_data.get('x') and self.cleaned_data.get('y')
-                and self.cleaned_data.get('width') and self.cleaned_data.get('height')):
+        if (self.cleaned_data.get('x') and self.cleaned_data.get('y') and self.cleaned_data.get('width')
+                and self.cleaned_data.get('height')):
 
             x = self.cleaned_data.get('x')
             y = self.cleaned_data.get('y')
