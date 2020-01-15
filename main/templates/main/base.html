@@ -40,6 +40,9 @@
     <link href="{% static 'js/bootstrap.min.js' %}" rel="stylesheet">
     <script src="{% static 'js/cropper.min.js' %}"></script>
 
+    <!--JavaScript rating library-->
+    <script src="{% static 'js/rater.min.js' %}"></script>
+
     <!-- Isolated Bootsrap v.3 (for the dropdown menu and the crop image) -->
     <!-- https://github.com/toert/Isolated-Bootstrap -->
     <link rel="stylesheet" href="https://toert.github.io/Isolated-Bootstrap/versions/3.3.7/iso_bootstrap3.3.7min.css">
@@ -56,7 +59,7 @@
             <h2 class="header-menu-text noselect" style="color: #1F4D8A"> <strong>AskAnything</strong></h2>
         </span>
 
-        <span style="position:absolute; float: right; right:90px;">
+        <span style="position:absolute; float: right; right: 20px;">
           {%if user.is_authenticated %}
               {% include "main/dropdown_menu.html" %}
           {% endif %}

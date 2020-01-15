@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag
-from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm
+from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating
+from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
+import datetime
 
 @login_required
 def home(request):
@@ -29,7 +30,7 @@ def home(request):
         # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
         #
         # https://stackoverflow.com/a/49872199
-        
+
         # https://docs.djangoproject.com/en/3.0/topics/db/sql/ - useful explanation of raw
         # Get all requests that have the selected tag-filter only,
         # excluding the requests from the currently logged in user:
@@ -293,6 +294,7 @@ def submit_feedback(request):
                 return redirect('home-page')
 
             feedback_request.feedbacker_comments = comments
+            feedback_request.date_completed = datetime.datetime.now()
             feedback_request.save()
 
             feedbackZIPFile = request.FILES['fileZip']
@@ -305,3 +307,36 @@ def submit_feedback(request):
         'request_id': request.GET.get('request_id', '')
     }
     return render(request, 'main/submit_feedback.html', context)
+
+@login_required
+def rate_feedbacker(request):
+    request_id = request.GET.get('request_id','')
+    if not request_id:
+        return redirect('dashboard')
+
+    feedback_request = FeedbackRequest.objects.get(id=request_id)
+
+    if feedback_request.feedbackee != request.user or feedback_request.date_posted == feedback_request.date_completed or feedback_request.feedbacker_rated:
+        return redirect('dashboard')
+
+    if request.method == "POST":
+        form = FeedbackerRatingForm(request.POST)
+
+        if form.is_valid():
+            review = form.cleaned_data['review']
+            quality = form.cleaned_data['quality']
+            speed = form.cleaned_data['speed']
+            communication = form.cleaned_data['communication']
+            rating = Rating(review=review, quality=quality, speed=speed, communication=communication, feedbackee=request.user,
+                                               feedbacker=feedback_request.feedbacker)
+            rating.save()
+
+            feedback_request.feedbacker_rated = 1
+            feedback_request.save()
+            
+            return redirect('dashboard')
+
+    context = {
+        'request_id': request.GET.get('request_id', '')
+    }
+    return render(request,'main/rate-feedbacker.html',context)
