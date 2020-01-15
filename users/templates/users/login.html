@@ -7,7 +7,7 @@
 <div class="large-area" style="max-width: 600px">
     <div class="decorative-text-wrapper noselect">Log In</div>
         <div class="cardbody" style="margin-bottom:0px;">
-            <form action="/login/" method="POST" id="loginForm">
+            <form action="/login/" method="POST" id="loginForm" novalidate>
                 {% csrf_token %}
                 {{ form|crispy }}  <!-- Crispy Forms do the design for us -->
                 <div class="form-group" style="margin-top:20px;">
