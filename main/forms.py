@@ -25,11 +25,12 @@ class NewFeedbackRequestForm(forms.Form):
 
 
 class FeedbackerCommentsForm(forms.Form):
-    comments = forms.CharField()
+    comments = forms.CharField(required=False)
 
     class Meta:
         model = FeedbackerComments
         fields = ['comments']
+
 
 class FeedbackerRatingForm(forms.Form):
     quality = forms.IntegerField()
