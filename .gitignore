@@ -114,5 +114,9 @@ venv.bak/
 .idea
 .iml
 
+# Sensitive Information
+config.json
+
+# Some useful comments:
 # https://stackoverflow.com/questions/48072655/django-settings-cpython-36-pyc-not-ignored-by-gitignore
 # https://stackoverflow.com/questions/25436312/gitignore-not-working/25436481#25436481
