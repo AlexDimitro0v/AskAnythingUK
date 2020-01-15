@@ -4,8 +4,12 @@
 
 {% block content%}
 <div class="feedback-request">
-    <div class="decorative-text-wrapper noselect">{{ user_to_view.username }}</div>
+    <div class="decorative-text-wrapper noselect">Profile</div>
     <div style="margin-top:50px">
+      <img class="photo-circle" style="display: table; margin: 0 auto; width: 150px; height: 150px; border-radius: 100%; border: 8px solid #efefef" src="{{ user_to_view.userprofile.image.url }}"/>
+      <h3 style="text-align: center; margin: 20px; font-size: 26px"><strong>{{ user_to_view.username }}</strong></h3>
+      <div class="border-top pt-1"></div>
+
         {% if user_to_view.userprofile.description %}
             <p>{{ user_to_view.userprofile.description }}</p>
         {% else %}
@@ -16,34 +20,37 @@
 <div class="feedback-request">
      <div class="decorative-text-wrapper noselect">Ratings</div>
      <div style="margin-top:50px; vertical-align: middle;">
-       {% for user_rating in user_ratings %}
+       {% if user_ratings %}
+         {% for user_rating in user_ratings %}
 
-     <div class="small-card" style="line-height: normal; padding: 25px">
-       <div style="margin-bottom: 10px">
-       <img class="photo-circle" src="{% static 'img/test-profile-pic.jpg' %}"/>
-       <span style="margin-left: 10px; font-weight: 600">Rating by {{user_rating.feedbackee}}</span>
-       </div>
-       <div class="border-top pt-1"></div>
-       <div style="display: flex; align-items: center;">
-         <h4 style="margin-bottom: 0; margin-right: 10px "><strong>Quality</strong> </h4>
-         <div class="rating" id="compRating" data-rate-value={{user_rating.quality}} style="font-size: 30px;"></div>
-       </div>
-       <div style="display: flex; align-items: center;">
-         <h4 style="margin-bottom: 0; margin-right: 10px"><strong>Speed</strong></h4>
-         <div class="rating" id="speedRating" data-rate-value={{user_rating.speed}} style="font-size: 30px;"></div>
-       </div>
+       <div class="small-card" style="line-height: normal; padding: 25px">
+         <div style="margin-bottom: 10px">
+         <img class="photo-circle" src="{{ user_rating.feedbackee.userprofile.image.url }}"/>
+         <span style="margin-left: 10px; font-weight: 600">Rating by {{user_rating.feedbackee}}</span>
+         </div>
+         <div class="border-top pt-1"></div>
+         <div style="display: flex; align-items: center;">
+           <h4 style="margin-bottom: 0; margin-right: 10px "><strong>Quality</strong> </h4>
+           <div class="rating" id="compRating" data-rate-value={{user_rating.quality}} style="font-size: 30px;"></div>
+         </div>
+         <div style="display: flex; align-items: center;">
+           <h4 style="margin-bottom: 0; margin-right: 10px"><strong>Speed</strong></h4>
+           <div class="rating" id="speedRating" data-rate-value={{user_rating.speed}} style="font-size: 30px;"></div>
+         </div>
 
-       <div style="display: flex; align-items: center;">
-         <h4 style="margin-bottom: 0; margin-right: 10px"><strong>Communication</strong> </h4>
-         <div class="rating" id="commRating" data-rate-value={{user_rating.communication}} style="font-size: 30px;"></div>
-       </div>
-       <div class="border-top pt-1"></div>
+         <div style="display: flex; align-items: center;">
+           <h4 style="margin-bottom: 0; margin-right: 10px"><strong>Communication</strong> </h4>
+           <div class="rating" id="commRating" data-rate-value={{user_rating.communication}} style="font-size: 30px;"></div>
+         </div>
+         <div class="border-top pt-1"></div>
 
-       <p>{{ user_rating.review }}</p>
-      </div>
+         <p>{{ user_rating.review }}</p>
+        </div>
 
-      {% endfor %}
-
+        {% endfor %}
+     {% else %}
+     <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Ratings Yet</p>
+     {% endif %}
       </div>
 </div>
 <script>
