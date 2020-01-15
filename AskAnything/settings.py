@@ -31,6 +31,8 @@ LOGIN_URL = 'login-page'          # Useful when login_required decorator is used
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "^m5ounntw1@bdo&07@o85^ia68iqod++@=hah95#ypaljj8w&0"
+# SECRET_KEY = config['DJANGO_SECRET_KEY']
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
