@@ -16,8 +16,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import json
 # Load the file that contains the sensitive information
-with open('config.json') as config_file:
-    config = json.load(config_file)
+#with open('config.json') as config_file:
+#    config = json.load(config_file)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

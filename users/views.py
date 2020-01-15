@@ -9,7 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-
+from main.models import Rating
 
 def register(request):
     context = {
@@ -105,11 +105,14 @@ def view_profile(request):
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
     username = request.GET.get('user', '')
 
-    user_to_view = User.objects.filter(username=username).first()
-    if not user_to_view:                    # establish the independence of the app again
-        user_to_view = request.user         # get the the currently logged in user
+    user = User.objects.filter(username=username).first()
+    ratings = Rating.objects.filter(feedbacker=user)
+
+    if not user:                    # establish the independence of the app again
+        user = request.user         # get the the currently logged in user
 
     context = {
-        'user_to_view': user_to_view,
+        'user_to_view': user,
+        'user_ratings': ratings
     }
     return render(request, 'users/view-profile.html', context)
