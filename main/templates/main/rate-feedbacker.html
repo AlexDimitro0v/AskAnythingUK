@@ -1,0 +1,52 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block content%}
+
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Rate Your Feedbacker</div>
+    <div class="cardbody" style="margin-bottom: 70px">
+      <h3 style="margin-bottom: 0">Quality</h3>
+      <div class="rating" id="compRating" data-rate-value=0 style="font-size: 35px;"></div>
+       <h3 style="margin-bottom: 0">Speed</h3>
+       <div class="rating" id="speedRating" data-rate-value=0 style="font-size: 35px;"></div>
+       <h3 style="margin-bottom: 0">Communication</h3>
+       <div class="rating" id="commRating" data-rate-value=0 style="font-size: 35px;"></div>
+       <form action="/rate-feedbacker/?request_id={{request_id}}" method="POST" id="ratingForm">
+          {% csrf_token %}
+          REVIEW:<br><textarea rows="15" id="description" name="review"></textarea> <br>
+          <input style="display: none;" value="0" id="speedHiddenInput" name="speed"/>
+          <input style="display: none;" value="0" id="commHiddenInput" name="communication"/>
+          <input style="display: none;" value="0" id="compHiddenInput" name="quality"/>
+        </form>
+        <div class="button-corner">
+          <span class="button noselect" id="submit_button">SUBMIT</span>
+        </div>
+        <script>
+          $('#submit_button').click(function() {
+              $("#ratingForm").submit();
+          });
+        </script>
+    </div>
+  </div>
+  <script>
+    var options = {
+      max_value: 5,
+      step_size: 1,
+      initial_value: 2
+    }
+    $(".rating").rate(options);
+
+    // Change values of hidden inputs in form when rating changes
+    $("#speedRating").on("change", function(ev, data){
+      $("#speedHiddenInput").val(data.to);
+    });
+    $("#commRating").on("change", function(ev, data){
+      $("#commHiddenInput").val(data.to);
+    });
+    $("#compRating").on("change", function(ev, data){
+      $("#compHiddenInput").val(data.to);
+    });
+  </script>
+{% endblock %}

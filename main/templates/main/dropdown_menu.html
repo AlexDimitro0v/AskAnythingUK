@@ -1,16 +1,14 @@
             <!-- Any HTML here will be styled with Bootstrap CSS -->
             <div class="bootstrap">
               <ul class="nav navbar-default" style="background-color:transparent;">
-                <li class="dropdown">
+                <li class="dropdown" data-toggle="tooltip">
                   <a class="dropdown-toggle" data-toggle="dropdown" style="background-color:transparent;" href="#">
                       <img class="photo-circle" src="{{ user.userprofile.image.url }}"/>
                   </a>
-                  <ul class="dropdown-menu">
-                    <li><a href="{% url 'dashboard'%}"><span class="fa fa-user-circle" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Profile</strong></a></li>
-                    <li class="divider"></li>
-                    <li><a href="#"><span class="fa fa-gear" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Settings</strong></a></li>
-                    <li class="divider"></li>
-                    <li><a href="{% url 'logout-page'%}"><span class="fa fa-sign-out" style="height: 13px; right: 10px; color: #1F4D8A;"></span> <strong> Sign Out</strong></a></li>
+                  <ul class="dropdown-menu dropdown-menu-right" id="user-dropdown" style="font-size: 1.2em" >
+                    <li><a href="{% url 'dashboard'%}"><span class="fa fa-user-circle" style="height: 1.2em; color: #1F4D8A;"></span> <strong>Profile</strong></a></li>
+                    <li><a href="#"><span class="fa fa-gear" style="height: 1.2em; color: #1F4D8A;"></span> <strong> Settings</strong></a></li>
+                    <li><a href="{% url 'logout-page'%}"><span class="fa fa-sign-out" style="height: 1.2em; color: #1F4D8A;"></span> <strong> Sign Out</strong></a></li>
                   </ul>
                 </li>
               </ul>

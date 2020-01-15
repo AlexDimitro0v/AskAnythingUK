@@ -27,7 +27,9 @@
         {% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
         <div>
             <div class="small-card" style="padding: 20px">
-                <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}"><p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p></a>
+                <div class="feedback-request-link">
+                  <a  href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}"><p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p></a>
+                </div>
                 <hr style="width: 50%; margin-top: 20px; margin-bottom: 20px">
                 {% if curr_candidates%}
                 <div>

@@ -2,6 +2,7 @@ from django import forms
 from .models import FeedbackRequest
 # from .models import Feedbacker
 from .models import FeedbackerComments
+from .models import Rating
 
 
 class NewFeedbackRequestForm(forms.Form):
@@ -29,3 +30,13 @@ class FeedbackerCommentsForm(forms.Form):
     class Meta:
         model = FeedbackerComments
         fields = ['comments']
+
+class FeedbackerRatingForm(forms.Form):
+    quality = forms.IntegerField()
+    speed = forms.IntegerField()
+    communication = forms.IntegerField()
+    review = forms.CharField()
+
+    class Meta:
+        model = Rating
+        fields = ["quality","speed","communication","review"]

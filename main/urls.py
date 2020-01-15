@@ -14,5 +14,6 @@ urlpatterns = [
     # path('customize-profile/', views.customize_profile, name="customize-profile-page"),
     path('choose-feedbacker/', views.choose_feedbacker, name="choose-feedbacker-page"),
     path('submit-feedback/', views.submit_feedback, name="submit-feedback-page"),
+    path('rate-feedbacker/', views.rate_feedbacker, name="rate-feedbacker-page"),
 
 ]
