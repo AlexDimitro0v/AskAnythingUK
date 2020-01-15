@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
 import datetime
+from django.utils import timezone
+
 
 @login_required
 def home(request):
@@ -294,7 +296,7 @@ def submit_feedback(request):
                 return redirect('home-page')
 
             feedback_request.feedbacker_comments = comments
-            feedback_request.date_completed = datetime.datetime.now()
+            feedback_request.date_completed = datetime.datetime.now(tz=timezone.utc)
             feedback_request.save()
 
             feedbackZIPFile = request.FILES['fileZip']
@@ -308,9 +310,10 @@ def submit_feedback(request):
     }
     return render(request, 'main/submit_feedback.html', context)
 
+
 @login_required
 def rate_feedbacker(request):
-    request_id = request.GET.get('request_id','')
+    request_id = request.GET.get('request_id', '')
     if not request_id:
         return redirect('dashboard')
 
@@ -339,4 +342,4 @@ def rate_feedbacker(request):
     context = {
         'request_id': request.GET.get('request_id', '')
     }
-    return render(request,'main/rate-feedbacker.html',context)
+    return render(request, 'main/rate-feedbacker.html', context)
