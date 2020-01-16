@@ -1,42 +1,97 @@
 {% extends 'main/base.html' %}
-{% block content%}
 {% load multifor %}
 {% load static %}
+{% block content%}
+    <style>
+        .btn-outline-info{
+          border-color: #1F4D8A;
+          color: #1F4D8A;
+        }
 
-{% for feedback_request in requests; curr_tags in tags %}
-<div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
-    {% if curr_tags.0 %}
-    <div class="tag-container">
-        {% for tag in curr_tags %}
-            <span class='tag' id="{{ tag }}" title="Click to filter by tag">{{ tag }}</span>
-        {% endfor %}
+        .btn-outline-info:hover{
+          background-color: #1F4D8A;
+          border-color: #1F4D8A;
+          color: #eeeeee;
+        }
+
+        .btn-info{
+          background-color: #1F4D8A;
+          border-color: #1F4D8A;
+        }
+
+        .btn-info:hover{
+          background-color: #1F4D8A;
+          color: #eeeeee;
+        }
+
+        .btn-outline-info:not(:disabled):not(.disabled).active, .btn-outline-info:not(:disabled):not(.disabled):active,
+        .show>.btn-outline-info.dropdown-toggle{
+          background-color: #1F4D8A;
+          border-color: #1F4D8A;
+        }
+
+
+    </style>
+    {% for feedback_request in requests; curr_tags in tags %}
+    <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
+        {% if curr_tags.0 %}
+        <div class="tag-container">
+            {% for tag in curr_tags %}
+                <span class='tag' id="{{ tag }}" title="Click to filter by tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <h3> {{ feedback_request.title }} </h3>
+        <p> {{ feedback_request.maintext }} </p>
+        <div style="margin-top: 5px">
+          <div class="button noselect button-corner" style="border-radius: 18px">
+              <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration: none;">More information</a>
+          </div>
+          <span class="status-info noselect" style=" border-radius: 18px">
+            <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
+              {{ feedback_request.reward }}
+          </span>
+          <span class="status-info noselect" style="background: #FFCF7D; border-radius: 18px">
+            <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
+            {{ feedback_request.time_limit }} days
+          </span>
+        </div>
     </div>
+    {% endfor %}
+
+    <!--https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-multiple-object/-->
+    {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            <span class="step-links" style="margin: 0 auto;">
+                {% if page_obj.has_previous %}
+    <!-- Put parameters by setting ? in the url https://www.searchenginejournal.com/technical-seo/url-parameter-handling/#close-->
+                    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                    <!--Show the 3 adjacent pages (from both sides)-->
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next &gt;</a>
+                {% endif %}
+            </span>
+        </div>
     {% endif %}
-    <h3> {{ feedback_request.title }} </h3>
-    <p> {{ feedback_request.maintext }} </p>
-    <div style="margin-top: 5px">
-      <div class="button noselect button-corner" style="border-radius: 18px">
-          <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration: none;">More information</a>
-      </div>
-      <span class="status-info noselect" style=" border-radius: 18px">
-        <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
-          {{ feedback_request.reward }}
-      </span>
-      <span class="status-info noselect" style="background: #FFCF7D; border-radius: 18px">
-        <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
-        {{ feedback_request.time_limit }} days
-      </span>
-    </div>
-</div>
-{% endfor %}
 
-<!-- Hidden form for tag filtering -->
-<form action="/" method="POST" id="tagFilterForm"> {% csrf_token %}</form>
-<script>
-  $('.tag').click(function(e) {
-    let tagValue = e.target.id;
-    $('#tagFilterForm').attr("action","/?tag-filter="+tagValue);
-    $('#tagFilterForm').submit();
-  });
-</script>
+
+    <!-- Hidden form for tag filtering -->
+    <form action="/" method="POST" id="tagFilterForm"> {% csrf_token %}</form>
+    <script>
+      $('.tag').click(function(e) {
+        let tagValue = e.target.id;
+        $('#tagFilterForm').attr("action","/?tag-filter="+tagValue);
+        $('#tagFilterForm').submit();
+      });
+    </script>
 {% endblock%}

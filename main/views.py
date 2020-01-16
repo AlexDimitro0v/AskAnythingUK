@@ -12,6 +12,7 @@ from django.core.files.storage import FileSystemStorage
 
 import datetime
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 
 @login_required
@@ -27,7 +28,14 @@ def home(request):
         # (excluding the requests from the currently logged in user)
         # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
         feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker')).exclude(feedbackee=request.user)
+        feedback_requests = feedback_requests.order_by('-date_posted')
+        # https://docs.djangoproject.com/en/3.0/topics/pagination/
+        page_number = request.GET.get('page', 1)  # defaults to 1 if not found
+        paginator = Paginator(feedback_requests, 5)
+        feedback_requests = paginator.get_page(page_number)
+        page_obj = feedback_requests
     else:
+        page_obj = None
         # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
         # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
         #
@@ -44,6 +52,7 @@ def home(request):
                                                             AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id
                                                             AND main_feedbackrequest.feedbacker_id != %s
                                                             ''', [tag_filter, request.user.id])
+
     # Create a list of tags for each feedback request
     tags = []   # will contain nested lists of tag names
     for feedback_request in feedback_requests:
@@ -54,7 +63,8 @@ def home(request):
 
     context = {
         'requests': feedback_requests,
-        'tags': tags
+        'tags': tags,
+        'page_obj': page_obj
     }
     return render(request, 'main/feedback_requests.html', context)
 
@@ -129,6 +139,7 @@ def new_feedback_request(request):
                     category_record = category_record[0]
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
+
             return redirect('home-page')
 
     return render(request, 'main/new_feedback_request.html')
