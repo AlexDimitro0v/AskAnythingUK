@@ -24,7 +24,7 @@ class FeedbackRequest(models.Model):
     feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker')
     reward = models.IntegerField(default=0)
     feedbacker_comments = models.TextField(default="")
-    feedbacker_rated = models.IntegerField(default=0)
+    feedbacker_rated = models.IntegerField(default=False)
 
     def __str__(self):
         return self.title
@@ -38,6 +38,9 @@ class Rating(models.Model):
     speed = models.IntegerField(default=0)
     communication = models.IntegerField(default=0)
     review = models.TextField()
+
+    def __str__(self):
+        return f"{self.feedbackee.username}-{self.feedbacker.username} Review"
 
 
 class Category(models.Model):
@@ -67,14 +70,6 @@ class Tag(models.Model):
 class Specialism(models.Model):
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
-# class Feedbacker(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)     # One-to-one relationship
-#     # profile_description = models.TextField()
-#
-#     def __str__(self):
-#         return self.user.username
 
 
 class FeedbackerComments(models.Model):

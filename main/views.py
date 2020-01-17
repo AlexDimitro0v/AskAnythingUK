@@ -3,16 +3,13 @@ from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
-# https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
-
+from django.core.paginator import Paginator
 from django.db import connections
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
-
 import datetime
 from django.utils import timezone
-from django.core.paginator import Paginator
 
 
 @login_required
@@ -30,8 +27,8 @@ def home(request):
         feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker')).exclude(feedbackee=request.user)
         feedback_requests = feedback_requests.order_by('-date_posted')
         # https://docs.djangoproject.com/en/3.0/topics/pagination/
-        page_number = request.GET.get('page', 1)  # defaults to 1 if not found
-        paginator = Paginator(feedback_requests, 5)
+        page_number = request.GET.get('page', 1)        # defaults to 1 if not found
+        paginator = Paginator(feedback_requests, 5)     # each page contains 5 feedback requests
         feedback_requests = paginator.get_page(page_number)
         page_obj = feedback_requests
     else:
@@ -71,10 +68,6 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    # # Only logged-in users can view their own dashboard
-    # if not request.user.is_authenticated:
-    #     return redirect('login-page')
-
     my_feedbacker_applications_ids = FeedbackerCandidate.objects.values_list('feedback', flat=True).filter(
         feedbacker=request.user)
     my_feedbacker_applications = FeedbackRequest.objects.filter(pk__in=set(my_feedbacker_applications_ids))
@@ -103,10 +96,6 @@ def dashboard(request):
 
 @login_required
 def new_feedback_request(request):
-    # # Only logged-in users can make new requests
-    # if not request.user.is_authenticated:
-    #     return redirect('login-page')
-
     # If new feedback request form just sent
     if request.method == "POST":
         form = NewFeedbackRequestForm(request.POST)
@@ -147,10 +136,6 @@ def new_feedback_request(request):
 
 @login_required
 def feedback_request(request):
-    # # Only logged-in users can view feedback requests
-    # if not request.user.is_authenticated:
-    #     return redirect('login-page')
-
     request_id = request.GET.get('request_id', '')
     user_is_feedbacker = False
     user_is_candidate = False
@@ -198,9 +183,6 @@ def feedback_request(request):
 
 @login_required
 def apply_as_feedbacker(request):
-    # if not request.user.is_authenticated:
-    #     return redirect('login-page')
-
     feedback_request_id = request.GET.get('request_id', '')
     feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
     cursor = connections['default'].cursor()
@@ -209,69 +191,6 @@ def apply_as_feedbacker(request):
     cursor.close()
     messages.success(request, f"Your application has been processed!")
     return redirect('dashboard')
-
-
-# @login_required
-# def feedbacker_profile(request):
-#     # ASK STEPAN ABOUT ALL OF THE VALIDATIONS AND REDIRECTS TO THE PROFILE-PAGE
-#
-#     # if not request.user.is_authenticated:
-#     #     return redirect('login-page')
-#     feedbacker_username = request.GET.get('user', '')
-#     feedback_request_id = request.GET.get('feedback', '')
-#
-#     # Get feedbacker from database
-#     feedbacker = User.objects.filter(username=feedbacker_username)
-#     if feedbacker:
-#         feedbacker = feedbacker[0]
-#     else:
-#         return redirect('profile-page')       # change to redirect to dashboard if in use again !!!!!!!!!!!!!
-#     my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user, id=feedback_request_id)
-#
-#     if not my_feedback_requests:
-#         return redirect('profile-page')
-#
-#     candidates = FeedbackerCandidate.objects.filter(feedback=feedback_request_id)
-#
-#     if not candidates:
-#         return redirect('profile-page')
-#     feedbacker_is_candidate = False
-#     for candidate in candidates:
-#         if candidate.feedbacker == feedbacker:
-#             feedbacker_is_candidate = True
-#
-#     if not feedbacker_is_candidate:
-#         return redirect('profile-page')
-#
-#     context = {
-#         'feedbacker': feedbacker,
-#     }
-#     return render(request, 'main/feedbacker-profile.html', context)
-
-
-# def customize_profile(request):
-#     if not request.user.is_authenticated:
-#         return redirect('login-page')
-#
-#     if request.method == "POST":
-#         form = FedbackerProfileForm(request.POST)
-#         if form.is_valid():
-#             existing_feedbacker = Feedbacker.objects.filter(user=request.user).first()
-#             if existing_feedbacker != None:
-#                 existing_ssssprofile_description = form.cleaned_data['description']
-#                 existing_feedbacker.save()
-#             else:
-#                 feedbacker = Feedbacker(user=request.user, profile_description=form.cleaned_data['description'])
-#                 feedbacker.save()
-#             return redirect('profile-page')       # change to redirect to dashboard if in use again !!!!!!!!!!!!!
-#
-#     profile_description = str()
-#     if Feedbacker.objects.filter(user=request.user).first():
-#         profile_description = Feedbacker.objects.filter(user=request.user).first().profile_description
-#     context = {
-#         'prev_description': profile_description
-#     }
-#     return render(request, 'customize_profile.html', context)
 
 
 @login_required
@@ -345,9 +264,9 @@ def rate_feedbacker(request):
                                                feedbacker=feedback_request.feedbacker)
             rating.save()
 
-            feedback_request.feedbacker_rated = 1
+            feedback_request.feedbacker_rated = True
             feedback_request.save()
-            
+            messages.success(request, 'You have successfully graded your feedbacker!')
             return redirect('dashboard')
 
     context = {
