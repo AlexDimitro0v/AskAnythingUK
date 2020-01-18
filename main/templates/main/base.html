@@ -62,6 +62,10 @@
         <span style="position:absolute; float: right; right: 20px;">
           {%if user.is_authenticated %}
               {% include "main/dropdown_menu.html" %}
+          {% else %}
+          <a href="{% url 'login-page' %}" class="header-menu-text noselect" ><button class="btn btn-outline-info">Log In</button></a>
+          <a href="{% url 'registration-page' %}" class="header-menu-text noselect" ><button class="btn btn-outline-info">Sign Up</button></a>
+
           {% endif %}
         </span>
     </div>

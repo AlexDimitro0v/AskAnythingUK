@@ -2,7 +2,60 @@
 {% block content%}
 {% load static %}
 
+{% if user_is_feedbacker or user_is_feedbackee%}
 <div class="large-area">
+  <div class="decorative-text-wrapper noselect">Files</div>
+  <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+          <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle"/>
+          <h3 style="margin-top: 10px;">FEEDBACKEE</h3>
+          <div class="border-top pt-4 "></div>
+          <a href="{{ feedbackee_files_link }}" download="Feedbackee Files" style="text-decoration:none;">
+              <button class="btn btn-outline-info" >Download Feedbackee's Files</button>
+          </a>
+        </div>
+          {% if feedback_request.feedbacker == feedback_request.feedbackee%}
+            <div class="col-sm landing-card" style="text-align: center; margin: 15px;display: flex; justify-content: center; align-content: center; flex-direction: column;">
+              <p style="text-align: center; font-size: 1.2em; font-weight: 600; display: table-cell; vertical-align: middle;">No Feedbacker Yet</p>
+            </div>
+          {% else %}
+            <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+            <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle"/>
+            <h3 style="margin-top: 10px;">FEEDBACKER</h3>
+            <div class="border-top pt-4"></div>
+              {% if feedbacker_files_link != None %}
+                  <a href="{{ feedbacker_files_link }}" download="Feedbacker Files"  style="text-decoration:none;">
+                      <button class="btn btn-outline-info" >Download Feedbacker's Files</button>
+                  </a>
+              {% endif %}
+              {% if user_is_feedbacker and feedbacker_files_link == None %}
+                  <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
+                      <button class="btn btn-outline-info" >Submit Feedback</button>
+                  </a>
+              {% endif %}
+              {% if user_is_feedbackee and feedbacker_files_link == None %}
+                <p style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: -4px">No Files Yet</p>
+              {% endif %}
+              {% if user_is_feedbackee and feedbacker_files_link != None and not feedback_request.feedbacker_rated%}
+                  <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
+                      <button class="btn btn-outline-info" >Rate Feedbacker</button>
+                  </a>
+              {% endif %}
+              </div>
+            {% endif %}
+
+        </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Description</div>
+    <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+
     <span class="status-info noselect" style="font-size: 1.3em;">
         <img src = "{% static 'img/pound_icon.png'%}" style="vertical-align: middle; height: 25px" />
         {{ feedback_request.reward }}
@@ -11,43 +64,53 @@
         <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
         {{ feedback_request.time_limit }} days
     </span>
-    {% if user_is_candidate %}
-        <span class="status-info noselect" style="background-color: #FFB580; font-size: 1.3em;">Application Submitted</span>
-    {% elif user_is_feedbacker %}
-        <span class="status-info noselect" style="background-color: #48EB9E; font-size: 1.3em;">Application Accepted</span>
-    {% elif user_was_rejected %}
-        <span class="status-info noselect" style="background-color: #FF6571; font-size: 1.3em;">Application Rejected</span>
-    {% endif %}
+
     <div style="margin-top: 10px; margin-bottom: 10px">
         <h1 style="text-align: center">{{ feedback_request.title }}</h1>
+        <div class="border-top mt-3 pt-2"></div>
         <p>{{ feedback_request.maintext }}</p>
-        {% if user_is_feedbacker or user_is_feedbackee%}
-            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-                <a href="{{ feedbackee_files_link }}" download="Feedbackee Files" style="text-decoration:none;">Download Feedbackee's Files</a>
-            </div>
-        {% if feedbacker_files_link != None %}
-            <br>
-            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-                <a href="{{ feedbacker_files_link }}" download="Feedbacker Files" style="text-decoration:none;">Download Feedbacker's Files</a>
-            </div>
-        {% endif %}
-        {% if user_is_feedbacker and feedbacker_files_link == None %}
-            <br>
-            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-                <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}" style="text-decoration:none; ">Submit Feedback</a>
-            </div>
-        {% endif %}
-        {% if user_is_feedbackee and feedbacker_files_link != None and not feedback_request.feedbacker_rated%}
-            <br>
-            <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-                <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none; ">Rate Feedbacker</a>
-            </div>
-        {% endif %}
-    </div>
-    {% elif not user_is_candidate %}
-        <div class="button noselect" style="display: inline-block; margin-top: 20px;">
-            <a href="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none;">Apply as Feedbacker</a>
-        </div>
-    {% endif %}
 </div>
+</div>
+</div>
+{% if not user_is_feedbacker and not user_is_feedbackee %}
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Apply</div>
+  <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+    {% if user_was_rejected %}
+      <img src = "{% static 'img/cross4.png'%}" class="photo-circle large-photo-circle"/>
+      <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Rejected</p>
+    {% elif not user_is_candidate %}
+    <div>
+      <ul>
+      <li>By applying, you are agreeing to provide feedback within the specified timeframe. <br></li>
+      <li>If your application is accepted, you can no longer withdraw it.</li>
+      </ul>
+  <!--
+    <form style="font-family: inherit">
+      <input type="checkbox" class="checkbox" style="-webkit-appearance: checkbox;"> I understand<br>
+      </form> -->
+    </div>
+    <br>
+    <br>
+
+    <div class="button-corner">
+    <a href="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
+        <button class="btn btn-outline-info" >Apply as Feedbacker</button>
+    </a>
+    </div>
+    {% else %}
+    <img src = "{% static 'img/tick4.png'%}" class="photo-circle large-photo-circle"/>
+    <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Submitted</p>
+    <br>
+    <br>
+    <div class="button-corner">
+    <a href="{%url 'withdraw-application-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
+        <button class="btn btn-outline-info" >Withdraw Application</button>
+    </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
 {% endblock%}

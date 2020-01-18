@@ -65,7 +65,7 @@ input {
 
 .large-area {
   width: 90%;
-  max-width: 1000px;
+  max-width: 900px;
   border-radius: 5px;
   background-color: #ffffff;
   left: 0;
@@ -122,6 +122,15 @@ input {
   vertical-align: middle;
 }
 
+.large-photo-circle {
+  display: table;
+  margin: 0 auto;
+  width: 150px;
+  height: 150px;
+  border-radius: 100%;
+  border: 8px solid #eee;
+}
+
 .premium-request {
   border: 3px solid #EBDF67;
 }
@@ -167,6 +176,19 @@ p {
   line-height: 40px;
   display: inline-block;
   margin-left: 10px;
+}
+
+.btn-outline-info{
+  padding-left: 20px;
+  padding-right: 20px;
+  boarder-color: #43C2F0;
+  color: #43C2F0;
+}
+
+.btn-outline-info:hover{
+  transition: 0.3s;
+  background-color: #43C2F0;
+  color: #eeeeee;
 }
 
 .button:hover {
@@ -515,6 +537,80 @@ color: #1F4D8A;
 
 .btn-link:hover{
 color: #1F4D8A;
+}
+
+.landing-card {
+  background-color: #eee;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.landing-card h3 {
+  font-weight: 600;
+}
+
+.full-screen {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+}
+
+.full-screen-image {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: rgba(255,255,255,0.8);
+  background-blend-mode: lighten;
+
+
+}
+
+.checkbox label:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.checkbox .cr {
+  position: relative;
+  display: inline-block;
+  border: 1px solid #a9a9a9;
+  border-radius: .25em;
+  width: 1.3em;
+  height: 1.3em;
+  float: left;
+  margin-right: .5em;
+}
+
+.checkbox .cr .cr-icon {
+  position: absolute;
+  font-size: .8em;
+  line-height: 0;
+  top: 50%;
+  left: 15%;
+}
+
+.checkbox label input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox label input[type="checkbox"]+.cr>.cr-icon {
+  opacity: 0;
+}
+
+.checkbox label input[type="checkbox"]:checked+.cr>.cr-icon {
+  opacity: 1;
+}
+
+.checkbox label input[type="checkbox"]:disabled+.cr {
+  opacity: .5;
 }
 
 /*

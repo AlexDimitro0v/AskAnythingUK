@@ -1,0 +1,67 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content%}
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Submit Feedback to Feedbackee</div>
+  <div class="cardbody">
+
+    <form action="/new-feedback-request/" method="POST" id="submitFeedbackForm" enctype="multipart/form-data">
+      {% csrf_token %}
+      FEEDBACK FILES:<br>
+      <label for="file-upload" class="button noselect" style="margin-left: 0px;">
+            Upload Files
+      </label>
+      <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple><br><br>
+      COMMENTS (OPTIONAL):<br><textarea rows="15" name="comments"></textarea> <br><br>
+    </form>
+    <span class="button noselect button-corner" id="submit_button">Submit</span>
+
+    <script>
+    let tags = [];
+    let numOfTags = 0;
+    $(document).ready(function () {
+
+    $('#submit_button').click(function() {
+       // Disable button to prevent multiple clicks
+       $("#submit_button").attr("disabled", true);
+        // Create an array of all selected files
+        let selectedFiles = Array.from(document.getElementById("file-upload").files);
+
+        let zip = new JSZip();
+
+         // Add all uploaded files to ZIP
+         function addFileToZip(n) {
+             if(n >= selectedFiles.length) {
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    let files = new File([content], "feedbackFiles.zip");
+                    let formData = new FormData(document.querySelector('#submitFeedbackForm'));
+                    formData.append('fileZip', files);
+                    formData.delete('feedbackfiles');
+
+                    let xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if(xhr.readyState == 4 && xhr.status == 200) {
+                          window.location.href = "/dashboard/";
+                        }
+                    }
+                    xhr.open('POST', "/submit-feedback/?request_id={{request_id}}", true);
+                    xhr.send(formData);
+              });
+            }
+            else {
+              let fileReader = new FileReader();
+              fileReader.onload = function() {
+                  zip.file(selectedFiles[n].name, this.result);
+                  addFileToZip(n + 1);
+              };
+              fileReader.readAsArrayBuffer(selectedFiles[n]);
+            }
+        }
+        addFileToZip(0);
+    });
+    });
+    </script>
+  </div>
+</div>
+{% endblock %}

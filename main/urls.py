@@ -10,5 +10,7 @@ urlpatterns = [
     path('choose-feedbacker/', views.choose_feedbacker, name="choose-feedbacker-page"),
     path('submit-feedback/', views.submit_feedback, name="submit-feedback-page"),
     path('rate-feedbacker/', views.rate_feedbacker, name="rate-feedbacker-page"),
+    path('landing-page/', views.landing_page, name="landing-page"),
+    path('withdraw-application/', views.withdraw_application, name="withdraw-application-page"),
 
 ]
