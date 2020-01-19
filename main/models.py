@@ -5,7 +5,6 @@ from django.utils import timezone
 # https://stackoverflow.com/questions/14663523/foreign-key-django-model
 # https://stackoverflow.com/questions/6928692/how-to-express-a-one-to-many-relationship-in-django
 # Note that ForeignKey in Django represents Many-to-One relationship !!! i.e. a feedbackee can have many requests
-#
 # OneToOneField represents one to one relationship
 # ManyToManyField represents many to many relationship
 

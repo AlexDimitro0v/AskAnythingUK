@@ -106,6 +106,7 @@ def view_profile(request):
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
     username = request.GET.get('user', '')
     user_to_view = User.objects.filter(username=username).first()
+
     if not user_to_view:                    # establish the independence of the app again
         user_to_view = request.user         # get the the currently logged in user
 

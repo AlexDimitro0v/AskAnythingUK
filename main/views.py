@@ -10,11 +10,25 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 import datetime
 from django.utils import timezone
+from django.http import Http404
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import (
+    DeleteView
+)
+# Class-based views types:
+# ListView    — to view the list of objects
+# CreateView  — to create a particular object
+# DetailView  — to view a particular object
+# UpdateView  — to update a particular object
+# DeleteView  — to delete a particular object
 
+
+# =====================================================================================================================
+# FUNCTION-BASED VIEWS:
 def home(request):
     # Redirect unauthenticated users to landing page
     if not request.user.is_authenticated:
-         return redirect('landing-page')
+        return redirect('landing-page')
 
     context = {
         'areas' :  Area.objects.all()
@@ -87,6 +101,7 @@ def feedback_requests(request):
     }
 
     return render(request, 'main/feedback_requests.html', context)
+
 
 @login_required
 def dashboard(request):
@@ -225,9 +240,6 @@ def apply_as_feedbacker(request):
 
 @login_required
 def choose_feedbacker(request):
-    # if not request.user.is_authenticated:
-    #     return redirect('login-page')
-
     feedbacker_username = request.GET.get('user', '')
     feedback_request_id = request.GET.get('feedback', '')
     feedback_request = FeedbackRequest.objects.filter(id=feedback_request_id).first()
@@ -296,7 +308,7 @@ def rate_feedbacker(request):
 
             feedback_request.feedbacker_rated = True
             feedback_request.save()
-            messages.success(request, 'You have successfully graded your feedbacker!')
+            messages.success(request, 'You have successfully rated your feedbacker!')
             return redirect('dashboard')
 
     context = {
@@ -304,26 +316,53 @@ def rate_feedbacker(request):
     }
     return render(request, 'main/rate-feedbacker.html', context)
 
+
 @login_required
 def withdraw_application(request):
     feedback_request_id = request.GET.get('request_id', '')
 
-    application = FeedbackerCandidate.objects.get(feedbacker=request.user,feedback_id=feedback_request_id)
+    application = FeedbackerCandidate.objects.get(feedbacker=request.user, feedback_id=feedback_request_id)
     application.delete()
     messages.success(request, f"Your application has been withdrawn!")
     return redirect('dashboard')
 
-@login_required
-def remove_feedback_request(request):
-    request_id = request.GET.get('request_id', '')
+# =====================================================================================================================
 
-    if not request_id:
-        return redirect('dashboard')
 
-    feedback_request = FeedbackRequest.objects.get(id=request_id)
+# =====================================================================================================================
+# CLASS-BASED VIEWS:
+class RequestDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """
+    By default Django expects a template that is just a form that asks if we are sure that we want to delete the request
+    and if we submit the form, the request will be deleted. Django also looks for a template named:
+    <app>/<model>_confirm_delete.html, i.e. main/feedbackrequest_confirm_delete.html by default.
+    """
+    model = FeedbackRequest         # which model to query in order to delete a request
+    # template_name = 'main/feedback_request_delete.html'
 
-    if feedback_request.feedbackee != request.user or feedback_request.feedbacker != feedback_request.feedbackee:
-        return redirect('dashboard')
+    def test_func(self):
+        """
+        The function put a restriction on deleting other's users feedback requests.
+        The currently logged-in user must NOT be able to delete other's people feedback requests or requests that have
+        already been assigned to a feedbacker.
+        This is when a user try to write the url manually.
+        """
+        feedback_request = self.get_object()     # get the exact feedback_request to be currently deleted
 
-    feedback_request.delete()
-    return redirect('dashboard')
+        if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
+            return True
+        return False
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and deletes the adequate feedback request + the zip file.
+        """
+        feedback_request = self.get_object()     # get the exact feedback_request to be currently deleted
+        if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
+            fs = FileSystemStorage()
+            fs.delete('zip_files/' + str(feedback_request.id) + '.zip')
+            feedback_request.delete()
+            messages.success(request, 'You have successfully deleted your feedback request.')
+            return redirect('dashboard')
+        else:
+            raise Http404
