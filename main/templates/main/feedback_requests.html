@@ -34,9 +34,8 @@
           background-color: #1F4D8A;
           border-color: #1F4D8A;
         }
-
-
     </style>
+
     {% for feedback_request in requests; curr_tags in tags %}
     <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
         {% if curr_tags.0 %}

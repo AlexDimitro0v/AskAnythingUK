@@ -1,0 +1,20 @@
+<!--This template will be used for confirming the deletion of a request -->
+{% extends 'main/base.html'%}
+{% block content %}
+<!-- Note that a submit button (delete in this case) is not included in the forms-->
+     <div class="large-area" style="max-width: 700px">
+        <div class="decorative-text-wrapper noselect">Delete Feedback Request</div>
+        <div class="cardbody" style="margin-bottom:0px;">
+        <form method="POST">
+            {% csrf_token %}                    <!-- Added Security token that Django requires-->
+            <fieldset class="form-group">
+                <h2>Are you sure you want to delete the post?</h2>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+                <a class="btn btn-outline-secondary" href="{% url 'feedback-request-page' %}?request_id={{object.pk}}">Cancel</a>
+            </div>
+        </form>
+        </div>
+    </div>
+{% endblock content%}

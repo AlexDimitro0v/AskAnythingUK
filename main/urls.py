@@ -12,4 +12,8 @@ urlpatterns = [
     path('rate-feedbacker/', views.rate_feedbacker, name="rate-feedbacker-page"),
     path('landing-page/', views.landing_page, name="landing-page"),
     path('withdraw-application/', views.withdraw_application, name="withdraw-application-page"),
+    path('feedback-request/<int:pk>/edit/', views.RequestUpdateView.as_view(template_name='main/edit_feedback_request.html'),
+         name='request-edit'),
+    path('feedback-request/<int:pk>/delete', views.RequestDeleteView.as_view(template_name='main/feedback_request_delete.html'),
+         name='request-delete'),
 ]

@@ -10,8 +10,22 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 import datetime
 from django.utils import timezone
+from django.http import HttpResponseRedirect, Http404
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import (
+    UpdateView,
+    DeleteView
+)
 
+# Class-based views types:
+# ListView    — to view the list of objects
+# CreateView  — to create a particular object
+# DetailView  — to view a particular object
+# UpdateView  — to update a particular object
+# DeleteView  — to delete a particular object
 
+# =====================================================================================================================
+# FUNCTION-BASED VIEWS:
 def home(request):
     # Redirect unauthenticated users to landing page
     if not request.user.is_authenticated:
@@ -198,9 +212,6 @@ def apply_as_feedbacker(request):
 
 @login_required
 def choose_feedbacker(request):
-    # if not request.user.is_authenticated:
-    #     return redirect('login-page')
-
     feedbacker_username = request.GET.get('user', '')
     feedback_request_id = request.GET.get('feedback', '')
     feedback_request = FeedbackRequest.objects.filter(id=feedback_request_id).first()
@@ -269,7 +280,7 @@ def rate_feedbacker(request):
 
             feedback_request.feedbacker_rated = True
             feedback_request.save()
-            messages.success(request, 'You have successfully graded your feedbacker!')
+            messages.success(request, 'You have successfully rated your feedbacker!')
             return redirect('dashboard')
 
     context = {
@@ -286,3 +297,79 @@ def withdraw_application(request):
     application.delete()
     messages.success(request, f"Your application has been withdrawn!")
     return redirect('dashboard')
+# =====================================================================================================================
+
+
+# =====================================================================================================================
+# CLASS-BASED VIEWS:
+class RequestUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    # This is going to be a view with a form where a new feedback request is created
+    model = FeedbackRequest
+    fields = ['title', 'maintext', 'time_limit', 'reward']   # Fields that will be in the form
+    # template that Django will look for by default is:
+    # <app>/<model>_form.html
+    # success_url = f'feedback-request-page?request_id={self.pk}'
+
+    def form_valid(self, form):
+        # Redirects to get_success_url().
+        """Called if all forms are valid. Before the submission of the form make sure that the author is set."""
+        # To avoid Integrity Error (feedbacker = NULL, feedbackee = NULL)
+        # the form_valid function should be overridden because each request has to have a set feedbacker and feedbackee.
+        form.instance.feedbacker = self.request.user      # set the feedbacker to the currently logged in user
+        form.instance.feedbackee = self.request.user      # set the feedbackee to the currently logged in user
+
+        return super().form_valid(form)
+
+    def test_func(self):
+        """
+        UserPassesTestMixin will run this function as an abstract class in order to see if the user passes
+        pass certain test conditions.
+        The function put a restriction on updating other's users requests. The currently logged-in user must not be able
+        to update other's people requests or requests that have already been assigned to a feedbacker.
+        """
+        feedback_request = self.get_object()     # get the exact feedback_request to be currently updated
+
+        if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
+            return True
+        return False
+    #
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     return super().post(request, *args, **kwargs)
+
+
+class RequestDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """
+    By default Django expects a template that is just a form that asks if we are sure that we want to delete the request
+    and if we submit the form, the request will be deleted. Django also looks for a template named:
+    <app>/<model>_confirm_delete.html, i.e. main/feedbackrequest_confirm_delete.html by default.
+    """
+    model = FeedbackRequest         # which model to query in order to delete a request
+    # template_name = 'main/feedback_request_delete.html'
+
+    def test_func(self):
+        """
+        The function put a restriction on deleting other's users feedback requests.
+        The currently logged-in user must NOT be able to delete other's people feedback requests or requests that have
+        already been assigned to a feedbacker.
+        This is when a user try to write the url manually.
+        """
+        feedback_request = self.get_object()     # get the exact feedback_request to be currently deleted
+
+        if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
+            return True
+        return False
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and deletes the adequate feedback request + the zip file.
+        """
+        feedback_request = self.get_object()     # get the exact feedback_request to be currently deleted
+        if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
+            fs = FileSystemStorage()
+            fs.delete('zip_files/' + str(feedback_request.id) + '.zip')
+            feedback_request.delete()
+            messages.success(request, 'You have successfully deleted your feedback request.')
+            return redirect('dashboard')
+        else:
+            raise Http404
