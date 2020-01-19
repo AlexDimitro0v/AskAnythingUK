@@ -126,7 +126,7 @@
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Options</div>
   <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
-    <a href="{%url 'remove-feedback-request-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
+    <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
         <button class="btn btn-outline-info" >Remove Feedback Request</button>
     </a>
   </div>
