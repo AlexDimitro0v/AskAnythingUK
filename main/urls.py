@@ -12,5 +12,4 @@ urlpatterns = [
     path('rate-feedbacker/', views.rate_feedbacker, name="rate-feedbacker-page"),
     path('landing-page/', views.landing_page, name="landing-page"),
     path('withdraw-application/', views.withdraw_application, name="withdraw-application-page"),
-
 ]

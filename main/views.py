@@ -11,10 +11,11 @@ from django.core.files.storage import FileSystemStorage
 import datetime
 from django.utils import timezone
 
+
 def home(request):
-     # Redirect unauthenticated users to landing page
+    # Redirect unauthenticated users to landing page
     if not request.user.is_authenticated:
-         return redirect('landing-page')
+        return redirect('landing-page')
 
     # Get the tag filter, return an empty string if not found:
     tag_filter = request.GET.get('tag-filter', '')      # https://stackoverflow.com/a/49872199
@@ -63,8 +64,10 @@ def home(request):
     }
     return render(request, 'main/feedback_requests.html', context)
 
+
 def landing_page(request):
     return render(request, 'main/landing-page.html')
+
 
 @login_required
 def dashboard(request):
@@ -274,11 +277,12 @@ def rate_feedbacker(request):
     }
     return render(request, 'main/rate-feedbacker.html', context)
 
+
 @login_required
 def withdraw_application(request):
     feedback_request_id = request.GET.get('request_id', '')
 
-    application = FeedbackerCandidate.objects.get(feedbacker=request.user,feedback_id=feedback_request_id)
+    application = FeedbackerCandidate.objects.get(feedbacker=request.user, feedback_id=feedback_request_id)
     application.delete()
     messages.success(request, f"Your application has been withdrawn!")
     return redirect('dashboard')
