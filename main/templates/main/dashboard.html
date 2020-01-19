@@ -3,7 +3,11 @@
 {% load multifor %}
 
 {% block content%}
-<div class="button noselect button-corner" style="position: fixed; z-index: 1"><a href="{% url 'new-feedback-request-page' %}" style="text-decoration: none;">Ask For Feedback</a></div>
+<div class="noselect button-corner" style="position: fixed; z-index: 1; ">
+  <a href="{% url 'new-feedback-request-page' %}"  style="text-decoration:none;">
+      <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em">Ask For Feedback</button>
+  </a>
+</div>
 <div class="feedback-request">
     <div class="decorative-text-wrapper noselect">My Profile</div>
     <div class="cardbody"  style="margin-top:50px">
@@ -17,7 +21,14 @@
             <p>No profile description.</p>
         {% endif %}
 
-        <div class="rounded button noselect button-corner"><a href="{% url 'customize-profile-page' %}" style="text-decoration: none;">Customize Profile</a></div>
+        <div class="noselect button-corner">
+          <a href="{% url 'profile-page' %}" style="text-decoration:none; margin-right: 5px">
+            <button class="btn btn-outline-info" >View Profile</button>
+          </a>
+          <a href="{% url 'customize-profile-page' %}" style="text-decoration:none;">
+              <button class="btn btn-outline-info">Customize Profile</button>
+          </a>
+        </div>
     </div>
 
 </div>

@@ -10,7 +10,15 @@ from django.utils import timezone
 # ManyToManyField represents many to many relationship
 
 
+class Area(models.Model):
+    name = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.name
+
+
 class FeedbackRequest(models.Model):
+    area = models.ForeignKey(Area,on_delete=models.CASCADE,default=1)
     title = models.CharField(max_length=100)
     maintext = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
@@ -37,7 +45,7 @@ class Rating(models.Model):
     quality = models.IntegerField(default=0)
     speed = models.IntegerField(default=0)
     communication = models.IntegerField(default=0)
-    review = models.TextField()
+    review = models.TextField(default="")
 
     def __str__(self):
         return f"{self.feedbackee.username}-{self.feedbacker.username} Review"

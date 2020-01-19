@@ -5,33 +5,38 @@
 <div class="large-area" style="max-width: 750px">
     <div class="decorative-text-wrapper noselect">New Feedback Request</div>
     <div class="cardbody">
+
         <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
             {% csrf_token %}
-            TITLE:<br><textarea rows='1' id="title" name="title" maxlength="50" style="max-width: 400px;"></textarea> <br>
+            Category<br>
+            <select name="area" class="custom-select">
+                {% for area in areas %}
+                  <option value="{{ area.id }}">{{ area.name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            Title<br><textarea rows='1' id="title" name="title" maxlength="50" class="form-control"></textarea> <br>
             <div style="color: red; display: none" id="title-prompt">You must specify a title.</div>
-            <br>
 
 
-            DESCRIPTION:<br><textarea rows="15" id="description" name="maintext"></textarea> <br>
+            Description<br><textarea rows="15" id="description" name="maintext" class="form-control"></textarea> <br>
             <div style="color: red; display: none" id="description-prompt">You must specify a description.</div>
-            <br>
 
 
-            REWARD (£):<br><input id="reward" name="reward" class="onelineform" style="max-width: 100px; margin: 0 auto"
-                                  type="number" min="1">
+            Reward (£)<br>
+            <input id="reward" name="reward" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
             <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
 
 
-            <br><br>TIME LIMIT (days):<br><input id="limit" name="timelimit" class="onelineform"
-                                                 style="max-width: 100px; margin: 0 auto" type="number" min="1">
+            <br>Time limit (days)<br><input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
             <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
 
 
-            <br><br>FEEDBACK FILES:<br>
+            <br>Feedback Files<br>
             <label for="file-upload" class="button noselect" style="margin-left: 0px">
                 Upload Files
             </label>
-            <input id="file-upload" type="file" name="feedbackfiles" style="display: none" multiple>
+            <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
         </form>
 
         <div style="color: red; display: none" id="file-upload-prompt">You must upload at least one file to submit
@@ -39,14 +44,14 @@
         </div>
 
         <form onsubmit="return false" style="margin-top: 15px;">
-            TAGS:<br>
-            <input id="tag-input" class="onelineform" maxlength="20" style="margin: 0 auto">
+            Tags<br>
+            <input id="tag-input" class="form-control" maxlength="20" style="max-width: 200px; margin-top: 0" >
         </form>
 
         <div>
             <div id="tags" style="margin-top: 20px; height: 1px"></div>
         </div>
-        <span class="button noselect button-corner" id="submit_button">Submit</span>
+        <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
 
         <script>
     let tags = [];

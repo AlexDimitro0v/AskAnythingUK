@@ -6,7 +6,8 @@
 :root {
   --bg-color: #919EEB;
   --header-height: 65px;
-
+  --primary-color: #1F4D8A;
+  --secondary-color: #1F4D8A;
 }
 
 /* Default setup */
@@ -44,15 +45,20 @@ input {
   margin-top: 12px;
 }
 
-#header {
+.header {
   width: 100%;
   height: var(--header-height);
   background-color: white;
   top: 0;
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   box-shadow: 0px 0px 5px grey;
+}
 
+.header2 {
+  margin-top: var(--header-height);
+  z-index: 1;
+  height: 55px;
 }
 
 .header-menu-text {
@@ -61,6 +67,15 @@ input {
   color: grey;
   margin-left: 10px;
   display: inline;
+}
+
+.header2-menu-text {
+  font-family: 'Raleway';
+  line-height: 55px;
+  color: grey;
+  margin-left: 25px;
+  display: inline;
+  font-weight: 600;
 }
 
 .large-area {
@@ -394,7 +409,7 @@ p {
 }
 
 textarea {
-  font-family: 'Lexend';
+  font-family: 'Lexend','Raleway';
 }
 
 .onelineform {
@@ -404,7 +419,7 @@ textarea {
 }
 
 form {
-  font-family: 'Lexend';
+  font-family: 'Lexend',"Raleway";
 }
 
 .cardbody {
@@ -568,9 +583,46 @@ color: #1F4D8A;
   background-size: cover;
   background-color: rgba(255,255,255,0.8);
   background-blend-mode: lighten;
-
-
 }
+
+.full-screen h1 {
+  font-family: 'Raleway';
+  font-size: 70px;
+  font-weight: 600;
+  color: #1F4D8A;
+}
+
+.btn-outline-info{
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+  border-width: 1.5px;
+  font-weight: 500;
+  font-size: 1.1em;
+  border-radius: 25px;
+}
+
+.btn-outline-info:hover{
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: #eeeeee;
+}
+
+.btn-info{
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-info:hover{
+  background-color: var(--secondary-color);
+  color: #eeeeee;
+}
+
+.btn-outline-info:not(:disabled):not(.disabled).active, .btn-outline-info:not(:disabled):not(.disabled):active,
+.show>.btn-outline-info.dropdown-toggle{
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
 
 /*
 Logo Colours

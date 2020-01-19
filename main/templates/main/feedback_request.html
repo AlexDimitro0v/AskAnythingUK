@@ -112,5 +112,14 @@
   </div>
 </div>
 {% endif %}
-
+{% if user_is_feedbackee and feedback_request.feedbacker == feedback_request.feedbackee %}
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Options</div>
+  <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+    <a href="{%url 'remove-feedback-request-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
+        <button class="btn btn-outline-info" >Remove Feedback Request</button>
+    </a>
+  </div>
+</div>
+{% endif %}
 {% endblock%}

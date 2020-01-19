@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating
+from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
@@ -12,17 +12,38 @@ import datetime
 from django.utils import timezone
 
 def home(request):
-     # Redirect unauthenticated users to landing page
+    # Redirect unauthenticated users to landing page
     if not request.user.is_authenticated:
          return redirect('landing-page')
 
+    context = {
+        'areas' :  Area.objects.all()
+    }
+    return render(request, 'main/home.html', context)
+
+
+
+
+def landing_page(request):
+    return render(request, 'main/landing-page.html')
+
+
+@login_required
+def feedback_requests(request):
     # Get the tag filter, return an empty string if not found:
     tag_filter = request.GET.get('tag-filter', '')      # https://stackoverflow.com/a/49872199
+    area_filter = request.GET.get('area-filter', '')
+
+    if not area_filter:
+        return redirect('home-page')
+
+    area = Area.objects.get(id=area_filter)
+
     if tag_filter == "":
         # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
         # (excluding the requests from the currently logged in user)
         # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
-        feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker')).exclude(feedbackee=request.user)
+        feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area).exclude(feedbackee=request.user)
         feedback_requests = feedback_requests.order_by('-date_posted')
         # https://docs.djangoproject.com/en/3.0/topics/pagination/
         page_number = request.GET.get('page', 1)        # defaults to 1 if not found
@@ -46,7 +67,8 @@ def home(request):
                                                             WHERE main_category.name=%s
                                                             AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id
                                                             AND main_feedbackrequest.feedbacker_id != %s
-                                                            ''', [tag_filter, request.user.id])
+                                                            AND main_feedbackrequest.area_id = %s
+                                                            ''', [tag_filter, request.user.id, area_filter])
 
     # Create a list of tags for each feedback request
     tags = []   # will contain nested lists of tag names
@@ -59,12 +81,12 @@ def home(request):
     context = {
         'requests': feedback_requests,
         'tags': tags,
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'areas' :  Area.objects.all(),
+        'area_filter_id' : area_filter
     }
-    return render(request, 'main/feedback_requests.html', context)
 
-def landing_page(request):
-    return render(request, 'main/landing-page.html')
+    return render(request, 'main/feedback_requests.html', context)
 
 @login_required
 def dashboard(request):
@@ -102,14 +124,20 @@ def new_feedback_request(request):
 
         # Get all tags attached to request and remove potential duplicates
         tags = list(set(request.GET.get('tags', '').split(",")))
-
+        print(form)
         if form.is_valid():
+            print("GORM")
+
             # Save feedback request to database if data is valid
             title = form.cleaned_data['title']
+            area_id = form.cleaned_data['area']
             maintext = form.cleaned_data['maintext']
             reward = form.cleaned_data['reward']
             time_limit = form.cleaned_data['timelimit']
-            feedback_request = FeedbackRequest(title=title, maintext=maintext, feedbackee=request.user, reward=reward,
+
+            area = Area.objects.get(id=area_id)
+
+            feedback_request = FeedbackRequest(area=area,title=title, maintext=maintext, feedbackee=request.user, reward=reward,
                                                feedbacker=request.user, time_limit=time_limit)
             feedback_request.save()
 
@@ -131,7 +159,9 @@ def new_feedback_request(request):
 
             return redirect('home-page')
 
-    return render(request, 'main/new_feedback_request.html')
+    areas = Area.objects.all()
+    context = {"areas" : areas}
+    return render(request, 'main/new_feedback_request.html',context)
 
 
 @login_required
@@ -281,4 +311,19 @@ def withdraw_application(request):
     application = FeedbackerCandidate.objects.get(feedbacker=request.user,feedback_id=feedback_request_id)
     application.delete()
     messages.success(request, f"Your application has been withdrawn!")
+    return redirect('dashboard')
+
+@login_required
+def remove_feedback_request(request):
+    request_id = request.GET.get('request_id', '')
+
+    if not request_id:
+        return redirect('dashboard')
+
+    feedback_request = FeedbackRequest.objects.get(id=request_id)
+
+    if feedback_request.feedbackee != request.user or feedback_request.feedbacker != feedback_request.feedbackee:
+        return redirect('dashboard')
+
+    feedback_request.delete()
     return redirect('dashboard')

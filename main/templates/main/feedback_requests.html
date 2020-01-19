@@ -2,36 +2,8 @@
 {% load multifor %}
 {% load static %}
 {% block content%}
-    <style>
-        .btn-outline-info{
-          border-color: #1F4D8A;
-          color: #1F4D8A;
-        }
 
-        .btn-outline-info:hover{
-          background-color: #1F4D8A;
-          border-color: #1F4D8A;
-          color: #eeeeee;
-        }
-
-        .btn-info{
-          background-color: #1F4D8A;
-          border-color: #1F4D8A;
-        }
-
-        .btn-info:hover{
-          background-color: #1F4D8A;
-          color: #eeeeee;
-        }
-
-        .btn-outline-info:not(:disabled):not(.disabled).active, .btn-outline-info:not(:disabled):not(.disabled):active,
-        .show>.btn-outline-info.dropdown-toggle{
-          background-color: #1F4D8A;
-          border-color: #1F4D8A;
-        }
-
-
-    </style>
+    <div style="margin-top: 150px">
     {% for feedback_request in requests; curr_tags in tags %}
     <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
         {% if curr_tags.0 %}
@@ -44,8 +16,11 @@
         <h3 style="font-weight: bold;"> {{ feedback_request.title }} </h3>
         <p> {{ feedback_request.maintext }} </p>
         <div style="margin-top: 5px">
-          <div class="button noselect button-corner" style="border-radius: 18px">
-              <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration: none;">More information</a>
+
+          <div class="noselect button-corner" style="border-radius: 18px">
+              <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
+                  <button class="btn btn-outline-info" >More Information</button>
+              </a>
           </div>
           <span class="status-info noselect" style=" border-radius: 18px">
             <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
@@ -58,7 +33,7 @@
         </div>
     </div>
     {% endfor %}
-
+    </div>
     <!--https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-multiple-object/-->
     {% if page_obj.has_other_pages %}
         <div class="pagination">
@@ -90,7 +65,7 @@
     <script>
       $('.tag').click(function(e) {
         let tagValue = e.target.id;
-        $('#tagFilterForm').attr("action","/?tag-filter="+tagValue);
+        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+tagValue+"&area-filter={{area_filter_id}}");
         $('#tagFilterForm').submit();
       });
     </script>

@@ -5,6 +5,7 @@ from .models import Rating
 
 
 class NewFeedbackRequestForm(forms.Form):
+    area = forms.IntegerField()
     title = forms.CharField()
     maintext = forms.CharField()
     reward = forms.IntegerField()
@@ -12,7 +13,7 @@ class NewFeedbackRequestForm(forms.Form):
 
     class Meta:
         model = FeedbackRequest
-        fields = ['title', 'maintext', 'reward', 'timelimit']
+        fields = ['area','title', 'maintext', 'reward', 'timelimit']
 
 
 class FeedbackerCommentsForm(forms.Form):

@@ -51,12 +51,12 @@
 </head>
 
 <body>
-    <div id="header" class="noselect" style="display: table">
+    <div class="noselect header" style="display: table">
         <span style="position: absolute">
             <a class="header-menu-text noselect" href="/" style="text-decoration: none">
                 <img class="photo-circle" src="{% static 'img/logo.png' %}"/>
             </a>
-            <h2 class="header-menu-text noselect" style="color: #1F4D8A"> <strong>AskAnything</strong></h2>
+            <h2 class="header-menu-text noselect" style="color: #1F4D8A; font-family: 'Raleway'; font-weight: 600"> AskAnything</h2>
         </span>
 
         <span style="position:absolute; float: right; right: 20px;">
@@ -69,6 +69,9 @@
           {% endif %}
         </span>
     </div>
+    {%if user.is_authenticated and request.path == "/" or  user.is_authenticated and request.path == "/feedback-requests/" %}
+        {% include "main/categories_menu.html" %}
+    {% endif %}
     <div id="main-container">
             {%if messages%}
                 {%for message in messages%}
