@@ -10,19 +10,18 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 import datetime
 from django.utils import timezone
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
-    UpdateView,
     DeleteView
 )
-
 # Class-based views types:
 # ListView    — to view the list of objects
 # CreateView  — to create a particular object
 # DetailView  — to view a particular object
 # UpdateView  — to update a particular object
 # DeleteView  — to delete a particular object
+
 
 # =====================================================================================================================
 # FUNCTION-BASED VIEWS:
@@ -302,42 +301,6 @@ def withdraw_application(request):
 
 # =====================================================================================================================
 # CLASS-BASED VIEWS:
-class RequestUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    # This is going to be a view with a form where a new feedback request is created
-    model = FeedbackRequest
-    fields = ['title', 'maintext', 'time_limit', 'reward']   # Fields that will be in the form
-    # template that Django will look for by default is:
-    # <app>/<model>_form.html
-    # success_url = f'feedback-request-page?request_id={self.pk}'
-
-    def form_valid(self, form):
-        # Redirects to get_success_url().
-        """Called if all forms are valid. Before the submission of the form make sure that the author is set."""
-        # To avoid Integrity Error (feedbacker = NULL, feedbackee = NULL)
-        # the form_valid function should be overridden because each request has to have a set feedbacker and feedbackee.
-        form.instance.feedbacker = self.request.user      # set the feedbacker to the currently logged in user
-        form.instance.feedbackee = self.request.user      # set the feedbackee to the currently logged in user
-
-        return super().form_valid(form)
-
-    def test_func(self):
-        """
-        UserPassesTestMixin will run this function as an abstract class in order to see if the user passes
-        pass certain test conditions.
-        The function put a restriction on updating other's users requests. The currently logged-in user must not be able
-        to update other's people requests or requests that have already been assigned to a feedbacker.
-        """
-        feedback_request = self.get_object()     # get the exact feedback_request to be currently updated
-
-        if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
-            return True
-        return False
-    #
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     return super().post(request, *args, **kwargs)
-
-
 class RequestDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """
     By default Django expects a template that is just a form that asks if we are sure that we want to delete the request

@@ -70,20 +70,11 @@
     {% if feedback_request.feedbackee == user and feedback_request.feedbackee == feedback_request.feedbacker%}
         <!--Only if the author is about to edit/delete and there is no assigned feedbacker-->
         <div class="pull-right">
-            <a class="btn btn-secondary btn-sm"
-               href="{% url 'request-edit' feedback_request.id %}">Update</a>
             <a class="btn btn-danger btn-sm"
                href="{% url 'request-delete' feedback_request.id %}">Delete</a>
         </div>
     {% endif %}
     </span>
-    {% if user_is_candidate %}
-        <span class="status-info noselect" style="background-color: #FFB580; font-size: 1.3em;">Application Submitted</span>
-    {% elif user_is_feedbacker %}
-        <span class="status-info noselect" style="background-color: #48EB9E; font-size: 1.3em;">Application Accepted</span>
-    {% elif user_was_rejected %}
-        <span class="status-info noselect" style="background-color: #FF6571; font-size: 1.3em;">Application Rejected</span>
-    {% endif %}
     <div style="margin-top: 10px; margin-bottom: 10px">
         <h1 style="text-align: center">{{ feedback_request.title }}</h1>
         <div class="border-top mt-3 pt-2"></div>
