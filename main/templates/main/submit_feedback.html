@@ -8,14 +8,14 @@
 
     <form action="/new-feedback-request/" method="POST" id="submitFeedbackForm" enctype="multipart/form-data">
       {% csrf_token %}
-      FEEDBACK FILES:<br>
+      Feedback Files:<br>
       <label for="file-upload" class="button noselect" style="margin-left: 0px;">
             Upload Files
       </label>
       <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple><br><br>
-      COMMENTS (OPTIONAL):<br><textarea rows="15" name="comments"></textarea> <br><br>
+      Comments:<br><textarea rows="15" name="comments" class="form-control"></textarea> <br><br>
     </form>
-    <span class="button noselect button-corner" id="submit_button">Submit</span>
+    <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
 
     <script>
     let tags = [];

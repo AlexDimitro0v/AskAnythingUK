@@ -15,6 +15,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
     DeleteView
 )
+from django.db.models import Max
+from django.db.models import Min
+
 # Class-based views types:
 # ListView    — to view the list of objects
 # CreateView  — to create a particular object
@@ -47,17 +50,36 @@ def feedback_requests(request):
     # Get the tag filter, return an empty string if not found:
     tag_filter = request.GET.get('tag-filter', '')      # https://stackoverflow.com/a/49872199
     area_filter = request.GET.get('area-filter', '')
+    filtered_min_price = request.GET.get('min-price', '')
+    filtered_max_price = request.GET.get('max-price', '')
+    filtered_min_time = request.GET.get('min-time', '')
+    filtered_max_time = request.GET.get('max-time', '')
 
     if not area_filter:
         return redirect('home-page')
 
     area = Area.objects.get(id=area_filter)
 
+    # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
+    # (excluding the requests from the currently logged in user)
+    # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
+    feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area).exclude(feedbackee=request.user)
+
+    # Get minimum and maximum values of price and time limit for all feedback requests in a given category
+    max_price = feedback_requests.aggregate(Max('reward'))['reward__max']
+    min_price = feedback_requests.aggregate(Min('reward'))['reward__min']
+    max_time = feedback_requests.aggregate(Max('time_limit'))['time_limit__max']
+    min_time = feedback_requests.aggregate(Min('time_limit'))['time_limit__min']
+
     if tag_filter == "":
-        # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
-        # (excluding the requests from the currently logged in user)
-        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
-        feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area).exclude(feedbackee=request.user)
+
+        if filtered_min_price:
+            feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area,
+                                                               reward__lte=filtered_max_price,
+                                                               reward__gte=filtered_min_price,
+                                                               time_limit__gte=filtered_min_time,
+                                                               time_limit__lte=filtered_max_time).exclude(feedbackee=request.user)
+
         feedback_requests = feedback_requests.order_by('-date_posted')
         # https://docs.djangoproject.com/en/3.0/topics/pagination/
         page_number = request.GET.get('page', 1)        # defaults to 1 if not found
@@ -66,6 +88,13 @@ def feedback_requests(request):
         page_obj = feedback_requests
     else:
         page_obj = None
+
+        if not filtered_max_time:
+            filtered_min_price = min_price
+            filtered_max_price = max_price
+            filtered_min_time = min_time
+            filtered_max_time = max_time
+
         # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
         # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
         #
@@ -82,7 +111,11 @@ def feedback_requests(request):
                                                             AND main_feedbackrequest.feedbacker_id = main_feedbackrequest.feedbackee_id
                                                             AND main_feedbackrequest.feedbacker_id != %s
                                                             AND main_feedbackrequest.area_id = %s
-                                                            ''', [tag_filter, request.user.id, area_filter])
+                                                            AND main_feedbackrequest.reward >= %s
+                                                            AND main_feedbackrequest.reward <= %s
+                                                            AND main_feedbackrequest.time_limit >= %s
+                                                            AND main_feedbackrequest.time_limit <= %s
+                                                            ''', [tag_filter, request.user.id, area_filter, filtered_min_price,filtered_max_price, filtered_min_time, filtered_max_time])
 
     # Create a list of tags for each feedback request
     tags = []   # will contain nested lists of tag names
@@ -97,7 +130,16 @@ def feedback_requests(request):
         'tags': tags,
         'page_obj': page_obj,
         'areas' :  Area.objects.all(),
-        'area_filter_id' : area_filter
+        'area_filter_id' : area_filter,
+        'tag_filter' : tag_filter,
+        'min_price' : min_price,
+        'max_price' : max_price,
+        'min_time' : min_time,
+        'max_time' : max_time,
+        'filtered_min_price' : filtered_min_price,
+        'filtered_max_price' : filtered_max_price,
+        'filtered_min_time' : filtered_min_time,
+        'filtered_max_time' : filtered_max_time,
     }
 
     return render(request, 'main/feedback_requests.html', context)

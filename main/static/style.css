@@ -24,6 +24,7 @@ html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, abbr, img, ol, ul, li, form
 
 body {
   background-color: #f5f5f5;
+  min-width: 1024px;
 }
 
 a {
@@ -95,7 +96,7 @@ input {
 
 .feedback-request {
   width: 95%;
-  max-width: 700px;
+  max-width: 750px;
   height: auto;
   border-radius: 5px;
   background-color: #ffffff;
@@ -109,14 +110,26 @@ input {
 
 }
 
+.middle-of-screen {
+  width: 95%;
+  max-width: 750px;
+  height: auto;
+  padding: 20px;
+  padding-top: 0;
+}
+
 .tag {
-  margin-top: 20px;
+  margin-top: 15px;
   padding: 7px;
   border-radius: 15px;
   background-color: #eeeeee;
   margin-right: 10px;
   transition: 0.2s;
   cursor: pointer;
+}
+
+.inline-tag {
+  display: inline-block;
 }
 
 
@@ -315,7 +328,6 @@ p {
 input {
   -webkit-appearance: none; /* This overrides the default input look in iOS browsers */
     text-align:center;
-    border: 2px solid var(--bg-color);
     outline: none;
     font-family: 'Raleway';
     font-size: 15px;
@@ -623,7 +635,21 @@ color: #1F4D8A;
   border-color: var(--secondary-color);
 }
 
+.important-text {
+  font-size: 1.5em;
+  font-weight: 600;
+}
 
+/* https://stackoverflow.com/questions/16028519/make-html-floating-elements-take-up-space-inside-div */
+.cf:before,
+.cf:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+.cf:after {
+  clear: both;
+}
 /*
 Logo Colours
 #43C2F0  - light upper

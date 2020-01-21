@@ -15,14 +15,14 @@
        <div class="rating" id="commRating" data-rate-value=0 style="font-size: 35px;"></div>
        <form action="/rate-feedbacker/?request_id={{request_id}}" method="POST" id="ratingForm">
           {% csrf_token %}
-          REVIEW:<br><textarea rows="15" id="description" name="review"></textarea> <br>
+          Review:<br><textarea rows="15" id="description" name="review" class="form-control"></textarea> <br>
           <input style="display: none;" value="0" id="speedHiddenInput" name="speed"/>
           <input style="display: none;" value="0" id="commHiddenInput" name="communication"/>
           <input style="display: none;" value="0" id="compHiddenInput" name="quality"/>
         </form>
-        <div class="button-corner">
-          <span class="button noselect" id="submit_button">SUBMIT</span>
-        </div>
+
+        <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
+
         <script>
           $('#submit_button').click(function() {
               $("#ratingForm").submit();

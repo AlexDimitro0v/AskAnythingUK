@@ -40,7 +40,7 @@
               {% endif %}
               {% if user_is_feedbackee and feedbacker_files_link != None and not feedback_request.feedbacker_rated%}
                   <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
-                      <button class="btn btn-outline-info" >Rate Feedbacker</button>
+                      <button class="btn btn-outline-info" style="margin-top: 15px">Rate Feedbacker</button>
                   </a>
               {% endif %}
               </div>
