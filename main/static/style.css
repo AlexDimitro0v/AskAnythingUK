@@ -132,10 +132,16 @@ input {
   display: inline-block;
 }
 
-
 .tag:hover {
   background-color: #dddddd;
+}
 
+.light-tag {
+  background-color: white;
+}
+
+.light-tag:hover {
+  background-color: #eee;
 }
 
 .tag-container {
@@ -650,6 +656,19 @@ color: #1F4D8A;
 .cf:after {
   clear: both;
 }
+
+.btn-info {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 25px;
+    border-width: 1.5px;
+    font-weight: 600;
+}
+
+.btn-outline-info {
+  font-weight: 600;
+}
+
 /*
 Logo Colours
 #43C2F0  - light upper

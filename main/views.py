@@ -73,6 +73,26 @@ def feedback_requests(request):
 
     if tag_filter == "":
 
+        # Aggregate all popular tags in the specified category
+        most_used_tags = []
+        all_used_tags = {}
+        for feedback_request in feedback_requests:
+            request_tag_ids = Tag.objects.filter(feedback=feedback_request)
+            request_tags = [tag.category for tag in request_tag_ids]
+            for tag in request_tags:
+                if tag in all_used_tags: all_used_tags[tag] += 1
+                else: all_used_tags[tag] = 1
+
+        # Sort tags from most to least used
+        sorted_tags = sorted(all_used_tags.items(), key=lambda kv: -kv[1])
+
+        # Take 10 most popular tags
+        if len(sorted_tags) > 10:
+            sorted_tags = sorted_tags[:10]
+
+        for tag in sorted_tags:
+            most_used_tags.append(tag[0])
+
         if filtered_min_price:
             feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area,
                                                                reward__lte=filtered_max_price,
@@ -88,6 +108,7 @@ def feedback_requests(request):
         page_obj = feedback_requests
     else:
         page_obj = None
+        most_used_tags = None
 
         if not filtered_max_time:
             filtered_min_price = min_price
@@ -140,6 +161,7 @@ def feedback_requests(request):
         'filtered_max_price' : filtered_max_price,
         'filtered_min_time' : filtered_min_time,
         'filtered_max_time' : filtered_max_time,
+        'most_used_tags' : most_used_tags
     }
 
     return render(request, 'main/feedback_requests.html', context)

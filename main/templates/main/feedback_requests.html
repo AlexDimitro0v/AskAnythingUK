@@ -85,21 +85,17 @@
       {% elif tag_filter %}
       <div style="display: inline-block; margin-top: 5px">
         <span class="important-text">Filtering by tag </span>
-        <span class='tag' title="Click to revert filter" style="font-size: 30px; font-weight: 600; margin-left: 5px">{{ tag_filter }}</span>
+        <span class='tag light-tag' title="Click to revert filter" style="font-size: 30px; font-weight: 600; margin-left: 5px; ">{{ tag_filter }}</span>
       </div>
-      <!--
+      {% else %}
       <p class="important-text">Filter by popular tags</p>
-
-      <div style="display: inline-block;">
-        <span class='tag inline-tag' title="Click to filter by tag">Composition</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Orchestral</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Music</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Sheet Music</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Classical</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Modern</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Piano</span>
-        <span class='tag inline-tag' title="Click to filter by tag">Performance</span>
-      </div> -->
+        {% if most_used_tags %}
+          <div style="display: inline-block;">
+          {% for tag in most_used_tags %}
+            <span class='tag inline-tag light-tag' id="{{ tag }}" title="Click to filter by tag" style="font-size: 1.2em; font-weight: 600;">{{ tag }}</span>
+          {% endfor %}
+          </div>
+        {% endif %}
       {% endif %}
     </div>
 
@@ -143,20 +139,20 @@
             <span class="step-links" style="margin: 0 auto;">
                 {% if page_obj.has_previous %}
     <!-- Put parameters by setting ? in the url https://www.searchenginejournal.com/technical-seo/url-parameter-handling/#close-->
-                    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+                    <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.previous_page_number }}">&lt; Previous</a>
                 {% endif %}
 
                 {% for num in page_obj.paginator.page_range %}
                     {% if page_obj.number == num %}
-                        <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                        <a class="btn btn-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}">{{ num }}</a>
                     <!--Show the 3 adjacent pages (from both sides)-->
                     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next &gt;</a>
+                    <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.next_page_number }}">Next &gt;</a>
                 {% endif %}
             </span>
         </div>
