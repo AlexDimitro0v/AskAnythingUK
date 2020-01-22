@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
@@ -8,16 +9,14 @@ from django.db import connections
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
-import datetime
 from django.utils import timezone
 from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Max
+from django.db.models import Min
 from django.views.generic import (
     DeleteView
 )
-from django.db.models import Max
-from django.db.models import Min
-
 # Class-based views types:
 # ListView    — to view the list of objects
 # CreateView  — to create a particular object
@@ -34,11 +33,9 @@ def home(request):
         return redirect('landing-page')
 
     context = {
-        'areas' :  Area.objects.all()
+        'areas':  Area.objects.all()
     }
     return render(request, 'main/home.html', context)
-
-
 
 
 def landing_page(request):
@@ -332,7 +329,7 @@ def submit_feedback(request):
                 return redirect('home-page')
 
             feedback_request.feedbacker_comments = comments
-            feedback_request.date_completed = datetime.datetime.now(tz=timezone.utc)
+            feedback_request.date_completed = datetime.now(tz=timezone.utc)
             feedback_request.save()
 
             feedbackZIPFile = request.FILES['fileZip']

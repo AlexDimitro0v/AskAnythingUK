@@ -13,7 +13,7 @@ class NewFeedbackRequestForm(forms.Form):
 
     class Meta:
         model = FeedbackRequest
-        fields = ['area','title', 'maintext', 'reward', 'timelimit']
+        fields = ['area', 'title', 'maintext', 'reward', 'timelimit']
 
 
 class FeedbackerCommentsForm(forms.Form):

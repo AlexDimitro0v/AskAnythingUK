@@ -8,6 +8,7 @@ class MainConfig(AppConfig):
     def ready(self):
         try:
             from .models import Area
+            # Add the following pre-defined categories:
             area_names = ["Video & Animation", "Graphics & Design", "Writing", "Translation", "Technology", "Music & Audio"]
             for name in area_names:
                 if not Area.objects.filter(name=name).exists():

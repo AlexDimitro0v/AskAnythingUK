@@ -79,5 +79,6 @@ class Specialism(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
+# Why do we need this lonely model when we have feedbacker_comments field in the FeedbackRequest Model?
 class FeedbackerComments(models.Model):
     feedbacker_comments = models.TextField(default="")
