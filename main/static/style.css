@@ -669,6 +669,10 @@ color: #1F4D8A;
   font-weight: 600;
 }
 
+.photo-button:hover {
+  border: 3px solid black;
+}
+
 /*
 Logo Colours
 #43C2F0  - light upper
