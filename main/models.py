@@ -33,7 +33,8 @@ class FeedbackRequest(models.Model):
     feedbacker_comments = models.TextField(default="")
     feedbacker_rated = models.IntegerField(default=False)
 
-
+    def __str__(self):
+        return self.title
 
 
 class Rating(models.Model):
