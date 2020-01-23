@@ -1,11 +1,10 @@
-            <!-- Any HTML here will be styled with Bootstrap CSS -->
+ <!-- Any HTML here will be styled with Bootstrap CSS -->
             <div class="bootstrap">
               <ul class="nav navbar-default" style="background-color:transparent;">
                 <li class="dropdown" data-toggle="tooltip">
-                  <a data-toggle="dropdown" href="#" style="height: 65px">
+                  <a data-toggle="dropdown" class="dropdown-toggle" style="height: 65px; background-color:transparent;">
                       <img class="photo-circle"  style="margin-top: -4px" src="{{ user.userprofile.image.url }}"/>
                       <span class="noselect" style="margin-left: 10px; line-height: 45px; height: 45px; font-size: 18px"><strong>{{user}}</strong></span>
-
                   </a>
                   <ul class="dropdown-menu dropdown-menu-right" id="user-dropdown" style="font-size: 1.2em" >
                     <li><a href="{% url 'dashboard'%}"><span class="fa fa-user-circle" style="height: 1.2em; color: #1F4D8A;"></span> <strong>Dashboard</strong></a></li>
@@ -15,3 +14,4 @@
                 </li>
               </ul>
             </div>
+
