@@ -693,6 +693,11 @@ color: #1F4D8A;
   margin-right: 10px;
 }
 
+.bold-p {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
 /*
 Logo Colours
 #43C2F0  - light upper
