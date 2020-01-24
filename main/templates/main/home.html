@@ -2,10 +2,36 @@
 {% load multifor %}
 {% load static %}
 {% block content%}
-    <div class="full-screen full-screen-image" style="margin-top: -150px; background-image: url({% static 'img/landing-page.jpg' %});">
+    <div class="full-screen full-screen-image" style="margin-top: -100px; background-image: url({% static 'img/landing-page.jpg' %});">
         <div>
             <h1>GET FEEDBACK</h1>
             <h1 style="font-size: 20px">(Our new home page will be here)</h1>
+            {% include "main/search-bar.html" %}
         </div>
     </div>
+
+
+    <!-- Hidden form for tag filtering -->
+    <form action="/" method="POST" id="searchForm"> {% csrf_token %}</form>
+
+<script>
+    $(document).ready(function () {
+      $('#search-button').click(function() {
+        if ($('input[name=search]').val() != "") {
+          $('#searchForm').attr("action","/search-requests/?q="+$('input[name=search]').val());
+          $('#searchForm').submit();
+        }
+      });
+
+      $(document).on('keypress',function(e) {
+        if(e.which == 13) {
+          if ($('input[name=search]').val() != "") {
+            $('#searchForm').attr("action","/search-requests/?q="+$('input[name=search]').val());
+            $('#searchForm').submit();
+          }
+        }
+      });
+    });
+</script>
+
 {% endblock%}
