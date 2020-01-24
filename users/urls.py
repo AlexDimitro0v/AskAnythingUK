@@ -10,6 +10,10 @@ urlpatterns = [
     path('profile-page/', views.view_profile, name="profile-page"),
     path('customize-profile/', views.customize_user_profile, name="customize-profile-page"),
     path('activate/<slug:uidb64>/<slug:token>)/', views.activate, name='activate'),
+    
+    path('settings/', views.user_settings, name='user-settings-page'),
+    
+    
     # 4 built-in views for password reset:
     # - password_reset sends the mail
     # - password_reset_done shows a success message for the above

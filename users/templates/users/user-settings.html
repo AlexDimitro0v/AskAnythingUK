@@ -1,0 +1,84 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load multifor %}
+
+{% block content%}
+<!-- change password ||make into seprate page|| -->
+<!-- first enter real password and then send email to verify email access which redirects to another page with the new password reentering -->
+<!-- TODO: SPILT INTO 2 PAGES, ONE REAL PASSWORD AND ONE GOTTEN WHEN ACCESSING THE EMAIL LINK-->
+<!-- script to compare if the 2 field have the same value -->
+<script type="text/javascript">
+function ComparingFields(objForm){
+	var New_Password = document.getElementById("NewPassword").value;
+	var Re_New_Password = document.getElementById("ReNewPassword").value;
+
+	if (New_Password !== ReNewPassword){
+	alert("Entered fields are not the same");
+	}
+}
+</script>
+<!-- Both fields are required and when on the submission of the form, compare if the 2 passwords are the same, and if not, return to the re-eneter
+password page and  -->
+<form action="/action_page.php" onsubmit="return ComparingFields(this);">
+	New Password: <input type="text" id="NewPassword" required><br />
+	Re-enter New Password: <input type="text" id="ReNewPassword" required><br />
+	<input type="submit">
+</form>
+
+
+
+
+
+
+<!-- toggle notifications -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- toggle all notifications -->
+<script>
+	$(function() {
+		$("#CheckAll").click(function (){
+			$("input:checkbox").attr("checked",this.checked)
+		});
+	});
+</script>
+<!-- toggle Section1 notifications -->
+<script>
+	$(function() {
+		$("#CheckSectionOne").click(function (){
+			$("input[name='SectionOne']").attr("checked",this.checked)
+		});
+	});
+</script>
+<!-- toggle Section2 notifications -->
+<script>
+	$(function() {
+		$("#CheckSectionTwo").click(function (){
+			$("input[name='SectionTwo']").attr("checked",this.checked)
+		});
+	});
+</script>
+
+<!-- Rectangular switch -->
+<div><label class="switch">All notifications On<input type="checkbox" id="CheckAll"><span class="slider"></span></label></div>
+
+<!-- Rounded switch for singluar notifications -->
+<div>
+	<h1>Section 1</h1>
+	<p><label class="switch"> Section 1 Notification On<input type="checkbox" id="CheckSectionOne"><span class="slider"></span></label></p>
+	<p> 
+		<label class="switch"> Section 1 Notification 1<input type="checkbox" name="SectionOne"><span class="slider round"></span></label><br />
+		<label class="switch"> Section 1 Notification 2<input type="checkbox" name="SectionOne"><span class="slider round"></span></label><br />
+		<label class="switch"> Section 1 Notification 3<input type="checkbox" name="SectionOne"><span class="slider round"></span></label>
+	</p>
+</div>
+
+<div>
+<h1>Section 2</h1>
+<p><label class="switch"> Section 2 Notification On<input type="checkbox" id="CheckSectionTwo"><span class="slider"></span></label></p>
+<p><label class="switch"> Section 2 Notification 1<input type="checkbox" name="SectionTwo"><span class="slider round"></span></label></p>
+<p><label class="switch"> Section 2 Notification 2<input type="checkbox" name="SectionTwo"><span class="slider round"></span></label></p>
+<p><label class="switch"> Section 2 Notification 3<input type="checkbox" name="SectionTwo"><span class="slider round"></span></label></p>
+</div>
+
+
+
+{% endblock %}

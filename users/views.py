@@ -116,3 +116,10 @@ def view_profile(request):
         'user_ratings': ratings
     }
     return render(request, 'users/view-profile.html', context)
+    
+    
+#settings page
+@login_required
+def user_settings(request):
+    return render(request, 'user/user-settings.html', context)
+    
