@@ -108,30 +108,37 @@
         {% endif %}
       </div>
 
-      {% for feedback_request in requests; curr_tags in tags %}
+      {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas %}
       <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}" style="margin-left: 20px;">
-          {% if curr_tags.0 %}
-          <div class="tag-container">
-              {% for tag in curr_tags %}
-                  <span class='tag' id="{{ tag }}" title="Click to filter by tag">{{ tag }}</span>
-              {% endfor %}
+          <div style="margin-bottom: 18px">
+            <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+            <span class="bold-p">{{ feedback_request.feedbackee }}</span>
+            <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
           </div>
-          {% endif %}
-          <h3 style="font-weight: bold;"> {{ feedback_request.title }} </h3>
-          <p> {{ feedback_request.maintext }} </p>
-          <div style="margin-top: 5px">
-            <div class="noselect button-corner" style="border-radius: 18px">
-                <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
-                    <button class="btn btn-outline-info" >More Information</button>
-                </a>
-            </div>
-            <span class="status-info noselect" style=" border-radius: 18px">
-              <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
-                {{ feedback_request.reward }}
+          <div class="border-top pt-4 mt-2"></div>
+
+          <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
+            <h3 style="font-weight: bold;" class="clickable-header"> {{ feedback_request.title }} </h3>
+            <p class="clickable-text cut-text"> {{ feedback_request.maintext }} </p>
+          </a>
+          <div class="border-top pt-2 mt-2 "></div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="margin-top: 10px">
+            {% if curr_tags.0 %}
+                {% for tag in curr_tags %}
+                    <span class='tag' id="{{ tag }}" title="Click to filter by tag" style=" white-space:nowrap; line-height: 50px">{{ tag }}</span>
+                {% endfor %}
+            {% endif %}
             </span>
-            <span class="status-info noselect" style="background: #FFCF7D; border-radius: 18px">
-              <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
-              {{ feedback_request.time_limit }} days
+            <span style="white-space: nowrap;">
+              <span class="status-info noselect">
+                <img src = "{% static 'img/pound_icon3.png'%}" style="height: 24px;  vertical-align: middle;" />
+                  £{{ feedback_request.reward }}
+              </span>
+              <span class="status-info noselect">
+                <img src = "{% static 'img/time_icon3.png'%}" style="vertical-align: middle; height: 24px" />
+                {{ feedback_request.time_limit }} days
+              </span>
             </span>
           </div>
       </div>
@@ -324,6 +331,23 @@
           $('#filterForm').attr("action","{{request.path}}?area-filter={{ area_filter_id }}&min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
           {% endif %}
           $('#filterForm').submit();
+      });
+
+      $( ".cut-text" ).each(function() {
+          if($(this).text().length > 500) {
+            text = $(this).text();
+            firstSpaceIndex = text.substring(500,text.length).indexOf(" ");
+            dots = "...";
+            if(firstSpaceIndex>-1) {
+              if(text[500+firstSpaceIndex-1] === ".") {
+                dots = "..";
+              }
+              $(this).text($(this).text().substring(0,500+firstSpaceIndex) + dots);
+            }
+            else {
+              $(this).text($(this).text().substring(0,500) + dots);
+            }
+          }
       });
     });
     </script>

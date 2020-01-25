@@ -9,7 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from main.models import Rating
+from main.models import Rating, Area
 
 
 def register(request):
@@ -95,6 +95,7 @@ def customize_user_profile(request):
     context = {
         'u_form': u_form,
         'p_form': p_form,
+        'areas' :  Area.objects.all(),
     }
     return render(request, 'users/customize_profile.html', context=context)
 
@@ -113,6 +114,7 @@ def view_profile(request):
     ratings = Rating.objects.filter(feedbacker=user_to_view)
     context = {
         'user_to_view': user_to_view,
-        'user_ratings': ratings
+        'user_ratings': ratings,
+        'areas' :  Area.objects.all(),
     }
     return render(request, 'users/view-profile.html', context)

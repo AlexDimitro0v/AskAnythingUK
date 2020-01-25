@@ -39,43 +39,27 @@
   {% if my_requests %}
         {% for feedback_request in my_requests; curr_candidates in feedback_candidates %}
         <div>
-            <div class="small-card" style="padding: 20px">
-                <div class="feedback-request-link">
-                  <a  href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}"><p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p></a>
-                </div>
-                <div class="border-top mb-3 mt-3"></div>
-                {% if curr_candidates%}
-                <div>
-                {% for candidate in curr_candidates%}       <!--For username in User instance-->
-                <div style="margin-bottom: 10px">
-                  <span class="feedback-request-link" style="display: inline-block; padding-left: 20px; padding-right: 20px">
-                  <a href="{% url 'profile-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
-                  <img class="photo-circle" src="{{ candidate.userprofile.image.url }}"/>
-                  <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
-                  </a>
-                  </span>
-                  <a href="{% url 'choose-feedbacker-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
-                    <div class="status-info-button status-info-profile">
-                        Choose as Feedbacker
+          <a  href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}">
+            <div class="small-card small-card-hover" style="padding: 20px">
+                <p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p>
+                <div class="mb-3 mt-3" style="border-top: 1px solid #cbcbcb"></div>
+
+                {% if feedback_request.feedbacker != feedback_request.feedbackee %}
+                  <div style="display: inline-block; width: 100%">
+                    <img class="photo-circle" src="{{ feedback_request.feedbacker.userprofile.image.url }}" style="margin-left: 10px; margin-top: -5px"/>
+                    <span style="margin-left: 10px; font-weight: 600">{{feedback_request.feedbacker}}</span>
+                    <div class="status-info status-info-profile noselect" style="font-size: 1em;">
+                      <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                      Your Feedbacker
                     </div>
-                  </a>
-                </div>
-                {% endfor %}
-              </div>
-                {% elif feedback_request.feedbacker != feedback_request.feedbackee %}
-                <div>
-                  <span class="feedback-request-link" style="display: inline-block; padding-left: 20px; padding-right: 20px">
-                  <a href="{% url 'profile-page' %}?user={{feedback_request.feedbacker}}&feedback={{feedback_request.id}}">
-                  <img class="photo-circle" src="{{ feedback_request.feedbacker.userprofile.image.url }}"/>
-                  <span style="margin-left: 10px; font-weight: 600">{{feedback_request.feedbacker}}</span>
-                  </a>
-                  </span>
-                  <div class="status-info status-info-profile noselect" style="background-color: #AC6DFF; font-size: 1em;">Your Feedbacker</div>
-                </div>
+                  </div>
+                {% elif curr_candidates %}
+                <p style="text-align: center">{{ curr_candidates }}</p>
                 {% else %}
                 <p style="text-align: center">No Feedbacker Candidates Yet</p>
                 {% endif %}
               </div>
+            </a>
         </div>
         {% endfor %}
   {% else%}
@@ -93,13 +77,17 @@
         {% for application in my_applications %}
         <a href="{% url 'feedback-request-page' %}?request_id={{application.id}}" style="text-decoration: none;">
         <div class="small-card small-card-hover">
-            {{application.title}}
+            <strong>{{application.title}}</strong>
             {% if application.feedbacker == user %}
-            <div class="status-info status-info-profile noselect" style="background-color: #48EB9E; font-size: 1em;">Application Accepted</div>
+            <div class="status-info status-info-profile noselect" style="font-size: 1em;">Application Accepted</div>
             {% elif application.feedbacker == application.feedbackee %}
-            <div class="status-info status-info-profile noselect" style="background-color: #FFB580; font-size: 1em;">Application Submitted</div>
+            <div class="status-info status-info-profile noselect" style="font-size: 1em;">
+              <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+              Application Submitted
+            </div>
             {% else %}
-            <div class="status-info status-info-profile noselect" style="background-color: #FF6571; font-size: 1em;">Application Rejected</div>
+            <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/cross4.png' %}">
+            <div class="status-info status-info-profile noselect" style="font-size: 1em;">Application Rejected</div>
             {% endif %}
         </div>
         </a>

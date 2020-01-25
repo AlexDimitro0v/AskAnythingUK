@@ -14,6 +14,7 @@ from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Max
 from django.db.models import Min
+from .functions import get_time_delta, get_request_candidates
 from django.views.generic import (
     DeleteView
 )
@@ -142,6 +143,13 @@ def feedback_requests(request):
         request_tags = [tag.category for tag in request_tag_ids]          # get all tag categories instances
         tags.append([tag.name for tag in request_tags])                   # finally store the name of those categories
 
+
+    time_deltas = []
+    curr_time = datetime.now(timezone.utc)
+    for feedback_request in feedback_requests:
+        time_posted = feedback_request.date_posted
+        time_deltas.append(get_time_delta(time_posted,curr_time))
+
     context = {
         'requests': feedback_requests,
         'tags': tags,
@@ -157,7 +165,8 @@ def feedback_requests(request):
         'filtered_max_price' : filtered_max_price,
         'filtered_min_time' : filtered_min_time,
         'filtered_max_time' : filtered_max_time,
-        'most_used_tags' : most_used_tags
+        'most_used_tags' : most_used_tags,
+        'time_deltas' : time_deltas
     }
 
     return render(request, 'main/feedback_requests.html', context)
@@ -172,20 +181,20 @@ def dashboard(request):
 
     feedback_candidates = []
     for my_request in my_feedback_requests:
-        curr_request_candidates = []
-        # Feedbacker not assigned yet
-        if my_request.feedbacker == my_request.feedbackee:
-            curr_request_candidates_ids = FeedbackRequest.objects.raw(
-                'SELECT main_feedbackercandidate.feedbacker_id AS id FROM main_feedbackercandidate INNER JOIN main_feedbackrequest ON main_feedbackercandidate.feedback_id = main_feedbackrequest.id  WHERE main_feedbackercandidate.feedback_id=%s',
-                [my_request.id])
-            curr_request_candidates_ids = [curr_candidate.id for curr_candidate in curr_request_candidates_ids]
-            curr_request_candidates = User.objects.filter(pk__in=set(curr_request_candidates_ids))
-        feedback_candidates.append(curr_request_candidates)
+        num_of_candidates = len(get_request_candidates(my_request))
+        if num_of_candidates < 1:
+            feedback_candidates.append(None)
+        elif num_of_candidates == 1:
+            feedback_candidates.append("1 Feedbacker Candidate")
+        else:
+            feedback_candidates.append(num_of_candidates + " Feedbacker Candidates")
 
     context = {
         'my_requests': my_feedback_requests,            # Feedback Request instances
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
         'feedback_candidates': feedback_candidates,     # User instances
+        'areas' :  Area.objects.all(),
+
         # 'feedbacker_info': Feedbacker.objects.filter(user=request.user).first()
     }
     return render(request, 'main/dashboard.html', context)
@@ -250,26 +259,35 @@ def feedback_request(request):
     feedbackee_files_link = None
     feedbacker_files_link = None
 
+    feedback_request = FeedbackRequest.objects.get(id=request_id)
+
+    feedback_candidates = get_request_candidates(feedback_request)
+
+    curr_time = datetime.now(timezone.utc)
+    time_posted = feedback_request.date_posted
+    time_delta = get_time_delta(time_posted,curr_time)
+
     fs = FileSystemStorage()
 
     # User is feedbackee for this request
-    if FeedbackRequest.objects.get(id=request_id).feedbackee == request.user:
+    if feedback_request.feedbackee == request.user:
         user_is_feedbackee = True
         feedbackee_files_link = fs.url('zip_files/' + request_id+".zip")
         if fs.exists('zip_files/' + request_id+"_feedbacker.zip"):
             feedbacker_files_link = fs.url('zip_files/' + request_id+"_feedbacker.zip")
     # User is feedbacker for this request
-    elif FeedbackRequest.objects.get(id=request_id).feedbacker == request.user:
+    elif feedback_request.feedbacker == request.user:
         user_is_feedbacker = True
         feedbackee_files_link = fs.url('zip_files/' + request_id+".zip")
         if fs.exists('zip_files/' + request_id+"_feedbacker.zip"):
             feedbacker_files_link = fs.url('zip_files/' + request_id+"_feedbacker.zip")
     # User is candidate for this request
     elif FeedbackerCandidate.objects.filter(feedbacker=request.user, feedback_id=request_id).first():
-        if FeedbackRequest.objects.get(id=request_id).feedbackee != FeedbackRequest.objects.get(id=request_id).feedbacker:
+        if feedback_request.feedbackee != feedback_request.feedbacker:
             user_was_rejected = True
         else:
             user_is_candidate = True
+
     if request_id != "":
         context = {
             'feedback_request': FeedbackRequest.objects.get(id=request_id),
@@ -279,7 +297,10 @@ def feedback_request(request):
             'feedbackee_files_link': feedbackee_files_link,
             'feedbacker_files_link': feedbacker_files_link,
             'user_is_feedbackee': user_is_feedbackee,
-            'user_was_rejected': user_was_rejected
+            'user_was_rejected': user_was_rejected,
+            'time_delta' : time_delta,
+            'areas' :  Area.objects.all(),
+            'feedback_candidates' : feedback_candidates
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -338,7 +359,8 @@ def submit_feedback(request):
             return redirect('dashboard')
 
     context = {
-        'request_id': request.GET.get('request_id', '')
+        'request_id': request.GET.get('request_id', ''),
+        'areas' :  Area.objects.all(),
     }
     return render(request, 'main/submit_feedback.html', context)
 
@@ -372,7 +394,8 @@ def rate_feedbacker(request):
             return redirect('dashboard')
 
     context = {
-        'request_id': request.GET.get('request_id', '')
+        'request_id': request.GET.get('request_id', ''),
+        'areas' :  Area.objects.all(),
     }
     return render(request, 'main/rate-feedbacker.html', context)
 

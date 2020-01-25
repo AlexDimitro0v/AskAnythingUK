@@ -74,7 +74,7 @@
           {% endif %}
         </span>
     </div>
-    {%if user.is_authenticated and request.path == "/" or  user.is_authenticated and request.path == "/feedback-requests/" or  user.is_authenticated and request.path == "/search-requests/" %}
+    {%if user.is_authenticated %}
         {% include "main/categories_menu.html" %}
     {% endif %}
     <div id="main-container">

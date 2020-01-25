@@ -2,6 +2,37 @@
 {% block content%}
 {% load static %}
 
+{% if feedback_candidates and feedback_request.feedbacker == feedback_request.feedbackee %}
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Candidates</div>
+  <div class="cardbody" style="margin-top:50px; margin-bottom: 0">
+    {% for candidate in feedback_candidates%}       <!--For username in User instance-->
+    <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
+      <span class="feedback-request-link" style="display: inline-block; padding: 5px; padding-left: 20px; padding-right: 20px">
+        <a href="{% url 'profile-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
+          <img class="photo-circle" src="{{ candidate.userprofile.image.url }}"/>
+          <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
+        </a>
+      </span>
+      <span style="float: right">
+        <a href="{% url 'choose-feedbacker-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
+          <button class="btn btn-outline-info" >Choose as Feedbacker</button>
+        </a>
+      </span>
+      <div class="border-top pt-2 mt-3"></div>
+      <p style="font-size: 100%; line-height: 1.8em">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer malesuada urna lectus, eu pretium odio vulputate ac. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla facilisi. Cras sollicitudin nunc a justo aliquet venenatis. Sed vitae erat lacus. Nunc faucibus augue ex. Morbi tempor rutrum tortor suscipit pharetra. Mauris euismod interdum ipsum, at faucibus ex viverra at. Maecenas iaculis iaculis mi, sed ullamcorper diam efficitur ac.
+      </p>
+      <div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endif %}
+
+
 {% if user_is_feedbacker or user_is_feedbackee%}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Files</div>
@@ -54,21 +85,30 @@
 
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Description</div>
-    <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+    <div class="cardbody"  style="margin-top: 60px; margin-bottom: 0">
+      <div style="margin-bottom: 18px;">
+        <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+        <span class="bold-p">{{ feedback_request.feedbackee }}</span>
+        <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ time_delta }} ago </span>
+      </div>
+      <div class="border-top pt-3 "></div>
 
-    <span class="status-info noselect" style="font-size: 1.3em;">
-        <img src = "{% static 'img/pound_icon.png'%}" style="vertical-align: middle; height: 25px" />
-        {{ feedback_request.reward }}
-    </span>
-    <span class="status-info noselect" style="font-size: 1.3em; background: #FFCF7D">
-        <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
-        {{ feedback_request.time_limit }} days
-    </span>
     <div style="margin-top: 10px; margin-bottom: 10px">
-        <h1 style="text-align: center">{{ feedback_request.title }}</h1>
-        <div class="border-top mt-3 pt-2"></div>
+        <h1 style="text-align: center; font-size: 2em; font-weight: 600; margin-bottom: 20px">{{ feedback_request.title }}</h1>
         <p>{{ feedback_request.maintext }}</p>
-</div>
+   </div>
+   <div class="border-top pt-3 "></div>
+
+   <div style=" padding-top: 0; text-align: center">
+     <span class="status-info noselect" style="font-size: 1.4em">
+       <img src = "{% static 'img/pound_icon3.png'%}" style="height: 28px;  vertical-align: middle;" />
+         £{{ feedback_request.reward }}
+     </span>
+     <span class="status-info noselect" style="font-size: 1.4em">
+       <img src = "{% static 'img/time_icon3.png'%}" style="vertical-align: middle; height: 28px" />
+       {{ feedback_request.time_limit }} days
+     </span>
+   </div>
 </div>
 </div>
 {% if not user_is_feedbacker and not user_is_feedbackee %}

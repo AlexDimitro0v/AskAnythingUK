@@ -1,8 +1,9 @@
 {% extends 'main/base.html' %}
+{% load multifor %}
 {% load static %}
 
 {% block content%}
-      <div id="main-container" style="margin-top: 120px; background: #EDF1F4; padding: 30px">
+      <div id="main-container" style="background: #EDF1F4; padding: 30px">
       {% include "main/search-bar.html" %}
       </div>
       <p class="important-text" style="text-align: center; font-size: 2em; margin-top: 30px">Search Results</p>
@@ -11,23 +12,33 @@
       {% if not requests %}
         <p class="important-text" style="text-align: center;">No feedback requests found</p>
       {% else %}
-        {% for feedback_request in requests %}
-        <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}" >
-            <h3 style="font-weight: bold;"> {{ feedback_request.title }} </h3>
-            <p> {{ feedback_request.maintext }} </p>
-            <div style="margin-top: 5px">
-              <div class="noselect button-corner" style="border-radius: 18px">
-                  <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
-                      <button class="btn btn-outline-info" >More Information</button>
-                  </a>
-              </div>
-              <span class="status-info noselect" style=" border-radius: 18px">
-                <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
-                  {{ feedback_request.reward }}
-              </span>
-              <span class="status-info noselect" style="background: #FFCF7D; border-radius: 18px">
-                <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
-                {{ feedback_request.time_limit }} days
+        {% for feedback_request in requests; curr_delta in time_deltas %}
+        <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
+            <div style="margin-bottom: 18px">
+              <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+              <span class="bold-p">{{ feedback_request.feedbackee }}</span>
+              <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
+            </div>
+            <div class="border-top pt-4 mt-2"></div>
+
+            <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
+              <h3 style="font-weight: bold;" class="clickable-header"> {{ feedback_request.title }} </h3>
+              <p class="clickable-text cut-text"> {{ feedback_request.maintext }} </p>
+            </a>
+            <div class="border-top pt-2 mt-2 "></div>
+            <div style="display: flex; justify-content: space-between;">
+            <span>
+            </span>
+
+              <span style="white-space: nowrap;">
+                <span class="status-info noselect">
+                  <img src = "{% static 'img/pound_icon3.png'%}" style="height: 24px;  vertical-align: middle;" />
+                    £{{ feedback_request.reward }}
+                </span>
+                <span class="status-info noselect">
+                  <img src = "{% static 'img/time_icon3.png'%}" style="vertical-align: middle; height: 24px" />
+                  {{ feedback_request.time_limit }} days
+                </span>
               </span>
             </div>
         </div>

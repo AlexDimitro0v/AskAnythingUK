@@ -196,7 +196,7 @@ input {
 }
 
 #main-container {
-  margin-top: 100px;
+  margin-top: 150px;
 }
 
 #main-container h3 {
@@ -384,17 +384,16 @@ textarea {
 
 .status-info {
   font-size: 1.3em;
-  background-color: var(--bg-color);
   height: 40px;
   margin-top: 10px;
   line-height: 38px;
-  border-radius: 8px;
   padding-left: 13px;
   padding-right: 13px;
-  color: white;
   margin-right: 10px;
   display: inline-block;
-
+  font-weight: 600;
+  border-radius: 0;
+  color: #1F4D8A;
 }
 
 .status-info-button {
@@ -698,6 +697,29 @@ color: #1F4D8A;
   font-size: 1.2em;
 }
 
+.vertical-bar {
+  height: 20px;
+  background: black;
+  border: 1px solid black; /* This is default border style for <hr> tag */
+  margin-right: 10px
+}
+
+.clickable-header {
+  transition: 0.3s;
+  color: var(--primary-color);
+}
+
+.clickable-header:hover {
+  color: #777;
+}
+
+.clickable-text {
+  transition: 0.3s;
+}
+
+.clickable-text:hover {
+  color: #999;
+}
 /*
 Logo Colours
 #43C2F0  - light upper
