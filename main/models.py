@@ -17,7 +17,7 @@ class Area(models.Model):
 
 
 class FeedbackRequest(models.Model):
-    area = models.ForeignKey(Area,on_delete=models.CASCADE,default=1)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=100)
     maintext = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
@@ -47,7 +47,7 @@ class Rating(models.Model):
     review = models.TextField(default="")
 
     def __str__(self):
-        return f"{self.feedbackee.username}-{self.feedbacker.username} Review"
+        return f"{self.feedbackee}-{self.feedbacker} Review"
 
 
 class Category(models.Model):
