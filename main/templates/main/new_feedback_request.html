@@ -8,7 +8,6 @@
 
         <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
             {% csrf_token %}
-            
             Category<br>
             <select name="area" class="custom-select">
                 {% for area in areas %}

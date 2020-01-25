@@ -65,16 +65,6 @@
         {{ feedback_request.time_limit }} days
     </span>
 
-    <span>
-    <!--Delete Button-->
-    {% if feedback_request.feedbackee == user and feedback_request.feedbackee == feedback_request.feedbacker%}
-        <!--Only if the author is about to delete and there is no assigned feedbacker-->
-        <div class="pull-right">
-            <a class="btn btn-danger btn-sm"
-               href="{% url 'request-delete' feedback_request.id %}">Delete</a>
-        </div>
-    {% endif %}
-    </span>
 
     <div style="margin-top: 10px; margin-bottom: 10px">
         <h1 style="text-align: center">{{ feedback_request.title }}</h1>
