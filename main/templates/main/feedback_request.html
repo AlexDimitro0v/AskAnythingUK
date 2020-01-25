@@ -33,12 +33,12 @@
       <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
         <div class="decorative-text-wrapper noselect">Are you sure?</div>
         <div class="cardbody"  style="margin-top:50px">
-          <img class="photo-circle" src="{{ candidate.userprofile.image.url }}"/>
-          <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
-
-          <p style="font-weight: 600">
-            Are you sure you want to choose this feedbacker? This action cannot be reverted.
+          <img class="large-photo-circle" src="{{ candidate.userprofile.image.url }}"/>
+          <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+            Are you sure you want to choose {{candidate}} as your feedbacker?<br>This action cannot be reverted.
           </p>
+          <div class="border-top pt-2 mt-3"></div>
+
           <div class="noselect button-corner">
             <button class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">No</button>
             <a href="{% url 'choose-feedbacker-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
@@ -171,20 +171,89 @@
     <br>
 
     <div class="button-corner">
-    <a href="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
-        <button class="btn btn-outline-info" >Apply as Feedbacker</button>
-    </a>
+        <button class="btn btn-outline-info" id="apply">Apply as Feedbacker</button>
     </div>
+
+    <div id=main-container">
+    <div id="overlay_apply" class="full-screen overlay">
+      <div class="full-screen">
+      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+        <div class="decorative-text-wrapper noselect">Are you sure?</div>
+        <div class="cardbody"  style="margin-top:50px">
+          <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+            Are you sure you want to apply to give feedback to {{feedback_request.feedbackee}}?<br>You can only withraw your application before it is accepted.
+          </p>
+          <div class="border-top pt-2 mt-3"></div>
+
+          <div class="noselect button-corner">
+            <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">No</button>
+            <a href="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
+              <button class="btn btn-outline-info">Yes</button>
+            </a>
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+    <script>
+      $(document).ready(function () {
+        $('#apply').click(function(e) {
+          $('#overlay_apply').css("display","block");
+          $('body').css("overflow","hidden");
+
+        });
+        $('#no_apply').click(function(e) {
+          $('#overlay_apply').css("display","none");
+          $('body').css("overflow","visible");
+        });
+      });
+    </script>
+
     {% else %}
     <img src = "{% static 'img/tick4.png'%}" class="photo-circle large-photo-circle"/>
     <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Submitted</p>
     <br>
     <br>
     <div class="button-corner">
-    <a href="{%url 'withdraw-application-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
-        <button class="btn btn-outline-info" >Withdraw Application</button>
-    </a>
+        <button class="btn btn-outline-info" id="withdraw" >Withdraw Application</button>
     </div>
+
+    <div id=main-container">
+    <div id="overlay_withdraw" class="full-screen overlay">
+      <div class="full-screen">
+      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+        <div class="decorative-text-wrapper noselect">Are you sure?</div>
+        <div class="cardbody"  style="margin-top:50px">
+          <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+            Are you sure you want to withdraw your application?
+          </p>
+          <div class="border-top pt-2 mt-3"></div>
+
+          <div class="noselect button-corner">
+            <button class="btn btn-outline-info" id="no_withdraw" style="margin-right: 10px">No</button>
+            <a href="{%url 'withdraw-application-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
+              <button class="btn btn-outline-info">Yes</button>
+            </a>
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+    <script>
+      $(document).ready(function () {
+        $('#withdraw').click(function(e) {
+          $('#overlay_withdraw').css("display","block");
+          $('body').css("overflow","hidden");
+
+        });
+        $('#no_withdraw').click(function(e) {
+          $('#overlay_withdraw').css("display","none");
+          $('body').css("overflow","visible");
+        });
+      });
+    </script>
     {% endif %}
   </div>
 </div>
