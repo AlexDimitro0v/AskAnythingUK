@@ -66,9 +66,9 @@
     </span>
 
     <span>
-    <!--Update and Delete Buttons-->
+    <!--Delete Button-->
     {% if feedback_request.feedbackee == user and feedback_request.feedbackee == feedback_request.feedbacker%}
-        <!--Only if the author is about to edit/delete and there is no assigned feedbacker-->
+        <!--Only if the author is about to delete and there is no assigned feedbacker-->
         <div class="pull-right">
             <a class="btn btn-danger btn-sm"
                href="{% url 'request-delete' feedback_request.id %}">Delete</a>

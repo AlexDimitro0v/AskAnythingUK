@@ -8,27 +8,29 @@
 
         <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
             {% csrf_token %}
+            
             Category<br>
             <select name="area" class="custom-select">
                 {% for area in areas %}
                   <option value="{{ area.id }}">{{ area.name }}</option>
                 {% endfor %}
             </select>
-            <br><br>
-            Title<br><textarea rows='1' id="title" name="title" maxlength="50" class="form-control"></textarea> <br>
+
+            <br><br>Title<br>
+            <textarea rows='1' id="title" name="title" maxlength="50" class="form-control"></textarea>
             <div style="color: red; display: none" id="title-prompt">You must specify a title.</div>
 
-
-            Description<br><textarea rows="15" id="description" name="maintext" class="form-control"></textarea> <br>
+            <br>Description<br><textarea rows="15" id="description" name="maintext" class="form-control"></textarea>
             <div style="color: red; display: none" id="description-prompt">You must specify a description.</div>
 
 
-            Reward (£)<br>
+            <br>Reward (£)<br>
             <input id="reward" name="reward" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
             <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
 
 
-            <br>Time limit (days)<br><input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
+            <br>Time limit (days)<br>
+            <input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
             <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
 
 
@@ -37,6 +39,7 @@
                 Upload Files
             </label>
             <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
+
         </form>
 
         <div style="color: red; display: none" id="file-upload-prompt">You must upload at least one file to submit

@@ -60,7 +60,7 @@ def feedback_requests(request):
     # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
     # (excluding the requests from the currently logged in user)
     # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
-    feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area).exclude(feedbackee=request.user)
+    feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'), area=area).exclude(feedbackee=request.user)
 
     # Get minimum and maximum values of price and time limit for all feedback requests in a given category
     max_price = feedback_requests.aggregate(Max('reward'))['reward__max']
@@ -71,14 +71,17 @@ def feedback_requests(request):
     if tag_filter == "":
 
         # Aggregate all popular tags in the specified category
+        # TODO Optimize the code below. What if there are thousands of tags?
         most_used_tags = []
         all_used_tags = {}
         for feedback_request in feedback_requests:
             request_tag_ids = Tag.objects.filter(feedback=feedback_request)
             request_tags = [tag.category for tag in request_tag_ids]
             for tag in request_tags:
-                if tag in all_used_tags: all_used_tags[tag] += 1
-                else: all_used_tags[tag] = 1
+                if tag in all_used_tags:
+                    all_used_tags[tag] += 1
+                else:
+                    all_used_tags[tag] = 1
 
         # Sort tags from most to least used
         sorted_tags = sorted(all_used_tags.items(), key=lambda kv: -kv[1])
@@ -86,24 +89,31 @@ def feedback_requests(request):
         # Take 10 most popular tags
         if len(sorted_tags) > 10:
             sorted_tags = sorted_tags[:10]
-
-        for tag in sorted_tags:
-            most_used_tags.append(tag[0])
+        print(sorted_tags)
+        for tag in sorted_tags:                     # iterate through the list of tuples
+            most_used_tags.append(tag[0])           # get the key from the kvp
 
         if filtered_min_price:
-            feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),area=area,
+            feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),
+                                                               area=area,
                                                                reward__lte=filtered_max_price,
                                                                reward__gte=filtered_min_price,
                                                                time_limit__gte=filtered_min_time,
                                                                time_limit__lte=filtered_max_time).exclude(feedbackee=request.user)
 
         feedback_requests = feedback_requests.order_by('-date_posted')
+
+        # Paginate:
         # https://docs.djangoproject.com/en/3.0/topics/pagination/
         page_number = request.GET.get('page', 1)        # defaults to 1 if not found
         paginator = Paginator(feedback_requests, 5)     # each page contains 5 feedback requests
         feedback_requests = paginator.get_page(page_number)
         page_obj = feedback_requests
     else:
+        # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
+        # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
+        #
+        # https://stackoverflow.com/a/49872199
         page_obj = None
         most_used_tags = None
 
@@ -112,11 +122,6 @@ def feedback_requests(request):
             filtered_max_price = max_price
             filtered_min_time = min_time
             filtered_max_time = max_time
-
-        # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
-        # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
-        #
-        # https://stackoverflow.com/a/49872199
 
         # https://docs.djangoproject.com/en/3.0/topics/db/sql/ - useful explanation of raw
         # Get all requests that have the selected tag-filter only,
@@ -147,18 +152,18 @@ def feedback_requests(request):
         'requests': feedback_requests,
         'tags': tags,
         'page_obj': page_obj,
-        'areas' :  Area.objects.all(),
-        'area_filter_id' : area_filter,
-        'tag_filter' : tag_filter,
-        'min_price' : min_price,
-        'max_price' : max_price,
-        'min_time' : min_time,
-        'max_time' : max_time,
-        'filtered_min_price' : filtered_min_price,
-        'filtered_max_price' : filtered_max_price,
-        'filtered_min_time' : filtered_min_time,
-        'filtered_max_time' : filtered_max_time,
-        'most_used_tags' : most_used_tags
+        'areas':  Area.objects.all(),
+        'area_filter_id': area_filter,
+        'tag_filter': tag_filter,
+        'min_price': min_price,
+        'max_price': max_price,
+        'min_time': min_time,
+        'max_time': max_time,
+        'filtered_min_price': filtered_min_price,
+        'filtered_max_price': filtered_max_price,
+        'filtered_min_time': filtered_min_time,
+        'filtered_max_time': filtered_max_time,
+        'most_used_tags': most_used_tags
     }
 
     return render(request, 'main/feedback_requests.html', context)
@@ -187,7 +192,6 @@ def dashboard(request):
         'my_requests': my_feedback_requests,            # Feedback Request instances
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
         'feedback_candidates': feedback_candidates,     # User instances
-        # 'feedbacker_info': Feedbacker.objects.filter(user=request.user).first()
     }
     return render(request, 'main/dashboard.html', context)
 
@@ -202,7 +206,6 @@ def new_feedback_request(request):
         tags = list(set(request.GET.get('tags', '').split(",")))
         print(form)
         if form.is_valid():
-            print("GORM")
 
             # Save feedback request to database if data is valid
             title = form.cleaned_data['title']
@@ -213,8 +216,14 @@ def new_feedback_request(request):
 
             area = Area.objects.get(id=area_id)
 
-            feedback_request = FeedbackRequest(area=area,title=title, maintext=maintext, feedbackee=request.user, reward=reward,
-                                               feedbacker=request.user, time_limit=time_limit)
+            feedback_request = FeedbackRequest(area=area,
+                                               title=title,
+                                               maintext=maintext,
+                                               feedbackee=request.user,
+                                               reward=reward,
+                                               feedbacker=request.user,
+                                               time_limit=time_limit
+                                               )
             feedback_request.save()
 
             # Save each attached zip file
@@ -236,8 +245,8 @@ def new_feedback_request(request):
             return redirect('home-page')
 
     areas = Area.objects.all()
-    context = {"areas" : areas}
-    return render(request, 'main/new_feedback_request.html',context)
+    context = {"areas": areas}
+    return render(request, 'main/new_feedback_request.html', context)
 
 
 @login_required
