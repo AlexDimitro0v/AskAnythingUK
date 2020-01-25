@@ -45,7 +45,6 @@ class EditUserForm(forms.ModelForm):
         # Get the email
         email = self.cleaned_data.get('email')
         logged_in_user_username = self.cleaned_data.get('username')
-        print(logged_in_user_username)
 
         # Check to see if any users already exist with this email.
         if User.objects.filter(email=email, is_active=True).exclude(username=logged_in_user_username).exists():

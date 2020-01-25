@@ -69,8 +69,26 @@ def feedback_requests(request):
 
     if tag_filter == "":
 
+        if filtered_min_price:
+            feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),
+                                                               area=area,
+                                                               reward__lte=filtered_max_price,
+                                                               reward__gte=filtered_min_price,
+                                                               time_limit__gte=filtered_min_time,
+                                                               time_limit__lte=filtered_max_time).exclude(feedbackee=request.user)
+
+        feedback_requests = feedback_requests.order_by('-date_posted')
+
+        # Paginate:
+        # https://docs.djangoproject.com/en/3.0/topics/pagination/
+        page_number = request.GET.get('page', 1)        # defaults to 1 if not found
+        paginator = Paginator(feedback_requests, 5)     # each page contains 5 feedback requests
+        feedback_requests = paginator.get_page(page_number)
+        page_obj = feedback_requests
+
         # Aggregate all popular tags in the specified category
-        # TODO Optimize the code below. What if there are thousands of tags?
+        # TODO Optimize the code below. What if there are thousands of tags? 
+        # Solution: Get the tags only from the feedback requests on the current page
         most_used_tags = []
         all_used_tags = {}
         for feedback_request in feedback_requests:
@@ -88,26 +106,9 @@ def feedback_requests(request):
         # Take 10 most popular tags
         if len(sorted_tags) > 10:
             sorted_tags = sorted_tags[:10]
-        print(sorted_tags)
         for tag in sorted_tags:                     # iterate through the list of tuples
             most_used_tags.append(tag[0])           # get the key from the kvp
 
-        if filtered_min_price:
-            feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),
-                                                               area=area,
-                                                               reward__lte=filtered_max_price,
-                                                               reward__gte=filtered_min_price,
-                                                               time_limit__gte=filtered_min_time,
-                                                               time_limit__lte=filtered_max_time).exclude(feedbackee=request.user)
-
-        feedback_requests = feedback_requests.order_by('-date_posted')
-
-        # Paginate:
-        # https://docs.djangoproject.com/en/3.0/topics/pagination/
-        page_number = request.GET.get('page', 1)        # defaults to 1 if not found
-        paginator = Paginator(feedback_requests, 5)     # each page contains 5 feedback requests
-        feedback_requests = paginator.get_page(page_number)
-        page_obj = feedback_requests
     else:
         # If tag-filter in the url (e.g. http://127.0.0.1:8000/?tag-filter=Writing) a dic will be created
         # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
@@ -203,7 +204,6 @@ def new_feedback_request(request):
 
         # Get all tags attached to request and remove potential duplicates
         tags = list(set(request.GET.get('tags', '').split(",")))
-        print(form)
         if form.is_valid():
 
             # Save feedback request to database if data is valid

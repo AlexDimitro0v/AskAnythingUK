@@ -2,6 +2,7 @@ from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from main.models import FeedbackRequest
 
+
 @registry.register_document
 class FeedbackRequestDocument(Document):
     class Index:
