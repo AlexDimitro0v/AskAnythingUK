@@ -1,0 +1,63 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content%}
+      <div id="main-container" style="margin-top: 120px; background: #EDF1F4; padding: 30px">
+      {% include "main/search-bar.html" %}
+      </div>
+      <p class="important-text" style="text-align: center; font-size: 2em; margin-top: 30px">Search Results</p>
+
+      <div id="main-container" style="margin-top: 30px;">
+      {% if not requests %}
+        <p class="important-text" style="text-align: center;">No feedback requests found</p>
+      {% else %}
+        {% for feedback_request in requests %}
+        <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}" >
+            <h3 style="font-weight: bold;"> {{ feedback_request.title }} </h3>
+            <p> {{ feedback_request.maintext }} </p>
+            <div style="margin-top: 5px">
+              <div class="noselect button-corner" style="border-radius: 18px">
+                  <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
+                      <button class="btn btn-outline-info" >More Information</button>
+                  </a>
+              </div>
+              <span class="status-info noselect" style=" border-radius: 18px">
+                <img src = "{% static 'img/pound_icon.png'%}" style="height: 25px;  vertical-align: middle" />
+                  {{ feedback_request.reward }}
+              </span>
+              <span class="status-info noselect" style="background: #FFCF7D; border-radius: 18px">
+                <img src = "{% static 'img/time_icon.png'%}" style="vertical-align: middle; height: 25px" />
+                {{ feedback_request.time_limit }} days
+              </span>
+            </div>
+        </div>
+
+        {% endfor %}
+      {% endif %}
+      <!--https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-multiple-object/-->
+      {% if page_obj.has_other_pages %}
+          <div class="pagination middle-of-screen">
+              <span class="step-links" style="margin: 0 auto;">
+                  {% if page_obj.has_previous %}
+      <!-- Put parameters by setting ? in the url https://www.searchenginejournal.com/technical-seo/url-parameter-handling/#close-->
+                      <a class="btn btn-outline-info mb-4" href="{{request.path}}?q={{search}}&page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+                  {% endif %}
+
+                  {% for num in page_obj.paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          <a class="btn btn-info mb-4" href="{{request.path}}?q={{search}}&page={{ num }}">{{ num }}</a>
+                      <!--Show the 3 adjacent pages (from both sides)-->
+                      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          <a class="btn btn-outline-info mb-4" href="{{request.path}}?q={{search}}&page={{ num }}">{{ num }}</a>
+                      {% endif %}
+                  {% endfor %}
+
+                  {% if page_obj.has_next %}
+                      <a class="btn btn-outline-info mb-4" href="{{request.path}}?q={{search}}&page={{ page_obj.next_page_number }}">Next &gt;</a>
+                  {% endif %}
+              </span>
+        </div>
+
+      {% endif %}
+    </div>
+{% endblock%}

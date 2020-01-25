@@ -1,0 +1,29 @@
+<div style="margin: 0 auto; right: 0; left: 0; max-width: 700px; width: 95%">
+        <span style="display: flex; padding: 10px">
+          <input style="font-weight: bold;" name="search" type="text" id="search-input" class="form-control search-bar" placeholder="Search feedback requests">
+          <button class="btn btn-outline-info" id="search-button" style="height: 50px">Search</button>
+        </span>
+</div>
+<!-- Hidden form for tag filtering -->
+<form action="/" method="POST" id="searchForm"> {% csrf_token %}</form>
+
+<script>
+$(document).ready(function () {
+  $('input[name=search]').val("{{search}}");
+  $('#search-button').click(function() {
+    if ($('input[name=search]').val() != "") {
+      $('#searchForm').attr("action","/search-requests/?q="+$('input[name=search]').val());
+      $('#searchForm').submit();
+    }
+  });
+
+  $(document).on('keypress',function(e) {
+    if(e.which == 13) {
+      if ($('input[name=search]').val() != "") {
+        $('#searchForm').attr("action","/search-requests/?q="+$('input[name=search]').val());
+        $('#searchForm').submit();
+      }
+    }
+  });
+});
+</script>

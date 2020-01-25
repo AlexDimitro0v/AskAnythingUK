@@ -27,11 +27,10 @@ from django.views.generic import (
 
 # =====================================================================================================================
 # FUNCTION-BASED VIEWS:
-def home(request):
-    # Redirect unauthenticated users to landing page
-    if not request.user.is_authenticated:
-        return redirect('landing-page')
 
+# Redirect unauthenticated users to landing page
+@login_required(login_url='landing-page')
+def home(request):
     context = {
         'areas':  Area.objects.all()
     }

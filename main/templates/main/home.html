@@ -2,10 +2,261 @@
 {% load multifor %}
 {% load static %}
 {% block content%}
-    <div class="full-screen full-screen-image" style="margin-top: -150px; background-image: url({% static 'img/landing-page.jpg' %});">
-        <div>
-            <h1>GET FEEDBACK</h1>
-            <h1 style="font-size: 20px">(Our new home page will be here)</h1>
-        </div>
+    <div class="full-screen full-screen-image" style="margin-top: -100px; background-image: url({% static 'img/home-bg.jpg' %});   background-color: rgba(255,255,255,0.5);">
+      <div class="container-fluid" style="max-width: 1400px">
+          <div class="row ">
+              <div class="col-6" >
+                <div style="background: none; width: 70%; min-width: 40px; top: 0">
+                    <div class="content" >
+                      <div class="content__container">
+                        <p class="content__container__text" style="color: #444">
+                          Working on your
+                        </p>
+
+                        <ul class="content__container__list">
+                          <li class="content__container__list__item">CV?</li>
+                          <li class="content__container__list__item">song?</li>
+                          <li class="content__container__list__item">essay?</li>
+                          <li class="content__container__list__item">logo?</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <p style="font-size: 1.3em; color: #444; max-width: 450px"><strong>We have just the right proffesional to help you make it as good as possible.</strong></p>
+                    <br>
+                    <a  href="{% url 'new-feedback-request-page' %}"  style="text-decoration:none; z-index: 10">
+                        <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em; padding-top: 10px;z-index: 10; padding-bottom: 10px">Get Feedback</button>
+                    </a>
+                </div>
+              </div>
+              <div class="col-6" style="padding-left: 80px">
+                <div style="margin-bottom: 18px">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                  <span style="color: #444" class="bold-p">Get high quality feedback on time</span>
+                </div>
+                <div style="margin-bottom: 18px">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                  <span style="color: #444" class="bold-p">Choose the best feedbacker from all candidates</span>
+                </div>
+                <div style="margin-bottom: 18px">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                  <span style="color: #444" class="bold-p">Complete confidentiality guaranteed</span>
+                </div>
+              </div>
+            </div>
+
+            </div>
     </div>
+    <div class="full-screen full-screen-image" style="background-image: url({% static 'img/landing-page.jpg' %});   background-color: rgba(255,255,255,0.9);">
+      <div style="background: none; width: 70%; min-width: 40px; top: 0">
+        <h1 style="text-align: center; font-size: 3em; margin-bottom: 20px">Feel like helping others?</h1>
+        <h1 style="text-align: center; font-size: 1.8em; margin-bottom: 20px">Try searching existing feedback requests<br>in your area of expertise.</h1>
+
+        {% include "main/search-bar.html" %}
+      </div>
+
+
+    </div>
+
+    <style>
+      /* https://codepen.io/yoannhel/pen/sJpDj */
+
+      .content {
+        position: absolute;
+        overflow: hidden;
+        font-size: 35px;
+        line-height: 70px;
+      }
+
+      .content {
+        float: left;
+      }
+
+      .content__container {
+        font-weight: 600;
+        overflow: hidden;
+        height: 70px;
+        padding: 0 70px;
+      }
+      .content__container:before {
+        content: "[";
+        left: 0;
+      }
+      .content__container:after {
+        content: "]";
+        position: absolute;
+        right: 0;
+      }
+      .content__container:after, .content__container:before {
+        position: absolute;
+        top: 0;
+        color: #1F4D8A;
+        font-size: 72px;
+        line-height: 70px;
+        -webkit-animation-name: opacity;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        animation-name: opacity;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+      }
+      .content__container__text {
+        display: inline;
+        float: left;
+        margin: 0;
+        padding: 0;
+        margin-top: 3px;
+      }
+      .content__container__list {
+        margin-top: 0;
+        padding-left: 280px;
+        text-align: left;
+        list-style: none;
+        -webkit-animation-name: change;
+        -webkit-animation-duration: 10s;
+        -webkit-animation-iteration-count: infinite;
+        animation-name: change;
+        animation-duration: 10s;
+        animation-iteration-count: infinite;
+      }
+      .content__container__list__item {
+        line-height: 70px;
+        margin: 0;
+        color: #1F4D8A;
+      }
+
+      @-webkit-keyframes opacity {
+        0%, 100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @-webkit-keyframes change {
+        0%, 12.66%, 100% {
+          transform: translate3d(0, 0, 0);
+        }
+        16.66%, 29.32% {
+          transform: translate3d(0, -25%, 0);
+        }
+        33.32%, 45.98% {
+          transform: translate3d(0, -50%, 0);
+        }
+        49.98%, 62.64% {
+          transform: translate3d(0, -75%, 0);
+        }
+        66.64%, 79.3% {
+          transform: translate3d(0, -50%, 0);
+        }
+        83.3%, 95.96% {
+          transform: translate3d(0, -25%, 0);
+        }
+      }
+      @-o-keyframes opacity {
+        0%, 100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @-o-keyframes change {
+        0%, 12.66%, 100% {
+          transform: translate3d(0, 0, 0);
+        }
+        16.66%, 29.32% {
+          transform: translate3d(0, -25%, 0);
+        }
+        33.32%, 45.98% {
+          transform: translate3d(0, -50%, 0);
+        }
+        49.98%, 62.64% {
+          transform: translate3d(0, -75%, 0);
+        }
+        66.64%, 79.3% {
+          transform: translate3d(0, -50%, 0);
+        }
+        83.3%, 95.96% {
+          transform: translate3d(0, -25%, 0);
+        }
+      }
+      @-moz-keyframes opacity {
+        0%, 100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @-moz-keyframes change {
+        0%, 12.66%, 100% {
+          transform: translate3d(0, 0, 0);
+        }
+        16.66%, 29.32% {
+          transform: translate3d(0, -25%, 0);
+        }
+        33.32%, 45.98% {
+          transform: translate3d(0, -50%, 0);
+        }
+        49.98%, 62.64% {
+          transform: translate3d(0, -75%, 0);
+        }
+        66.64%, 79.3% {
+          transform: translate3d(0, -50%, 0);
+        }
+        83.3%, 95.96% {
+          transform: translate3d(0, -25%, 0);
+        }
+      }
+      @keyframes opacity {
+        0%, 100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @keyframes change {
+        0%, 12.66%, 100% {
+          transform: translate3d(0, 0, 0);
+        }
+        16.66%, 29.32% {
+          transform: translate3d(0, -25%, 0);
+        }
+        33.32%, 45.98% {
+          transform: translate3d(0, -50%, 0);
+        }
+        49.98%, 62.64% {
+          transform: translate3d(0, -75%, 0);
+        }
+        66.64%, 79.3% {
+          transform: translate3d(0, -50%, 0);
+        }
+        83.3%, 95.96% {
+          transform: translate3d(0, -25%, 0);
+        }
+      }
+
+      // 6 is the number of animation.
+      // Here, there are 4 lines :
+
+      // 1 to 2
+      // 2 to 3
+      // 3 to 4
+      // 4 to 3
+      // 3 to 2
+      // 2 to 1
+
+      // 6x + 6y = 100 (100% duration)
+
+      // HERE :
+      // y = 4 -> Animation between two lines
+      // x = 12.66 -> Time spent on a line
+
+      // You can define a value and calculate the other if you want change speed or the number of lines
+      </style>
+
 {% endblock%}

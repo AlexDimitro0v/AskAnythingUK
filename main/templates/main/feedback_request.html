@@ -9,7 +9,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-          <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle"/>
+          <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
           <h3 style="margin-top: 10px;">FEEDBACKEE</h3>
           <div class="border-top pt-4 "></div>
           <a href="{{ feedbackee_files_link }}" download="Feedbackee Files" style="text-decoration:none;">
@@ -22,7 +22,7 @@
             </div>
           {% else %}
             <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-            <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle"/>
+            <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
             <h3 style="margin-top: 10px;">FEEDBACKER</h3>
             <div class="border-top pt-4"></div>
               {% if feedbacker_files_link != None %}
@@ -75,6 +75,7 @@
         </div>
     {% endif %}
     </span>
+
     <div style="margin-top: 10px; margin-bottom: 10px">
         <h1 style="text-align: center">{{ feedback_request.title }}</h1>
         <div class="border-top mt-3 pt-2"></div>
