@@ -2,7 +2,7 @@
 {% block content%}
 {% load static %}
 
-{% if feedback_candidates and feedback_request.feedbacker == feedback_request.feedbackee %}
+{% if user_is_feedbackee and feedback_candidates and feedback_request.feedbacker == feedback_request.feedbackee %}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Candidates</div>
   <div class="cardbody" style="margin-top:50px; margin-bottom: 0">
@@ -15,9 +15,7 @@
         </a>
       </span>
       <span style="float: right">
-        <a href="{% url 'choose-feedbacker-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
-          <button class="btn btn-outline-info" >Choose as Feedbacker</button>
-        </a>
+          <button class="btn btn-outline-info" id="choose-feedbacker{{forloop.counter}}">Choose as Feedbacker</button>
       </span>
       <div class="border-top pt-2 mt-3"></div>
       <p style="font-size: 100%; line-height: 1.8em">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer malesuada urna lectus, eu pretium odio vulputate ac. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla facilisi. Cras sollicitudin nunc a justo aliquet venenatis. Sed vitae erat lacus. Nunc faucibus augue ex. Morbi tempor rutrum tortor suscipit pharetra. Mauris euismod interdum ipsum, at faucibus ex viverra at. Maecenas iaculis iaculis mi, sed ullamcorper diam efficitur ac.
@@ -26,6 +24,46 @@
 
       </div>
     </div>
+
+    <div id=main-container">
+    <div id="overlay{{forloop.counter}}" class="full-screen overlay">
+
+      <div class="full-screen">
+
+      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+        <div class="decorative-text-wrapper noselect">Are you sure?</div>
+        <div class="cardbody"  style="margin-top:50px">
+          <img class="photo-circle" src="{{ candidate.userprofile.image.url }}"/>
+          <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
+
+          <p style="font-weight: 600">
+            Are you sure you want to choose this feedbacker? This action cannot be reverted.
+          </p>
+          <div class="noselect button-corner">
+            <button class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">No</button>
+            <a href="{% url 'choose-feedbacker-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
+              <button class="btn btn-outline-info">Yes</button>
+            </a>
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+      $(document).ready(function () {
+        $('#choose-feedbacker{{forloop.counter}}').click(function(e) {
+          $('#overlay{{forloop.counter}}').css("display","block");
+          $('body').css("overflow","hidden");
+
+        });
+        $('#no{{forloop.counter}}').click(function(e) {
+          $('#overlay{{forloop.counter}}').css("display","none");
+          $('body').css("overflow","visible");
+        });
+      });
+    </script>
     {% endfor %}
   </div>
 </div>

@@ -159,19 +159,19 @@ def feedback_requests(request):
         'requests': feedback_requests,
         'tags': tags,
         'page_obj': page_obj,
-        'areas' :  Area.objects.all(),
-        'area_filter_id' : area_filter,
-        'tag_filter' : tag_filter,
-        'min_price' : min_price,
-        'max_price' : max_price,
-        'min_time' : min_time,
-        'max_time' : max_time,
-        'filtered_min_price' : filtered_min_price,
-        'filtered_max_price' : filtered_max_price,
-        'filtered_min_time' : filtered_min_time,
-        'filtered_max_time' : filtered_max_time,
-        'most_used_tags' : most_used_tags,
-        'time_deltas' : time_deltas
+        'areas':  Area.objects.all(),
+        'area_filter_id': area_filter,
+        'tag_filter': tag_filter,
+        'min_price': min_price,
+        'max_price': max_price,
+        'min_time': min_time,
+        'max_time': max_time,
+        'filtered_min_price': filtered_min_price,
+        'filtered_max_price': filtered_max_price,
+        'filtered_min_time': filtered_min_time,
+        'filtered_max_time': filtered_max_time,
+        'most_used_tags': most_used_tags,
+        'time_deltas': time_deltas
     }
 
     return render(request, 'main/feedback_requests.html', context)
@@ -192,7 +192,7 @@ def dashboard(request):
         elif num_of_candidates == 1:
             feedback_candidates.append("1 Feedbacker Candidate")
         else:
-            feedback_candidates.append(num_of_candidates + " Feedbacker Candidates")
+            feedback_candidates.append(str(num_of_candidates) + " Feedbacker Candidates")
 
     context = {
         'my_requests': my_feedback_requests,            # Feedback Request instances
@@ -211,7 +211,7 @@ def new_feedback_request(request):
 
         # Get all tags attached to request and remove potential duplicates
         tags = list(set(request.GET.get('tags', '').split(",")))
-        print(form)
+
         if form.is_valid():
 
             # Save feedback request to database if data is valid
