@@ -15,6 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Max
 from django.db.models import Min
 from .functions import get_time_delta, get_request_candidates
+from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
+import braintree
 from django.views.generic import (
     DeleteView
 )
@@ -24,6 +26,12 @@ from django.views.generic import (
 # DetailView  — to view a particular object
 # UpdateView  — to update a particular object
 # DeleteView  — to delete a particular object
+
+# Set up the payment gateway
+braintree.Configuration.configure(braintree.Environment.Sandbox,
+                                  merchant_id=BRAINTREE_MERCHANT_KEY,
+                                  public_key=BRAINTREE_PUBLIC_KEY,
+                                  private_key=BRAINTREE_PRIVATE_KEY)
 
 
 # =====================================================================================================================
@@ -199,7 +207,7 @@ def dashboard(request):
         'my_requests': my_feedback_requests,            # Feedback Request instances
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
         'feedback_candidates': feedback_candidates,     # User instances
-        'areas' :  Area.objects.all(),
+        'areas':  Area.objects.all(),
     }
     return render(request, 'main/dashboard.html', context)
 
@@ -273,7 +281,7 @@ def feedback_request(request):
 
     curr_time = datetime.now(timezone.utc)
     time_posted = feedback_request.date_posted
-    time_delta = get_time_delta(time_posted,curr_time)
+    time_delta = get_time_delta(time_posted, curr_time)
 
     fs = FileSystemStorage()
 
@@ -296,6 +304,8 @@ def feedback_request(request):
         else:
             user_is_candidate = True
 
+    client_token = braintree.ClientToken.generate()
+
     if request_id != "":
         context = {
             'feedback_request': FeedbackRequest.objects.get(id=request_id),
@@ -306,9 +316,10 @@ def feedback_request(request):
             'feedbacker_files_link': feedbacker_files_link,
             'user_is_feedbackee': user_is_feedbackee,
             'user_was_rejected': user_was_rejected,
-            'time_delta' : time_delta,
-            'areas' :  Area.objects.all(),
-            'feedback_candidates' : feedback_candidates
+            'time_delta': time_delta,
+            'areas':  Area.objects.all(),
+            'feedback_candidates': feedback_candidates,
+            'client_token': client_token
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -329,12 +340,29 @@ def apply_as_feedbacker(request):
 
 @login_required
 def choose_feedbacker(request):
-    feedbacker_username = request.GET.get('user', '')
-    feedback_request_id = request.GET.get('feedback', '')
-    feedback_request = FeedbackRequest.objects.filter(id=feedback_request_id).first()
-    feedback_request.feedbacker = User.objects.filter(username=feedbacker_username).first()
-    feedback_request.save()
-    messages.success(request, f"Feedbacker has been chosen successfully!")
+
+    if request.method == 'POST':
+        try:
+            feedback_request = FeedbackRequest.objects.get(id=request.POST['feedback_request_id'])
+            feedbacker = User.objects.get(username=request.POST['feedbacker_username'])
+        except FeedbackRequest.DoesNotExist:
+            return redirect('/')
+
+        nonce = request.POST["payment_method_nonce"]
+        result = braintree.Transaction.sale({
+            "amount": feedback_request.reward,
+            "payment_method_nonce": nonce
+        })
+
+        feedback_request.feedbacker = feedbacker
+        feedback_request.save()
+
+        if result:
+            if result.is_success:
+                messages.success(request, f"Feedbacker has been chosen successfully!")
+            else:
+                messages.error(request, f"Problem with payment method")
+
     return redirect('dashboard')
 
 
@@ -416,6 +444,7 @@ def withdraw_application(request):
     application.delete()
     messages.success(request, f"Your application has been withdrawn!")
     return redirect('dashboard')
+
 
 # =====================================================================================================================
 
