@@ -121,5 +121,5 @@ def view_profile(request):
 #settings page
 @login_required
 def user_settings(request):
-    return render(request, 'user/user-settings.html', context)
+    return render(request, 'users/user-settings.html')
     

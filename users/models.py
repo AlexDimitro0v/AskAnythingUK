@@ -9,7 +9,7 @@ class UserProfile(models.Model):
     description = models.TextField(blank=True)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')  # the dir where the images get uploaded to
     user = models.OneToOneField(User, on_delete=models.CASCADE)   # if the user is deleted then also delete the profile
-
+    #notifictions = models.
     def __str__(self):
         return f"{self.user.username} Profile"
 
