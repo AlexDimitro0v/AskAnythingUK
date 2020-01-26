@@ -168,3 +168,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "teamalpha050@gmail.com"
 EMAIL_HOST_PASSWORD = "AlphaTeam123"
+
+
+# Braintree Payment Gateway Keys
+BRAINTREE_PUBLIC_KEY = "68xjvvfyfczfpbx7"
+BRAINTREE_PRIVATE_KEY = "5c5b4faf38028ce06d9822a0b4610e2c"
+BRAINTREE_MERCHANT_KEY = "zb9j7cw38qwwky8c"
