@@ -32,8 +32,10 @@
      background: #dee2e6;
  }
 </style>
-
-    <div style="margin-top: 150px">
+  <div id="main-container" style="background: #EDF1F4; padding: 30px; margin-top: -30px">
+  {% include "main/search-bar.html" %}
+  </div>
+    <div style="margin-top: 30px">
       <div class="container-fluid">
           <div class="row justify-content-center">
             {% if min_price or min_time %}
@@ -78,7 +80,7 @@
               </div>
               {% endif %}
             {% endif %}
-    {% if not requests %}
+    {% if not requests and not min_price %}
     <div style="width: 400px">
     {% endif %}
     <div
@@ -108,15 +110,24 @@
         {% endif %}
       </div>
 
-      {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas %}
+      {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas; curr_premium in premium_requests; curr_new in new_requests %}
       <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}" style="margin-left: 20px;">
           <div style="margin-bottom: 18px">
             <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
             <span class="bold-p">{{ feedback_request.feedbackee }}</span>
             <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
           </div>
-          <div class="border-top pt-4 mt-2"></div>
-
+          <div class="border-top pt-3 mt-2"></div>
+          {% if curr_new or curr_premium %}
+          <div style="margin-bottom: 8px">
+            {% if curr_premium %}
+            <span class="premium-badge noselect" style="font-size: 0.65em; margin-top: 0;">Premium</span>
+            {% endif %}
+            {% if curr_new %}
+            <span class="premium-badge noselect" style="font-size: 0.65em; margin-top: 0; border: 2px solid #1F4D8A; color: #1F4D8A">New</span>
+            {% endif %}
+          </div>
+          {% endif %}
           <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
             <h3 style="font-weight: bold;" class="clickable-header"> {{ feedback_request.title }} </h3>
             <p class="clickable-text cut-text"> {{ feedback_request.maintext }} </p>
@@ -172,8 +183,6 @@
 </div>
 </div>
 
-
-
     <!-- Hidden form for tag filtering -->
     <form action="/" method="POST" id="tagFilterForm"> {% csrf_token %}</form>
 
@@ -184,8 +193,13 @@
     $(document).ready(function () {
       $('.tag').click(function(e) {
         let tagValue = e.target.id;
+        {% if min_price %}
+        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+tagValue+"&area-filter={{area_filter_id}}        &min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
+        {% else %}
         $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+tagValue+"&area-filter={{area_filter_id}}");
+        {% endif %}
         $('#tagFilterForm').submit();
+
       });
 
       {% if filtered_max_price %}
@@ -200,7 +214,7 @@
         let currMaxPrice = {{max_price}};
       {% endif %}
 
-      {% if requests %}
+      {% if requests or min_price %}
 
       $(function() {
          $( "#slider-price" ).slider({

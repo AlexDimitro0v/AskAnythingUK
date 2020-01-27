@@ -10,7 +10,11 @@ from django.utils.encoding import force_bytes, force_text
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from main.models import Rating, Area
-
+from dateutil.relativedelta import relativedelta
+from .models import UserProfile
+from datetime import datetime
+from django.utils import timezone
+from main.functions import has_premium
 
 def register(request):
     context = {
@@ -96,6 +100,7 @@ def customize_user_profile(request):
         'u_form': u_form,
         'p_form': p_form,
         'areas' :  Area.objects.all(),
+        'has_premium' : has_premium(request.user)
     }
     return render(request, 'users/customize_profile.html', context=context)
 
@@ -115,6 +120,29 @@ def view_profile(request):
     context = {
         'user_to_view': user_to_view,
         'user_ratings': ratings,
-        'areas' :  Area.objects.all(),
+        'areas': Area.objects.all(),
+        'has_premium': has_premium(request.user),
+        'viewed_has_premium': has_premium(user_to_view)
     }
     return render(request, 'users/view-profile.html', context)
+
+@login_required
+def get_premium(request):
+    if has_premium(request.user):
+        return redirect('dashboard')
+
+    context = {
+        'areas' :  Area.objects.all(),
+        'has_premium' : has_premium(request.user)
+    }
+    return render(request, 'users/get-premium.html', context)
+
+@login_required
+def try_premium(request):
+    curr_user = UserProfile.objects.get(user=request.user)
+    if datetime.now(timezone.utc) > curr_user.premium_ends:
+        plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
+        curr_user.premium_ends = plus_one_month
+        messages.success(request, f"Premium account activated!")
+        curr_user.save()
+    return redirect('dashboard')

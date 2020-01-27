@@ -9,10 +9,17 @@
     <form action="/new-feedback-request/" method="POST" id="submitFeedbackForm" enctype="multipart/form-data">
       {% csrf_token %}
       Feedback Files:<br>
-      <label for="file-upload" class="button noselect" style="margin-left: 0px;">
+      <label for="file-upload" class="btn btn-outline-info" style="margin-left: 0px; cursor: pointer">
             Upload Files
       </label>
-      <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple><br><br>
+      <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
+      <span style="margin-left: 10px; font-weight: 600" id="fileCount"></span>
+      <span style="margin-left: 10px; font-weight: 600" id="fileSize"></span>
+
+      <div style="margin-top: 10px" id="allFiles">
+      </div>
+
+      <br>
       Comments:<br><textarea rows="15" name="comments" class="form-control"></textarea> <br><br>
     </form>
     <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
@@ -21,6 +28,39 @@
     let tags = [];
     let numOfTags = 0;
     $(document).ready(function () {
+      // https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+      function formatBytes(bytes, decimals = 1) {
+          if (bytes === 0) return '0 Bytes';
+
+          const k = 1024;
+          const dm = decimals < 0 ? 0 : decimals;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+      }
+
+      let totalSize = 0;
+      $("input[name=feedbackfiles]").change(function() {
+        $('#allFiles').empty();
+        let numOfFiles = $(this).get(0).files.length;
+        totalSize = 0;
+        for (var i = 0; i < numOfFiles; ++i) {
+            totalSize += $(this).get(0).files[i].size;
+            $('#allFiles').append("<div class='file-container'><img  style='width: 25px' src='{% static 'img/file.png' %}'/><p class='file-p'>"+ $(this).get(0).files[i].name.substring(0,20) +"</p></div>");
+
+        }
+
+        $("#fileSize").text(formatBytes(totalSize));
+
+        if(numOfFiles===1) {
+          $("#fileCount").text("1 file");
+        }
+        else {
+          $("#fileCount").text(numOfFiles + " files");
+        }
+      });
 
     $('#submit_button').click(function() {
        // Disable button to prevent multiple clicks

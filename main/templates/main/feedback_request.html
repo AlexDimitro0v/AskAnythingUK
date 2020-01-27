@@ -124,13 +124,22 @@
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Description</div>
     <div class="cardbody"  style="margin-top: 60px; margin-bottom: 0">
-      <div style="margin-bottom: 18px;">
+      <div style="margin-bottom: 18px; ">
         <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
         <span class="bold-p">{{ feedback_request.feedbackee }}</span>
         <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ time_delta }} ago </span>
       </div>
       <div class="border-top pt-3 "></div>
-
+      {% if new_request or premium_request %}
+      <div style="margin-bottom: 8px; text-align: center">
+        {% if premium_request %}
+        <span class="premium-badge noselect" style="font-size: 0.7em; margin-top: 0; margin-right: 5px">Premium</span>
+        {% endif %}
+        {% if new_request %}
+        <span class="premium-badge noselect" style="font-size: 0.7em; margin-top: 0;  border: 2px solid #1F4D8A; color: #1F4D8A">New</span>
+        {% endif %}
+      </div>
+      {% endif %}
     <div style="margin-top: 10px; margin-bottom: 10px">
         <h1 style="text-align: center; font-size: 2em; font-weight: 600; margin-bottom: 20px">{{ feedback_request.title }}</h1>
         <p>{{ feedback_request.maintext }}</p>
@@ -174,6 +183,57 @@
         <button class="btn btn-outline-info" id="apply">Apply as Feedbacker</button>
     </div>
 
+    {% if new_request and not has_premium %}
+        <div id=main-container">
+        <div id="overlay_apply" class="full-screen overlay">
+          <div class="full-screen">
+          <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+            <div class="decorative-text-wrapper noselect">Get Premium</div>
+            <div class="cardbody"  style="margin-top:50px">
+              <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                This feedback request is less than 24 hours old.<br>
+                Only premium users can apply to new requests.
+              </p>
+              <div class="border-top pt-2 mt-3"></div>
+
+              <div class="noselect button-corner">
+                <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">Wait</button>
+                <a href="{%url 'get-premium-page'%}" style="text-decoration:none;">
+                  <button class="btn btn-outline-info">Get Premium</button>
+                </a>
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    {% elif three_or_more_applications and not has_premium %}
+    <!-- Too many applications overlay -->
+      <div id=main-container">
+      <div id="overlay_apply" class="full-screen overlay">
+        <div class="full-screen">
+        <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+          <div class="decorative-text-wrapper noselect">Get Premium</div>
+          <div class="cardbody"  style="margin-top:50px">
+            <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+              You have three active applications.<br>
+              Only premium users can apply to more than three requests at a time.
+            </p>
+            <div class="border-top pt-2 mt-3"></div>
+
+            <div class="noselect button-corner">
+              <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">Go Back</button>
+              <a href="{%url 'get-premium-page'%}" style="text-decoration:none;">
+                <button class="btn btn-outline-info">Get Premium</button>
+              </a>
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <!-- Apply overlay -->
     <div id=main-container">
     <div id="overlay_apply" class="full-screen overlay">
       <div class="full-screen">
@@ -196,6 +256,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
     <script>
       $(document).ready(function () {
         $('#apply').click(function(e) {
@@ -219,6 +280,7 @@
         <button class="btn btn-outline-info" id="withdraw" >Withdraw Application</button>
     </div>
 
+    <!-- Withdraw application overlay -->
     <div id=main-container">
     <div id="overlay_withdraw" class="full-screen overlay">
       <div class="full-screen">

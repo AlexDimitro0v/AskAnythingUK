@@ -1,8 +1,18 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% load multifor %}
-
 {% block content%}
+<style>
+.photo-border {
+  border-radius: 100%;
+{% if has_premium %}
+  border: 8px solid #e9ca6e;
+{% else %}
+  border: 8px solid #eee;
+{% endif %}
+}
+</style>
+
 <div class="noselect button-corner" style="position: fixed; z-index: 1; ">
   <a href="{% url 'new-feedback-request-page' %}"  style="text-decoration:none;">
       <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em">Ask For Feedback</button>
@@ -11,8 +21,12 @@
 <div class="feedback-request">
     <div class="decorative-text-wrapper noselect">My Profile</div>
     <div class="cardbody"  style="margin-top:50px">
-      <img class="photo-circle" style="display: table; margin: 0 auto; width: 150px; height: 150px; border-radius: 100%; border: 8px solid #eee" src="{{ user.userprofile.image.url }}"/>
-      <h3 style="text-align: center; margin: 20px; font-size: 26px"><strong>{{ user.username }}</strong></h3>
+      <img class="photo-circle photo-border" style="display: table; margin: 0 auto; width: 150px; height: 150px;" src="{{ user.userprofile.image.url }}"/>
+      <h3 style="text-align: center; margin: 20px; font-size: 26px"><strong>{{ user.username }}</strong>
+      </h3>
+      {% if has_premium %}
+        <div class="premium-badge noselect" style="margin-top: -17px; margin-bottom: 20px">Premium</div>
+      {% endif %}
       <div class="border-top pt-1"></div>
 
         {% if user.userprofile.description %}
@@ -86,8 +100,10 @@
               Application Submitted
             </div>
             {% else %}
-            <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/cross4.png' %}">
-            <div class="status-info status-info-profile noselect" style="font-size: 1em;">Application Rejected</div>
+            <div class="status-info status-info-profile noselect" style="font-size: 1em;">
+              <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/cross4.png' %}">
+              Application Rejected
+            </div>
             {% endif %}
         </div>
         </a>

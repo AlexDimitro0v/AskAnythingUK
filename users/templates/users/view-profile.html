@@ -3,13 +3,27 @@
 {% load multifor %}
 
 {% block content%}
+
+<style>
+.photo-border {
+  border-radius: 100%;
+{% if viewed_has_premium %}
+  border: 8px solid #e9ca6e;
+{% else %}
+  border: 8px solid #eee;
+{% endif %}
+}
+</style>
+
 <div class="feedback-request">
     <div class="decorative-text-wrapper noselect">Profile</div>
     <div style="margin-top:50px">
-      <img class="photo-circle" style="display: table; margin: 0 auto; width: 150px; height: 150px; border-radius: 100%; border: 8px solid #eee" src="{{ user_to_view.userprofile.image.url }}"/>
+      <img class="photo-circle photo-border" style="display: table; margin: 0 auto; width: 150px; height: 150px; border-radius: 100%;" src="{{ user_to_view.userprofile.image.url }}"/>
       <h3 style="text-align: center; margin: 20px; font-size: 26px"><strong>{{ user_to_view.username }}</strong></h3>
+      {% if viewed_has_premium %}
+        <div class="premium-badge noselect" style="margin-top: -17px; margin-bottom: 20px">Premium</div>
+      {% endif %}
       <div class="border-top pt-1"></div>
-
         {% if user_to_view.userprofile.description %}
             <p>{{ user_to_view.userprofile.description }}</p>
         {% else %}
