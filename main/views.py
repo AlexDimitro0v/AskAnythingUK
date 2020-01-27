@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area
+from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area, Purchase
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
@@ -162,7 +162,7 @@ def feedback_requests(request):
     curr_time = datetime.now(timezone.utc)
     for feedback_request in feedback_requests:
         time_posted = feedback_request.date_posted
-        time_deltas.append(get_time_delta(time_posted,curr_time))
+        time_deltas.append(get_time_delta(time_posted, curr_time))
 
     context = {
         'requests': feedback_requests,
@@ -257,6 +257,7 @@ def new_feedback_request(request):
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
 
+            messages.success(request, "Your request has been published!")
             return redirect('home-page')
 
     areas = Area.objects.all()
@@ -354,14 +355,20 @@ def choose_feedbacker(request):
             "payment_method_nonce": nonce
         })
 
-        feedback_request.feedbacker = feedbacker
-        feedback_request.save()
+        if result.is_success:
+            feedback_request.feedbacker = feedbacker
+            feedback_request.save()
+            purchase = Purchase(
+                feedback=feedback_request,
+                feedbackee=feedback_request.feedbackee,
+                feedbacker=feedbacker,
+                time=datetime.now(tz=timezone.utc)
+            )
+            purchase.save()
 
-        if result:
-            if result.is_success:
-                messages.success(request, f"Feedbacker has been chosen successfully!")
-            else:
-                messages.error(request, f"Problem with payment method")
+            messages.success(request, f"Feedbacker has been chosen successfully!")
+        else:
+            messages.error(request, f"Problem with payment method")
 
     return redirect('dashboard')
 
@@ -431,7 +438,7 @@ def rate_feedbacker(request):
 
     context = {
         'request_id': request.GET.get('request_id', ''),
-        'areas' :  Area.objects.all(),
+        'areas':  Area.objects.all(),
     }
     return render(request, 'main/rate-feedbacker.html', context)
 

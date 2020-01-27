@@ -37,7 +37,7 @@
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
             Are you sure you want to choose {{candidate}} as your feedbacker?<br>This action cannot be reverted.
           </p>
-          <div class="border-top pt-2 mt-3"></div>
+          <br>
 
             <form method="POST" action="/choose-feedbacker/">
               {% csrf_token %}
@@ -49,7 +49,7 @@
                 <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
                 <input name="feedbacker_username" value="{{ candidate }}" hidden>
                 <div class="noselect button-corner">
-                  <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Go back</button>
+                  <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
                   <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay ${{feedback_request.reward}}</button>
                 </div>
               </div>
@@ -65,16 +65,16 @@
     <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
 
     <script>
-      $(document).ready(function() {
-        braintree.setup("{{ client_token }}", "dropin", {
-          container: "payment-form",
-          paypal: {
-            singleUse: true,
-            amount: "{{ feedback_request.reward }}",
-            currency: 'USD'
-          }
+        $(document).ready(function() {
+          braintree.setup("{{ client_token }}", "dropin", {
+            container: "payment-form",
+            paypal: {
+              singleUse: true,
+              amount: "{{ feedback_request.reward }}",
+              currency: 'USD'
+            }
+          });
         });
-      });
     </script>
 
     <script>
