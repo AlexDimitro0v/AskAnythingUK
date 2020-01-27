@@ -14,9 +14,10 @@ from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Max
 from django.db.models import Min
-from .functions import get_time_delta, get_request_candidates
+from .functions import get_time_delta, get_request_candidates, has_premium
 from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
 import braintree
+
 from django.views.generic import (
     DeleteView
 )
@@ -41,7 +42,8 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 @login_required(login_url='landing-page')
 def home(request):
     context = {
-        'areas':  Area.objects.all()
+        'areas':  Area.objects.all(),
+        'has_premium' : has_premium(request.user)
     }
     return render(request, 'main/home.html', context)
 
@@ -164,6 +166,18 @@ def feedback_requests(request):
         time_posted = feedback_request.date_posted
         time_deltas.append(get_time_delta(time_posted, curr_time))
 
+    premium_requests = []
+    for feedback_request in feedback_requests:
+        if has_premium(feedback_request.feedbackee):
+            premium_requests.append(True)
+        else: premium_requests.append(False)
+
+    new_requests = []
+    for feedback_request in feedback_requests:
+        if (datetime.now(timezone.utc) - feedback_request.date_posted).total_seconds() < 86400:
+            new_requests.append(True)
+        else: new_requests.append(False)
+
     context = {
         'requests': feedback_requests,
         'tags': tags,
@@ -180,7 +194,10 @@ def feedback_requests(request):
         'filtered_min_time': filtered_min_time,
         'filtered_max_time': filtered_max_time,
         'most_used_tags': most_used_tags,
-        'time_deltas': time_deltas
+        'time_deltas': time_deltas,
+        'premium_requests': premium_requests,
+        'new_requests': new_requests,
+        'has_premium' : has_premium(request.user)
     }
 
     return render(request, 'main/feedback_requests.html', context)
@@ -208,6 +225,8 @@ def dashboard(request):
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
         'feedback_candidates': feedback_candidates,     # User instances
         'areas':  Area.objects.all(),
+        'has_premium' : has_premium(request.user)
+
     }
     return render(request, 'main/dashboard.html', context)
 
@@ -261,7 +280,10 @@ def new_feedback_request(request):
             return redirect('home-page')
 
     areas = Area.objects.all()
-    context = {"areas": areas}
+    context = {
+        "areas": areas,
+        'has_premium' : has_premium(request.user)
+        }
     return render(request, 'main/new_feedback_request.html', context)
 
 
@@ -288,6 +310,22 @@ def feedback_request(request):
     curr_time = datetime.now(timezone.utc)
     time_posted = feedback_request.date_posted
     time_delta = get_time_delta(time_posted, curr_time)
+
+    premium_request = False
+    if has_premium(feedback_request.feedbackee):
+                premium_request = True
+
+    new_request = False
+    if (datetime.now(timezone.utc) - feedback_request.date_posted).total_seconds() < 86400:
+        new_request = True
+
+    # Count the number of active applications the user has
+    num_of_applications = 0
+    if not has_premium(request.user):
+        applications = FeedbackerCandidate.objects.filter(feedbacker=request.user)
+        for application in applications:
+            if application.feedback.feedbackee == application.feedback.feedbacker:
+                num_of_applications +=1
 
     fs = FileSystemStorage()
 
@@ -325,10 +363,13 @@ def feedback_request(request):
             'time_delta': time_delta,
             'areas':  Area.objects.all(),
             'feedback_candidates': feedback_candidates,
-            'client_token': client_token,
             'date_posted': feedback_request.date_posted.replace(microsecond=0),
-            'date_completed': feedback_request.date_completed.replace(microsecond=0)
-
+            'date_completed': feedback_request.date_completed.replace(microsecond=0),
+            'has_premium': has_premium(request.user),
+            'new_request': new_request,
+            'premium_request': premium_request,
+            'three_or_more_applications': num_of_applications >= 3,
+            'client_token': client_token
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -447,6 +488,7 @@ def rate_feedbacker(request):
     context = {
         'request_id': request.GET.get('request_id', ''),
         'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'main/rate-feedbacker.html', context)
 

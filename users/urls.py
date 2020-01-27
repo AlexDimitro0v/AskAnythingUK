@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name="logout-page"),
     path('profile-page/', views.view_profile, name="profile-page"),
     path('customize-profile/', views.customize_user_profile, name="customize-profile-page"),
+    path('get-premium/', views.get_premium, name="get-premium-page"),
+    path('try-premium/', views.try_premium, name="try-premium-page"),
     path('activate/<slug:uidb64>/<slug:token>)/', views.activate, name='activate'),
     # 4 built-in views for password reset:
     # - password_reset sends the mail

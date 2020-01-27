@@ -1,5 +1,8 @@
 from .models import FeedbackRequest
 from django.contrib.auth.models import User
+from datetime import datetime
+from django.utils import timezone
+from users.models import UserProfile
 
 def get_time_delta(time_0,time_1):
         delta = time_1 - time_0
@@ -36,3 +39,7 @@ def get_request_candidates(feedback_request):
         curr_request_candidates_ids = [curr_candidate.id for curr_candidate in curr_request_candidates_ids]
         request_candidates = User.objects.filter(pk__in=set(curr_request_candidates_ids))
     return request_candidates
+
+def has_premium(user):
+    curr_user = UserProfile.objects.get(user=user)
+    return datetime.now(timezone.utc) <= curr_user.premium_ends

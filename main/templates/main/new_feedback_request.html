@@ -34,10 +34,15 @@
 
 
             <br>Feedback Files<br>
-            <label for="file-upload" class="button noselect" style="margin-left: 0px">
+            <label for="file-upload" class="btn btn-outline-info" style="cursor: pointer">
                 Upload Files
             </label>
             <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
+            <span style="margin-left: 10px; font-weight: 600" id="fileCount"></span>
+            <span style="margin-left: 10px; font-weight: 600" id="fileSize"></span>
+
+            <div style="margin-top: 10px" id="allFiles">
+            </div>
 
         </form>
 
@@ -55,12 +60,80 @@
         </div>
         <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
 
-        <script>
+
+        <!-- Files too large overlay -->
+        <div id=main-container">
+        <div id="overlay_toolarge" class="full-screen overlay">
+          <div class="full-screen">
+          <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+            <div class="decorative-text-wrapper noselect">Files Too Large</div>
+            <div class="cardbody"  style="margin-top:50px">
+              <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                Your files are over 10 megabytes in size<br>
+                Only premium users can upload large files.
+              </p>
+              <div class="border-top pt-2 mt-3"></div>
+
+              <div class="noselect button-corner">
+                <button class="btn btn-outline-info" id="no_premium" style="margin-right: 10px">Go Back</button>
+                <a href="{%url 'get-premium-page'%}" style="text-decoration:none;">
+                  <button class="btn btn-outline-info">Get Premium</button>
+                </a>
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+  <script>
     let tags = [];
     let numOfTags = 0;
     $(document).ready(function () {
+      $('#no_premium').click(function(e) {
+        $('#overlay_toolarge').css("display","none");
+        $('body').css("overflow","visible");
+      });
+      // https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+      function formatBytes(bytes, decimals = 1) {
+          if (bytes === 0) return '0 Bytes';
 
-    $('#submit_button').click(function() {
+          const k = 1024;
+          const dm = decimals < 0 ? 0 : decimals;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+      }
+
+      let totalSize = 0;
+      $("input[name=feedbackfiles]").change(function() {
+        $('#allFiles').empty();
+        let numOfFiles = $(this).get(0).files.length;
+        totalSize = 0;
+        for (var i = 0; i < numOfFiles; ++i) {
+            totalSize += $(this).get(0).files[i].size;
+            $('#allFiles').append("<div class='file-container'><img  style='width: 25px' src='{% static 'img/file.png' %}'/><p class='file-p'>"+ $(this).get(0).files[i].name.substring(0,20) +"</p></div>");
+
+        }
+
+        $("#fileSize").text(formatBytes(totalSize));
+
+        if(numOfFiles===1) {
+          $("#fileCount").text("1 file");
+        }
+        else {
+          $("#fileCount").text(numOfFiles + " files");
+        }
+      });
+
+      $('#submit_button').click(function() {
+        {% if not has_premium %}
+        if(totalSize>10485760) {
+          $('#overlay_toolarge').css("display","block");
+          $('body').css("overflow","hidden");
+        }
+        {% endif %}
         // Disable button to prevent multiple clicks
         $("#submit_button").attr("disabled", true);
         // Create an array of all selected files
@@ -107,6 +180,7 @@
                     }
 
                     if(!formValid) {
+                      $("#submit_button").attr("disabled", false);
                       return;
                     }
 
