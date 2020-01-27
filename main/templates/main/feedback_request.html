@@ -143,9 +143,14 @@
               {% endif %}
               {% if user_is_feedbackee and feedbacker_files_link != None and not feedback_request.feedbacker_rated%}
                   <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
-                      <button class="btn btn-outline-info" style="margin-top: 15px">Rate Feedbacker</button>
+                      <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
+              {%if date_posted != date_completed%}
+                  <a href="#" style="text-decoration:none;">
+                      <button class="btn btn-outline-info" style="margin-top: 10px">Release Money</button>
+                  </a>
+              {% endif%}
               </div>
             {% endif %}
 
@@ -358,11 +363,6 @@
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Options</div>
     <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
-    {%if feedback_request.date_posted != feedback_request.date_completed%}
-      <a href="#" style="text-decoration:none;">
-          <button class="btn btn-outline-info" >Release Money</button>
-      </a>
-    {% endif%}
       <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
           <button class="btn btn-outline-info" >Remove Feedback Request</button>
       </a>

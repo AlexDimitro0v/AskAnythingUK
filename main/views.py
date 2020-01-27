@@ -299,7 +299,12 @@ def feedback_request(request):
     feedbacker_files_link = None
 
     feedback_request = FeedbackRequest.objects.get(id=request_id)
-
+    # print(feedback_request.date_completed.replace(microsecond=0))
+    # print(feedback_request.date_posted.replace(microsecond=0))
+    # if feedback_request.date_completed.replace(microsecond=0) > feedback_request.date_posted.replace(microsecond=0):
+    #     print('Yes')
+    # else:
+    #     print("No")
     feedback_candidates = get_request_candidates(feedback_request)
 
     curr_time = datetime.now(timezone.utc)
@@ -361,6 +366,8 @@ def feedback_request(request):
             'time_delta': time_delta,
             'areas':  Area.objects.all(),
             'feedback_candidates': feedback_candidates,
+            'date_posted': feedback_request.date_posted.replace(microsecond=0),
+            'date_completed': feedback_request.date_completed.replace(microsecond=0),
             'has_premium': has_premium(request.user),
             'new_request': new_request,
             'premium_request': premium_request,
@@ -463,7 +470,7 @@ def rate_feedbacker(request):
 
     feedback_request = FeedbackRequest.objects.get(id=request_id)
 
-    if feedback_request.feedbackee != request.user or feedback_request.date_posted == feedback_request.date_completed or feedback_request.feedbacker_rated:
+    if feedback_request.feedbackee != request.user or feedback_request.date_posted.replace(microsecond=0) == feedback_request.date_completed.replace(microsecond=0) or feedback_request.feedbacker_rated:
         return redirect('dashboard')
 
     if request.method == "POST":
