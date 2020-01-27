@@ -786,25 +786,44 @@ color: #1F4D8A;
 }
 
 .file-container {
-  border: 1px dashed #aaa;
+  border: 2px dashed #ccc;
   border-radius: 8px;
   background: #fefefe;
   width: 125px;
+  height: 107px;
   text-align: center;
   padding: 10px;
   margin-right: 10px;
   display: inline-block;
   margin-top: 10px;
   vertical-align: top; /* here */
+  flex: 2;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.file-container:hover {
+  background: #eee;
 
 }
 
 .file-p {
-  margin-top: 0;
+margin-top: -5px;
 overflow: hidden;
 font-weight: 600;
 font-size: 0.8em;
 word-wrap: break-word;
+}
+
+.file-extension {
+  font-size: 0.5em;
+  color: white;
+  margin-left: -35px;
+  margin-top: 18px;
+  position: absolute;
+  font-weight: 600;
+  text-align: center;
+  width: 23px;
 }
 
 /*

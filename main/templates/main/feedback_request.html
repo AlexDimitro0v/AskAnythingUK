@@ -107,7 +107,7 @@
       <div class="row">
         <div class="col-sm landing-card" style="text-align: center; margin: 15px">
           <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
-          <h3 style="margin-top: 10px;">FEEDBACKEE</h3>
+          <h3 style="margin-top: 10px;">{{feedback_request.feedbackee}}</h3>
           <div class="border-top pt-4 "></div>
           <a href="{{ feedbackee_files_link }}" download="Feedbackee Files" style="text-decoration:none;">
               <button class="btn btn-outline-info" >Download Feedbackee's Files</button>
@@ -119,8 +119,10 @@
             </div>
           {% else %}
             <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-            <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
-            <h3 style="margin-top: 10px;">FEEDBACKER</h3>
+            <a href="{% url 'profile-page' %}?user={{feedback_request.feedbacker.id}}&feedback={{feedback_request.id}}">
+              <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
+              <h3 style="margin-top: 10px;">{{feedback_request.feedbacker}}</h3>
+            </a>
             <div class="border-top pt-4"></div>
               {% if feedbacker_files_link != None %}
                   <a href="{{ feedbacker_files_link }}" download="Feedbacker Files"  style="text-decoration:none;">
@@ -131,6 +133,10 @@
                   <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
                       <button class="btn btn-outline-info" >Submit Feedback</button>
                   </a>
+              {% elif user_is_feedbacker %}
+                <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
+                    <button class="btn btn-outline-info" style="margin-top: 15px">Resubmit Feedback</button>
+                </a>
               {% endif %}
               {% if user_is_feedbackee and feedbacker_files_link == None %}
                 <p style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: -4px">No Files Yet</p>
