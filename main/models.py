@@ -82,3 +82,16 @@ class Specialism(models.Model):
 # Why do we need this lonely model when we have feedbacker_comments field in the FeedbackRequest Model?
 class FeedbackerComments(models.Model):
     feedbacker_comments = models.TextField(default="")
+
+
+class Purchase(models.Model):
+    # Cannot delete a feedback of an existing purchase!
+    feedback = models.ForeignKey(FeedbackRequest, on_delete=models.PROTECT)
+    # Cannot delete a feedbackee of an existing purchase!
+    feedbackee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='buyer')
+    feedbacker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller')
+    time = models.DateTimeField(default=timezone.now)
+    is_completed = models.IntegerField(default=False)
+
+    def __str__(self):
+        return f"{self.feedback.title} Purchase"

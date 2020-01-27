@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area
+from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area, Purchase
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
@@ -15,6 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Max
 from django.db.models import Min
 from .functions import get_time_delta, get_request_candidates, has_premium
+from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
+
 from django.views.generic import (
     DeleteView
 )
@@ -24,6 +26,12 @@ from django.views.generic import (
 # DetailView  — to view a particular object
 # UpdateView  — to update a particular object
 # DeleteView  — to delete a particular object
+
+# Set up the payment gateway
+braintree.Configuration.configure(braintree.Environment.Sandbox,
+                                  merchant_id=BRAINTREE_MERCHANT_KEY,
+                                  public_key=BRAINTREE_PUBLIC_KEY,
+                                  private_key=BRAINTREE_PRIVATE_KEY)
 
 
 # =====================================================================================================================
@@ -155,7 +163,7 @@ def feedback_requests(request):
     curr_time = datetime.now(timezone.utc)
     for feedback_request in feedback_requests:
         time_posted = feedback_request.date_posted
-        time_deltas.append(get_time_delta(time_posted,curr_time))
+        time_deltas.append(get_time_delta(time_posted, curr_time))
 
     premium_requests = []
     for feedback_request in feedback_requests:
@@ -215,8 +223,9 @@ def dashboard(request):
         'my_requests': my_feedback_requests,            # Feedback Request instances
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
         'feedback_candidates': feedback_candidates,     # User instances
-        'areas' :  Area.objects.all(),
+        'areas':  Area.objects.all(),
         'has_premium' : has_premium(request.user)
+
     }
     return render(request, 'main/dashboard.html', context)
 
@@ -266,6 +275,7 @@ def new_feedback_request(request):
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
 
+            messages.success(request, "Your request has been published!")
             return redirect('home-page')
 
     areas = Area.objects.all()
@@ -293,7 +303,7 @@ def feedback_request(request):
 
     curr_time = datetime.now(timezone.utc)
     time_posted = feedback_request.date_posted
-    time_delta = get_time_delta(time_posted,curr_time)
+    time_delta = get_time_delta(time_posted, curr_time)
 
     premium_request = False
     if has_premium(feedback_request.feedbackee):
@@ -332,6 +342,8 @@ def feedback_request(request):
         else:
             user_is_candidate = True
 
+    client_token = braintree.ClientToken.generate()
+
     if request_id != "":
         context = {
             'feedback_request': FeedbackRequest.objects.get(id=request_id),
@@ -342,13 +354,14 @@ def feedback_request(request):
             'feedbacker_files_link': feedbacker_files_link,
             'user_is_feedbackee': user_is_feedbackee,
             'user_was_rejected': user_was_rejected,
-            'time_delta' : time_delta,
-            'areas' :  Area.objects.all(),
-            'feedback_candidates' : feedback_candidates,
-            'has_premium' : has_premium(request.user),
+            'time_delta': time_delta,
+            'areas':  Area.objects.all(),
+            'feedback_candidates': feedback_candidates,
+            'has_premium': has_premium(request.user),
             'new_request': new_request,
             'premium_request': premium_request,
-            'three_or_more_applications': num_of_applications >= 3
+            'three_or_more_applications': num_of_applications >= 3,
+            'client_token': client_token
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -369,12 +382,35 @@ def apply_as_feedbacker(request):
 
 @login_required
 def choose_feedbacker(request):
-    feedbacker_username = request.GET.get('user', '')
-    feedback_request_id = request.GET.get('feedback', '')
-    feedback_request = FeedbackRequest.objects.filter(id=feedback_request_id).first()
-    feedback_request.feedbacker = User.objects.filter(username=feedbacker_username).first()
-    feedback_request.save()
-    messages.success(request, f"Feedbacker has been chosen successfully!")
+
+    if request.method == 'POST':
+        try:
+            feedback_request = FeedbackRequest.objects.get(id=request.POST['feedback_request_id'])
+            feedbacker = User.objects.get(username=request.POST['feedbacker_username'])
+        except FeedbackRequest.DoesNotExist:
+            return redirect('/')
+
+        nonce = request.POST["payment_method_nonce"]
+        result = braintree.Transaction.sale({
+            "amount": feedback_request.reward,
+            "payment_method_nonce": nonce
+        })
+
+        if result.is_success:
+            feedback_request.feedbacker = feedbacker
+            feedback_request.save()
+            purchase = Purchase(
+                feedback=feedback_request,
+                feedbackee=feedback_request.feedbackee,
+                feedbacker=feedbacker,
+                time=datetime.now(tz=timezone.utc)
+            )
+            purchase.save()
+
+            messages.success(request, f"Feedbacker has been chosen successfully!")
+        else:
+            messages.error(request, f"Problem with payment method")
+
     return redirect('dashboard')
 
 
@@ -408,7 +444,7 @@ def submit_feedback(request):
 
     context = {
         'request_id': request.GET.get('request_id', ''),
-        'areas' :  Area.objects.all(),
+        'areas':  Area.objects.all(),
     }
     return render(request, 'main/submit_feedback.html', context)
 
@@ -443,8 +479,8 @@ def rate_feedbacker(request):
 
     context = {
         'request_id': request.GET.get('request_id', ''),
-        'areas' :  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'main/rate-feedbacker.html', context)
 
@@ -457,6 +493,7 @@ def withdraw_application(request):
     application.delete()
     messages.success(request, f"Your application has been withdrawn!")
     return redirect('dashboard')
+
 
 # =====================================================================================================================
 

@@ -37,32 +37,60 @@
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
             Are you sure you want to choose {{candidate}} as your feedbacker?<br>This action cannot be reverted.
           </p>
-          <div class="border-top pt-2 mt-3"></div>
+          <br>
 
-          <div class="noselect button-corner">
-            <button class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">No</button>
-            <a href="{% url 'choose-feedbacker-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
-              <button class="btn btn-outline-info">Yes</button>
-            </a>
-        </div>
+            <form method="POST" action="/choose-feedbacker/">
+              {% csrf_token %}
+              <div id="payment-form" style="text-align:center;">
+                <span>Payment</span>
+                <!--input elements for user card data-->
+
+                <input type="hidden" name="payment_method_nonce">
+                <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
+                <input name="feedbacker_username" value="{{ candidate }}" hidden>
+                <div class="noselect button-corner">
+                  <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
+                  <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay ${{feedback_request.reward}}</button>
+                </div>
+              </div>
+            </form>
+
         </div>
       </div>
       </div>
     </div>
   </div>
 
+    <!-- load the required client component -->
+    <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+
+    <script>
+        $(document).ready(function() {
+          braintree.setup("{{ client_token }}", "dropin", {
+            container: "payment-form",
+            paypal: {
+              singleUse: true,
+              amount: "{{ feedback_request.reward }}",
+              currency: 'USD'
+            }
+          });
+        });
+    </script>
+
     <script>
       $(document).ready(function () {
         $('#choose-feedbacker{{forloop.counter}}').click(function(e) {
           $('#overlay{{forloop.counter}}').css("display","block");
           $('body').css("overflow","hidden");
-
         });
+
         $('#no{{forloop.counter}}').click(function(e) {
           $('#overlay{{forloop.counter}}').css("display","none");
           $('body').css("overflow","visible");
         });
+
       });
+
     </script>
     {% endfor %}
   </div>
@@ -323,11 +351,16 @@
 {% if user_is_feedbackee and feedback_request.feedbacker == feedback_request.feedbackee %}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Options</div>
-  <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
-    <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
-        <button class="btn btn-outline-info" >Remove Feedback Request</button>
-    </a>
-  </div>
+    <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+    {%if feedback_request.date_posted != feedback_request.date_completed%}
+      <a href="#" style="text-decoration:none;">
+          <button class="btn btn-outline-info" >Release Money</button>
+      </a>
+    {% endif%}
+      <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
+          <button class="btn btn-outline-info" >Remove Feedback Request</button>
+      </a>
+    </div>
 </div>
 {% endif %}
 {% endblock%}
