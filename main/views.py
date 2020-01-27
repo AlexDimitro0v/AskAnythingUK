@@ -16,6 +16,7 @@ from django.db.models import Max
 from django.db.models import Min
 from .functions import get_time_delta, get_request_candidates, has_premium
 from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
+import braintree
 
 from django.views.generic import (
     DeleteView
