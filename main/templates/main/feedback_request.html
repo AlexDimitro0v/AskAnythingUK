@@ -289,11 +289,16 @@
 {% if user_is_feedbackee and feedback_request.feedbacker == feedback_request.feedbackee %}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Options</div>
-  <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
-    <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
-        <button class="btn btn-outline-info" >Remove Feedback Request</button>
-    </a>
-  </div>
+    <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
+    {%if feedback_request.date_posted != feedback_request.date_completed%}
+      <a href="#" style="text-decoration:none;">
+          <button class="btn btn-outline-info" >Release Money</button>
+      </a>
+    {% endif%}
+      <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
+          <button class="btn btn-outline-info" >Remove Feedback Request</button>
+      </a>
+    </div>
 </div>
 {% endif %}
 {% endblock%}

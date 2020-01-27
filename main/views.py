@@ -403,7 +403,7 @@ def submit_feedback(request):
 
     context = {
         'request_id': request.GET.get('request_id', ''),
-        'areas' :  Area.objects.all(),
+        'areas':  Area.objects.all(),
     }
     return render(request, 'main/submit_feedback.html', context)
 
