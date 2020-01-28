@@ -1,16 +1,17 @@
 {% extends 'main/base.html' %}
 {% block content%}
 {% load static %}
+{% load multifor %}
 
 {% if user_is_feedbackee and feedback_candidates and feedback_request.feedbacker == feedback_request.feedbackee %}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Candidates</div>
   <div class="cardbody" style="margin-top:50px; margin-bottom: 0">
-    {% for candidate in feedback_candidates%}       <!--For username in User instance-->
+    {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums %}       <!--For username in User instance-->
     <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
       <span class="feedback-request-link" style="display: inline-block; padding: 5px; padding-left: 20px; padding-right: 20px">
         <a href="{% url 'profile-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
-          <img class="photo-circle" src="{{ candidate.userprofile.image.url }}"/>
+          <img class="photo-circle" src="{{ candidate.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
         </a>
       </span>
@@ -33,16 +34,16 @@
       <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
         <div class="decorative-text-wrapper noselect">Are you sure?</div>
         <div class="cardbody"  style="margin-top:50px">
-          <img class="large-photo-circle" src="{{ candidate.userprofile.image.url }}"/>
+          <img class="large-photo-circle" src="{{ candidate.userprofile.image.url }}" style="border: 8px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
             Are you sure you want to choose {{candidate}} as your feedbacker?<br>This action cannot be reverted.
           </p>
-          <br>
+          <div class="border-top pt-3 mt-3"></div>
 
             <form method="POST" action="/choose-feedbacker/">
               {% csrf_token %}
               <div id="payment-form" style="text-align:center;">
-                <span>Payment</span>
+                <span style="font-weight: 600; font-size: 1.2em; text-align: center">Payment</span>
                 <!--input elements for user card data-->
 
                 <input type="hidden" name="payment_method_nonce">
@@ -115,7 +116,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-          <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
+          <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle" style="border-color: {% if feedbackee_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <h3 style="margin-top: 10px;">{{feedback_request.feedbackee}}</h3>
           <div class="border-top pt-4 "></div>
           <a href="{{ feedbackee_files_link }}" download="Feedbackee Files" style="text-decoration:none;">
@@ -129,7 +130,7 @@
           {% else %}
             <div class="col-sm landing-card" style="text-align: center; margin: 15px">
             <a href="{% url 'profile-page' %}?user={{feedback_request.feedbacker.id}}&feedback={{feedback_request.id}}">
-              <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle" style="border-color: #ccc;"/>
+              <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle" style="border-color: {% if feedbacker_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
               <h3 style="margin-top: 10px;">{{feedback_request.feedbacker}}</h3>
             </a>
             <div class="border-top pt-4"></div>
@@ -197,7 +198,7 @@
   <div class="decorative-text-wrapper noselect">Description</div>
     <div class="cardbody"  style="margin-top: 60px; margin-bottom: 0">
       <div style="margin-bottom: 18px; ">
-        <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+        <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if premium_request %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
         <span class="bold-p">{{ feedback_request.feedbackee }}</span>
         <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ time_delta }} ago </span>
       </div>
@@ -397,7 +398,7 @@
   <div class="decorative-text-wrapper noselect">Options</div>
     <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
       <a href="{% url 'request-delete' feedback_request.id %}" style="text-decoration:none;">
-          <button class="btn btn-outline-info" >Remove Feedback Request</button>
+          <button class="btn btn-outline-danger" style="margin: 0 auto; display: block">Remove Feedback Request</button>
       </a>
     </div>
 </div>

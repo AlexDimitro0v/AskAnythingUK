@@ -111,9 +111,9 @@
       </div>
 
       {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas; curr_premium in premium_requests; curr_new in new_requests %}
-      <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}" style="margin-left: 20px;">
+      <div class="feedback-request {% if curr_premium %} premium-request {% endif %}" style="margin-left: 20px;">
           <div style="margin-bottom: 18px">
-            <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+            <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if curr_premium %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
             <span class="bold-p">{{ feedback_request.feedbackee }}</span>
             <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
           </div>
