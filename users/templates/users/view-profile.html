@@ -24,11 +24,24 @@
         <div class="premium-badge noselect" style="margin-top: -17px; margin-bottom: 20px">Premium</div>
       {% endif %}
       <div class="border-top pt-1"></div>
-        {% if user_to_view.userprofile.description %}
+          {% if user_to_view.userprofile.description %}
             <p>{{ user_to_view.userprofile.description }}</p>
-        {% else %}
+          {% else %}
             <p>No profile description.</p>
-        {% endif %}
+          {% endif %}
+          <p>Member Since: {{ user_to_view.date_joined|date:"d M Y" }}</p>
+          {% if user_to_view.userprofile.linkedin %}
+            <p>LinkedIn Profile:</p>
+            <a href="{{ user_to_view.userprofile.linkedin }}">{{ user_to_view.userprofile.linkedin }}</a>
+          {% endif %}
+          {% if user_to_view.userprofile.url_link_1 or user_to_view.userprofile.url_link_2 or user_to_view.userprofile.url_link_3 %}
+            <p>Personal Website Links:</p>
+            <ul style="list-style-type: none">
+              <li><a href="{{ user_to_view.userprofile.url_link_1 }}">{{ user_to_view.userprofile.url_link_1 }}</a></li>
+              <li><a href="{{ user_to_view.userprofile.url_link_2 }}">{{ user_to_view.userprofile.url_link_2 }}</a></li>
+              <li><a href="{{ user_to_view.userprofile.url_link_3 }}">{{ user_to_view.userprofile.url_link_3 }}</a></li>
+            </ul>
+          {% endif %}
     </div>
 </div>
 <div class="feedback-request">

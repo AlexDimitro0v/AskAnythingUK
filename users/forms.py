@@ -64,7 +64,7 @@ class EditProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['city', 'description', 'image', 'x', 'y', 'width', 'height', ]
+        fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2', 'url_link_3', 'image', 'x', 'y', 'width', 'height', ]
 
     def save(self):
         photo = super(EditProfileForm, self).save()
