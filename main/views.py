@@ -277,7 +277,7 @@ def new_feedback_request(request):
                 tag_record.save()
 
             messages.success(request, "Your request has been published!")
-            return redirect('home-page')
+    #       return redirect('home-page')
 
     areas = Area.objects.all()
     context = {
@@ -347,6 +347,9 @@ def feedback_request(request):
             user_was_rejected = True
         else:
             user_is_candidate = True
+
+    if feedback_request.feedbackee != feedback_request.feedbacker and not user_is_feedbackee and not user_is_feedbacker and not user_was_rejected:
+        return redirect('dashboard')
 
     client_token = braintree.ClientToken.generate()
 
@@ -446,6 +449,8 @@ def submit_feedback(request):
 
             feedbackZIPFile = request.FILES['fileZip']
             fs = FileSystemStorage()
+            # Delete any previously submitted feedback
+            fs.delete('zip_files/' + str(feedback_request.id) + '_feedbacker.zip')
             fs.save('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
             messages.success(request, "Feedback submitted!")
             return redirect('dashboard')
