@@ -34,7 +34,7 @@
 
 
             <br>Feedback Files<br>
-            <label for="file-upload" class="btn btn-outline-info" style="cursor: pointer; margin-bottom:5px;">
+            <label for="file-upload" class="btn btn-outline-info" style="cursor: pointer">
                 Upload Files
             </label>
             <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
@@ -113,7 +113,7 @@
         totalSize = 0;
         for (var i = 0; i < numOfFiles; ++i) {
             totalSize += $(this).get(0).files[i].size;
-            $('#allFiles').append("<div class='file-container' style='margin-top: 0px;'><img  style='width: 25px' src='{% static 'img/file.png' %}'/><p class='file-p' style='margin-top: 0px;'>"+ $(this).get(0).files[i].name.substring(0,20) +"</p></div>");
+            $('#allFiles').append("<div class='file-container'><img  style='width: 25px' src='{% static 'img/file.png' %}'/><p class='file-p'>"+ $(this).get(0).files[i].name.substring(0,20) +"</p></div>");
 
         }
 
