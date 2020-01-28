@@ -90,6 +90,12 @@
     $('#submit_button').click(function() {
        // Disable button to prevent multiple clicks
        $("#submit_button").attr("disabled", true);
+       swal({
+        title: "You have successfully submitted your feedback!",
+        text: "The feedbackee will review the feedback and then release the money.",
+        icon: "success",
+        buttons: false
+        });
         // Create an array of all selected files
         let nonNullSelectedFiles = selectedFiles.filter(file => file != null);
 

@@ -74,6 +74,15 @@
               currency: 'USD'
             }
           });
+
+        $('#yes{{forloop.counter}}').click(function(e) {
+           swal({
+            title: "You have successfully hired {{candidate}}!",
+            text: "The money will be put on hold. We take a 10% cut.",
+            icon: "success",
+            buttons: false
+           });
+        });
         });
     </script>
 
@@ -146,11 +155,32 @@
                       <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
-              {%if date_posted != date_completed%}
-                  <a href="#" style="text-decoration:none;">
-                      <button class="btn btn-outline-info" style="margin-top: 10px">Release Money</button>
-                  </a>
+              {%if feedbacker_files_link%}
+                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money">Release Money</button>
               {% endif%}
+              <script>
+                $(document).ready(function () {
+                  $('#release-money').click(function() {
+                   swal({
+                    title: "Are you sure?",
+                    text: "This action cannot be reverted.",
+                    icon: "warning",
+                    buttons: ['Cancel', 'Release'],
+                    dangerMode: true
+                  })
+                  .then((willDelete) => {
+                    if (willDelete) {
+                      swal("Money released!", {
+                        icon: "success",
+                      });
+                    }
+                  });
+                  });
+                });
+
+              </script>
+
+
               </div>
             {% endif %}
 
@@ -159,6 +189,9 @@
   </div>
 </div>
 {% endif %}
+
+
+
 
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Description</div>
