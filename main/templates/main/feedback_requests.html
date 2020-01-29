@@ -346,23 +346,11 @@
           {% endif %}
           $('#filterForm').submit();
       });
-
-      $( ".cut-text" ).each(function() {
-          if($(this).text().length > 500) {
-            text = $(this).text();
-            firstSpaceIndex = text.substring(500,text.length).indexOf(" ");
-            dots = "...";
-            if(firstSpaceIndex>-1) {
-              if(text[500+firstSpaceIndex-1] === ".") {
-                dots = "..";
-              }
-              $(this).text($(this).text().substring(0,500+firstSpaceIndex) + dots);
-            }
-            else {
-              $(this).text($(this).text().substring(0,500) + dots);
-            }
-          }
-      });
     });
+
+    let maxLength = 500;
+    {% include "main/cutText.js" %}
+
     </script>
+
 {% endblock%}

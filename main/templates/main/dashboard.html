@@ -30,7 +30,7 @@
       <div class="border-top pt-1"></div>
 
         {% if user.userprofile.description %}
-            <p>{{ user.userprofile.description }}</p>
+            <p style="white-space: pre-wrap;" class="cut-text">{{ user.userprofile.description }}</p>
         {% else %}
             <p>No profile description.</p>
         {% endif %}
@@ -113,5 +113,9 @@
     {% endif %}
     </div>
 </div>
+<script>
+  let maxLength = 300;
+  {% include "main/cutText.js" %}
+</script>
 
 {% endblock %}

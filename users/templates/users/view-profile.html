@@ -24,25 +24,58 @@
         <div class="premium-badge noselect" style="margin-top: -17px; margin-bottom: 20px">Premium</div>
       {% endif %}
       <div class="border-top pt-1"></div>
+      <div style="display: flex; margin: 15px; justify: space-between">
+        <div style="text-align: center; font-weight: 600; width: 100%">
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%; margin-bottom: 5px" src="{% static 'img/location.png' %}"/>
+          Location <br>
+          {{ user_to_view.userprofile.city }}
+        </div>
+        <div style="text-align: center; font-weight: 600; width: 100%">
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border: 3px solid #ccc; margin-bottom: 5px; " src="{% static 'img/default.jpg' %}"/>
+          Member Since <br>
+          {{ user_to_view.date_joined|date:"d M Y" }}
+        </div>
+        <div style="text-align: center; font-weight: 600; width: 100%">
+          <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px;border-radius: 0; margin-bottom: 5px" src="{% static 'img/stats.png' %}"/>
+          Jobs Finished <br>
+          {{jobs_finished}}
+        </div>
+      </div>
+      <div class="border-top pt-1"></div>
+
           {% if user_to_view.userprofile.description %}
-            <p>{{ user_to_view.userprofile.description }}</p>
+            <p style="white-space: pre-wrap;">{{ user_to_view.userprofile.description }}</p>
           {% else %}
             <p>No profile description.</p>
           {% endif %}
-          <p>Member Since: {{ user_to_view.date_joined|date:"d M Y" }}</p>
-          {% if user_to_view.userprofile.linkedin %}
-            <p>LinkedIn Profile:</p>
-            <a href="{{ user_to_view.userprofile.linkedin }}">{{ user_to_view.userprofile.linkedin }}</a>
-          {% endif %}
-          {% if user_to_view.userprofile.url_link_1 or user_to_view.userprofile.url_link_2 or user_to_view.userprofile.url_link_3 %}
-            <p>Personal Website Links:</p>
-            <ul style="list-style-type: none">
-              <li><a href="{{ user_to_view.userprofile.url_link_1 }}">{{ user_to_view.userprofile.url_link_1 }}</a></li>
-              <li><a href="{{ user_to_view.userprofile.url_link_2 }}">{{ user_to_view.userprofile.url_link_2 }}</a></li>
-              <li><a href="{{ user_to_view.userprofile.url_link_3 }}">{{ user_to_view.userprofile.url_link_3 }}</a></li>
-            </ul>
-          {% endif %}
+
+      <div class="border-top pt-1 mt-3"></div>
+      <div style="display: flex; margin: 15px; justify: space-between">
+      {% if user_to_view.userprofile.linkedin %}
+      <div style="text-align: center; font-weight: 600; width: 100%">
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%;  margin-bottom: 10px" src="{% static 'img/linkedin.png' %}"/>
+        <a href="{{ user_to_view.userprofile.linkedin }}">LinkedIn Profile</a>
+      </div>
+      {% endif %}
+      {% if user_to_view.userprofile.url_link_1 %}
+      <div style="text-align: center; font-weight: 600; width: 100%">
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%;  margin-bottom: 10px" src="{{ user_to_view.userprofile.image.url }}"/>
+        <a href="{{ user_to_view.userprofile.url_link_1 }}">Personal Website</a>
+      </div>
+      {% endif %}
     </div>
+  </div>
+</div>
+<div class="feedback-request">
+     <div class="decorative-text-wrapper noselect">Skills & Education</div>
+     <div style="margin-top:50px; vertical-align: middle;">
+       <div style="display: inline-block;">
+              {% for skill in user_skills %}
+                  <span class="tag inline-tag no-click-tag noselect" style="font-size: 1.2em; font-weight: 600;">{{ skill }}</span>
+              {% endfor %}
+
+            </div>
+      </div>
 </div>
 <div class="feedback-request">
      <div class="decorative-text-wrapper noselect">Ratings</div>

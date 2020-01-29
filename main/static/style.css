@@ -813,6 +813,14 @@ word-wrap: break-word;
   width: 23px;
 }
 
+.no-click-tag {
+  cursor: default;
+}
+
+.no-click-tag:hover {
+  background: #eee;
+}
+
 /*
 Logo Colours
 #43C2F0  - light upper

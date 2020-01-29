@@ -2,7 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content%}
-
+    <style>
+      #hint_id_username {
+        display: none;
+      }
+    </style>
     <div class="large-area" style="max-width: 700px">
       <div class="decorative-text-wrapper noselect">Customize Profile</div>
       <div class="cardbody">
@@ -14,7 +18,18 @@
             {{ u_form|crispy }}  <!-- Crispy Forms do the design for us -->
             {{ p_form|crispy }}  <!-- Crispy Forms do the design for us -->
         </form>
+        <form onsubmit="return false" style="margin-top: 15px;">
+            Skills<br>
+            <input id="tag-input" class="form-control" maxlength="20" style="max-width: 200px; margin-top: 0" >
+        </form>
 
+        <div  style="margin-top: 10px;">
+          <span id="tags">
+            {% for skill in user_skills %}
+              <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
+            {% endfor %}
+          </span>
+        </div>
         <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
        <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
         <div class="modal fade" role="dialog" id="modalCrop">
@@ -43,11 +58,26 @@
           </div>
         </div>
        </div>
-       
+
        <button class="button-corner btn btn-outline-info" id="submit_button">Update</button>
 
         <div id="tags"></div>
             <script>
+              $(document).ready(function () {
+                    let maxTags = 10;
+                    let tags = {{ user_skills|safe }};
+                    let numOfTags = {{ user_skills|length }};
+
+                    {% include "main/tags.js" %}
+
+                    /* SCRIPT TO POST TO THE SERVER */
+                    $('#submit_button').click(function() {
+                        $("#customizeProfileForm").attr('action',"/customize-profile/?tags="+tags);
+                        $("#customizeProfileForm").submit();
+                    });
+                });
+
+
                 $(function () {
                   /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
                   $("#id_image").change(function () {
@@ -99,12 +129,6 @@
                     $("#id_width").val(cropData["width"]);
                     $('#modalCrop').modal('hide');
                   });
-                });
-
-                /* SCRIPT TO POST TO THE SERVER */
-                let tags = [];
-                $('#submit_button').click(function() {
-                    $("#customizeProfileForm").submit();
                 });
             </script>
         </div>

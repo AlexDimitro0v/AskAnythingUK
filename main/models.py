@@ -73,12 +73,6 @@ class Tag(models.Model):
         return self.category.name
 
 
-# Why we are using this model (Tag model does the same work)?
-class Specialism(models.Model):
-    feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-
 # Why do we need this lonely model when we have feedbacker_comments field in the FeedbackRequest Model?
 class FeedbackerComments(models.Model):
     feedbacker_comments = models.TextField(default="")

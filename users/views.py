@@ -9,12 +9,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from main.models import Rating, Area
+from main.models import Rating, Area, FeedbackRequest, Category
 from dateutil.relativedelta import relativedelta
-from .models import UserProfile
+from .models import UserProfile, Specialism
 from datetime import datetime
 from django.utils import timezone
 from main.functions import has_premium
+from django.db.models import F        # used to compare 2 instances or fields of the same model
 
 def register(request):
     context = {
@@ -90,17 +91,39 @@ def customize_user_profile(request):
         if u_form.is_valid() and p_form.is_valid():        # check whether both forms are valid
             u_form.save()
             p_form.save()
+
+            tags = list(set(request.GET.get('tags', '').split(",")))
+
+            # Delete all previous skills
+            Specialism.objects.filter(feedbacker=request.user).delete()
+
+            # Save each tag instance to database
+            for tag in tags:
+                if tag=="": continue
+                category_record = Category.objects.filter(name=tag)
+                if not category_record:
+                    category_record = Category(name=tag)
+                    category_record.save()
+                else:
+                    category_record = category_record[0]
+                tag_record = Specialism(feedbacker=request.user, category=category_record)
+                tag_record.save()
             messages.success(request, f"Your account has been updated!")
             return redirect('profile-page')  # redirects the user to the profile page to avoid POST-GET-REDIRECT PATTERN
             # https://stackoverflow.com/questions/10827242/understanding-the-post-redirect-get-pattern
-    else:
-        u_form = EditUserForm(instance=request.user)
-        p_form = EditProfileForm(instance=request.user.userprofile)
+
+    u_form = EditUserForm(instance=request.user)
+    p_form = EditProfileForm(instance=request.user.userprofile)
+
+    user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
+    user_skills = [str(skill.category) for skill in user_skills_ids]
+
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'areas' :  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user),
+        'user_skills': user_skills
     }
     return render(request, 'users/customize_profile.html', context=context)
 
@@ -116,13 +139,20 @@ def view_profile(request):
     if not user_to_view:                    # establish the independence of the app again
         user_to_view = request.user         # get the the currently logged in user
 
+    jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F('feedbacker')))
+
+    user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
+    user_skills = [skill.category for skill in user_skills_ids]
+
     ratings = Rating.objects.filter(feedbacker=user_to_view)
     context = {
         'user_to_view': user_to_view,
         'user_ratings': ratings,
         'areas': Area.objects.all(),
         'has_premium': has_premium(request.user),
-        'viewed_has_premium': has_premium(user_to_view)
+        'viewed_has_premium': has_premium(user_to_view),
+        'jobs_finished': jobs_finished,
+        'user_skills': user_skills
     }
     return render(request, 'users/view-profile.html', context)
 

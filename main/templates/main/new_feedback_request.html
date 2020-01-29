@@ -55,8 +55,9 @@
             <input id="tag-input" class="form-control" maxlength="20" style="max-width: 200px; margin-top: 0" >
         </form>
 
-        <div>
-            <div id="tags" style="margin-top: 20px; height: 1px"></div>
+        <div  style="margin-top: 10px;">
+          <span id="tags"></span>
+        </div>
         </div>
         <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
 
@@ -86,15 +87,17 @@
         </div>
       </div>
   <script>
-    let tags = [];
-    let numOfTags = 0;
-    $(document).ready(function () {
+
+$(document).ready(function () {
+      let tags = [];
+      let numOfTags = 0;
+      let maxTags = 5;
+      {% include "main/tags.js" %}
+
       $('#no_premium').click(function(e) {
         $('#overlay_toolarge').css("display","none");
         $('body').css("overflow","visible");
       });
-
-
 
       // https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
       function formatBytes(bytes, decimals = 1) {
@@ -233,28 +236,7 @@
         addFileToZip(0);
     });
 
-    // When enter is pressed, new tag is added
-    $('#tag-input').keypress(function (e) {
-        if (e.which == 13 ) {
-          let tagValue = $('#tag-input').val().trim();
-          if(tagValue != "" && numOfTags < 5 && !tags.includes(tagValue)) {
-            numOfTags++;
-            tags.push(tagValue);
-            $('#tag-input').val('');
-            $('#tags').append("<span class='tag' id='tagtag'>"+tagValue+"</span>");
-          }
-        }
-
-    });
-
-    $("body").on("click", ".tag", function(){
-      tags.pop($(this).val);
-      $(this).remove();
-      numOfTags--;
-     });
-
-    });
-
+  });
         </script>
     </div>
 </div>
