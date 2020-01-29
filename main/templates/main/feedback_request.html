@@ -10,7 +10,7 @@
     {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums %}       <!--For username in User instance-->
     <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
       <span class="feedback-request-link" style="display: inline-block; padding: 5px; padding-left: 20px; padding-right: 20px">
-        <a href="{% url 'profile-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
+        <a href="{% url 'profile-page' %}?user={{candidate.id}}&feedback={{feedback_request.id}}">
           <img class="photo-circle" src="{{ candidate.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
         </a>
