@@ -376,7 +376,6 @@ def feedback_request(request):
         return redirect('dashboard')
 
     client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
-    print(client_tokens)
     if request_id != "":
         context = {
             'feedback_request': feedback_request,
@@ -546,9 +545,11 @@ def withdraw_application(request):
 def finish_purchase(request):
     feedback_request_id = request.GET.get('feedback_request', '')
     feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
-
-    print(feedback_request)
-    purchase = Purchase.objects.get(feedback=feedback_request)
+    try:
+        purchase = Purchase.objects.get(feedback=feedback_request_id)
+    except:
+        raise Exception('This request simply does not have a Purchase instance, i.e. it is an old request. Try'
+                        'creating one manually via the admin panel.')
     purchase.is_completed = True
     purchase.save()
     return redirect('dashboard')

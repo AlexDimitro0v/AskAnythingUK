@@ -72,7 +72,7 @@
             container: "payment-form{{forloop.counter}}",
             paypal: {
               singleUse: true,
-              amount: "{{ feedback_request.rewaxrd }}",
+              amount: "{{ feedback_request.reward }}",
               currency: 'USD'
             }
           });
@@ -159,16 +159,11 @@
                       <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
-              {%if feedbacker_files_link and not purchase.is_completed and not  feedback_request.feedbacker == user%}
-                <form method="post">
-                  {% csrf_token %}
+              {%if feedbacker_files_link and not purchase.is_completed and not feedback_request.feedbacker == user%}
                   <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money" type="submit">Release Money</button>
-                </form>
               {% endif%}
               <script>
-
                   $('#release-money').click(function() {
-                  var data = $(this).serialize();
                    swal({
                     title: "Are you sure?",
                     text: "This action cannot be reverted.",
@@ -176,22 +171,17 @@
                     buttons: ['Cancel', 'Release'],
                     dangerMode: true,
                   })
-                  .then((willRelease) => {
-                    if (willRealease) {
-                      $.ajaxSubmit({
-                        type: 'POST',
-                        url: "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}",
-                        data: data,
-                        success: function (data) {
-                          swal("Money released!", {
-                            icon: "success",
-                          });
-                        }
-                      });
+                  .then((willDelete) => {
+                    if (willDelete) {
+                    swal("Money released!", {
+                      icon: "success",
+                      buttons:false})
+                     window.setTimeout(function(){
+                        window.location = "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}";
+                    }, 1300);
                     }
                   });
                   });
-
               </script>
 
 
