@@ -2,6 +2,7 @@ from django import forms
 from .models import FeedbackRequest
 from .models import FeedbackerComments
 from .models import Rating
+from .models import FeedbackerCandidate
 
 
 class NewFeedbackRequestForm(forms.Form):
@@ -33,3 +34,10 @@ class FeedbackerRatingForm(forms.Form):
     class Meta:
         model = Rating
         fields = ["quality", "speed", "communication", "review"]
+
+class ApplicationForm(forms.Form):
+    application = forms.CharField()
+
+    class Meta:
+        model = FeedbackerCandidate
+        fields = ["application"]

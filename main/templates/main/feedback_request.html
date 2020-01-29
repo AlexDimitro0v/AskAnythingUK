@@ -11,16 +11,17 @@
     {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums; token in client_tokens %}       <!--For username in User instance-->
     <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
       <span class="feedback-request-link" style="display: inline-block; padding: 5px; padding-left: 20px; padding-right: 20px">
-        <a href="{% url 'profile-page' %}?user={{candidate.id}}&feedback={{feedback_request.id}}">
-          <img class="photo-circle" src="{{ candidate.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
-          <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
+        <a href="{% url 'profile-page' %}?user={{candidate.feedbacker.id}}&feedback={{feedback_request.id}}">
+          <img class="photo-circle" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
+          <span style="margin-left: 10px; font-weight: 600">{{candidate.feedbacker}}</span>
         </a>
       </span>
       <span style="float: right">
           <button class="btn btn-outline-info" id="choose-feedbacker{{forloop.counter}}">Choose as Feedbacker</button>
       </span>
       <div class="border-top pt-2 mt-3"></div>
-      <p style="font-size: 100%; line-height: 1.8em">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer malesuada urna lectus, eu pretium odio vulputate ac. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla facilisi. Cras sollicitudin nunc a justo aliquet venenatis. Sed vitae erat lacus. Nunc faucibus augue ex. Morbi tempor rutrum tortor suscipit pharetra. Mauris euismod interdum ipsum, at faucibus ex viverra at. Maecenas iaculis iaculis mi, sed ullamcorper diam efficitur ac.
+      <p style="font-size: 100%; line-height: 1.8em">
+        {{candidate.application}}
       </p>
       <div>
 
@@ -35,9 +36,9 @@
       <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
         <div class="decorative-text-wrapper noselect">Are you sure?</div>
         <div class="cardbody"  style="margin-top:50px">
-          <img class="large-photo-circle" src="{{ candidate.userprofile.image.url }}" style="border: 8px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
+          <img class="large-photo-circle" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 8px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
-            Are you sure you want to choose {{candidate}} as your feedbacker?<br>This action cannot be reverted.
+            Are you sure you want to choose {{candidate.feedbacker}} as your feedbacker?<br>This action cannot be reverted.
           </p>
           <div class="border-top pt-3 mt-3"></div>
 
@@ -49,7 +50,7 @@
 
                 <input type="hidden" name="payment_method_nonce">
                 <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
-                <input name="feedbacker_username" value="{{ candidate }}" hidden>
+                <input name="feedbacker_username" value="{{ candidate.feedbacker }}" hidden>
                 <div class="noselect button-corner">
                   <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
                   <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay ${{feedback_request.reward}}</button>
@@ -242,22 +243,30 @@
       <img src = "{% static 'img/cross4.png'%}" class="photo-circle large-photo-circle"/>
       <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Rejected</p>
     {% elif not user_is_candidate %}
-    <div>
-      <ul>
-      <li>By applying, you are agreeing to provide feedback within the specified timeframe. <br></li>
-      <li>If your application is accepted, you can no longer withdraw it.</li>
-      </ul>
-  <!--
-    <form style="font-family: inherit">
-      <input type="checkbox" class="checkbox" style="-webkit-appearance: checkbox;"> I understand<br>
-      </form> -->
-    </div>
-    <br>
-    <br>
 
+    <form action="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" method="POST" id="applyForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        Why are you a good candidate? (Max 300 characters)<br><textarea  maxlength="300" rows="5" id="application" name="application" class="form-control"></textarea>
+    </form>
+    <br>
+    <br>
+    <br>
     <div class="button-corner">
-        <button class="btn btn-outline-info" id="apply">Apply as Feedbacker</button>
+        <button class="btn btn-outline-info" id="apply" disabled>Apply as Feedbacker</button>
     </div>
+
+    <script>
+      $(function () {
+        $('#application').on('keyup', function(){
+        if ($(this).val() == '') {
+            $('#apply').prop('disabled', true);
+        }
+        else {
+            $('#apply').prop('disabled', false);
+          }
+        });
+      });
+    </script>
 
     {% if new_request and not has_premium %}
         <div id=main-container">
@@ -317,21 +326,33 @@
         <div class="decorative-text-wrapper noselect">Are you sure?</div>
         <div class="cardbody"  style="margin-top:50px">
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
-            Are you sure you want to apply to give feedback to {{feedback_request.feedbackee}}?<br>You can only withraw your application before it is accepted.
+            Are you sure you want to apply to give feedback to {{feedback_request.feedbackee}}?
+          </p>
+          <p style="font-weight: 500; font-size: 1em; text-align: center">
+            By applying, you are agreeing to provide feedback within the specified time limit.
+            <br>
+            You can only withdraw your application before it is accepted.
           </p>
           <div class="border-top pt-2 mt-3"></div>
 
           <div class="noselect button-corner">
             <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">No</button>
-            <a href="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" style="text-decoration:none;">
-              <button class="btn btn-outline-info">Yes</button>
-            </a>
+            <button class="btn btn-outline-info" id="yes">Yes</button>
         </div>
         </div>
       </div>
       </div>
     </div>
   </div>
+
+  <script>
+    $(document).ready(function () {
+      $('#yes').click(function(e) {
+        $('#applyForm').submit();
+      });
+    });
+  </script>
+
   {% endif %}
     <script>
       $(document).ready(function () {

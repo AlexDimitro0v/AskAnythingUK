@@ -230,6 +230,12 @@ p {
   color: #eeeeee;
 }
 
+.btn-outline-info:disabled{
+  color: #4d4d4d;
+  border-color: #4d4d4d;
+}
+
+
 .button:hover {
   transition: 0.3s;
   background-color: #2967AA;

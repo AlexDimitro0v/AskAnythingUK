@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area, Purchase
-from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm
+from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm, ApplicationForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 from django.core.paginator import Paginator
@@ -329,7 +329,7 @@ def feedback_request(request):
 
     candidate_premiums = []
     for candidate in feedback_candidates:
-        candidate_premiums.append(has_premium(candidate))
+        candidate_premiums.append(has_premium(candidate.feedbacker))
 
     curr_time = datetime.now(timezone.utc)
     time_posted = feedback_request.date_posted
@@ -408,18 +408,25 @@ def feedback_request(request):
 
 @login_required
 def apply_as_feedbacker(request):
-    feedback_request_id = request.GET.get('request_id', '')
-    feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
+    if request.method == "POST":
+        form = ApplicationForm(request.POST)
 
-    # Feedbacker already chosen, cannot apply
-    if feedback_request.feedbacker != feedback_request.feedbackee:
-        return redirect('dashboard')
+        if form.is_valid():
+            feedback_request_id = request.GET.get('request_id', '')
+            feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
 
-    cursor = connections['default'].cursor()
-    cursor.execute("INSERT INTO main_feedbackercandidate (feedbacker_id,feedback_id) VALUES( %s , %s )",
-                   [request.user.id, feedback_request_id])
-    cursor.close()
-    messages.success(request, f"Your application has been processed!")
+            # Feedbacker already chosen, cannot apply
+            if feedback_request.feedbacker != feedback_request.feedbackee:
+                return redirect('dashboard')
+
+            application_text = form.cleaned_data['application']
+
+            application = FeedbackerCandidate(feedbacker=request.user,
+                                              feedback=feedback_request,
+                                              application=application_text,
+                                              )
+            application.save()
+            messages.success(request, f"Your application has been processed!")
     return redirect('dashboard')
 
 

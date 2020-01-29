@@ -63,9 +63,16 @@
         <a href="{{ user_to_view.userprofile.url_link_1 }}">Personal Website</a>
       </div>
       {% endif %}
+      {% if user_to_view.userprofile.url_link_2 %}
+      <div style="text-align: center; font-weight: 600; width: 100%">
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%;  margin-bottom: 10px" src="{{ user_to_view.userprofile.image.url }}"/>
+        <a href="{{ user_to_view.userprofile.url_link_2 }}">Personal Website</a>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
+{% if user_skills %}
 <div class="feedback-request">
      <div class="decorative-text-wrapper noselect">Skills & Education</div>
      <div style="margin-top:50px; vertical-align: middle;">
@@ -77,6 +84,7 @@
             </div>
       </div>
 </div>
+{% endif %}
 <div class="feedback-request">
      <div class="decorative-text-wrapper noselect">Ratings</div>
      <div style="margin-top:50px; vertical-align: middle;">

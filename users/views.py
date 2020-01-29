@@ -135,10 +135,13 @@ def view_profile(request):
     # Main purpose of separate apps is reuseability
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
     user_id = request.GET.get('user', '')
-    user_to_view = User.objects.filter(id=user_id).first()
 
-    if not user_to_view:                    # establish the independence of the app again
+    if not user_id:                    # establish the independence of the app again
         user_to_view = request.user         # get the the currently logged in user
+    else:
+        user_to_view = User.objects.filter(id=user_id).first()
+
+
 
     jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F('feedbacker')))
 
