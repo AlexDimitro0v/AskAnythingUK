@@ -397,7 +397,7 @@ def feedback_request(request):
             'premium_request': premium_request,
             'three_or_more_applications': num_of_applications >= 3,
             'client_token': client_token,
-            'purchase': Purchase.objects.filter(feedback=feedback_request).first()
+            'purchase': Purchase.objects.filter(feedback=feedback_request).first(),
             'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
             'feedbacker_has_premium': has_premium(feedback_request.feedbacker),
             'candidate_premiums': candidate_premiums
