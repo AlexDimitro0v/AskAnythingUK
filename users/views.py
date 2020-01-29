@@ -16,6 +16,7 @@ from datetime import datetime
 from django.utils import timezone
 from main.functions import has_premium
 
+
 def register(request):
     context = {
         'title': 'Register',
@@ -126,16 +127,18 @@ def view_profile(request):
     }
     return render(request, 'users/view-profile.html', context)
 
+
 @login_required
 def get_premium(request):
     if has_premium(request.user):
         return redirect('dashboard')
 
     context = {
-        'areas' :  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'users/get-premium.html', context)
+
 
 @login_required
 def try_premium(request):

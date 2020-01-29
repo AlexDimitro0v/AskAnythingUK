@@ -276,13 +276,12 @@ def new_feedback_request(request):
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
 
-            messages.success(request, "Your request has been published!")
     #       return redirect('home-page')
 
     areas = Area.objects.all()
     context = {
         "areas": areas,
-        'has_premium' : has_premium(request.user)
+        'has_premium': has_premium(request.user)
         }
     return render(request, 'main/new_feedback_request.html', context)
 
@@ -372,7 +371,8 @@ def feedback_request(request):
             'new_request': new_request,
             'premium_request': premium_request,
             'three_or_more_applications': num_of_applications >= 3,
-            'client_token': client_token
+            'client_token': client_token,
+            'purchase': Purchase.objects.filter(feedback=feedback_request).first()
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -508,6 +508,16 @@ def withdraw_application(request):
     return redirect('dashboard')
 
 
+@login_required
+def finish_purchase(request):
+    feedback_request_id = request.GET.get('feedback_request', '')
+    feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
+
+    print(feedback_request)
+    purchase = Purchase.objects.get(feedback=feedback_request)
+    purchase.is_completed = True
+    purchase.save()
+    return redirect('dashboard')
 # =====================================================================================================================
 
 

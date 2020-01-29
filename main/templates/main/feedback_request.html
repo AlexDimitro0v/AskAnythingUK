@@ -78,9 +78,10 @@
         $('#yes{{forloop.counter}}').click(function(e) {
            swal({
             title: "You have successfully hired {{candidate}}!",
-            text: "The money will be put on hold. We take a 10% cut.",
+            text: "The money will be put on hold.",
             icon: "success",
-            buttons: false
+            buttons: false,
+            timer: 2000,
            });
         });
         });
@@ -155,28 +156,38 @@
                       <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
-              {%if feedbacker_files_link%}
-                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money">Release Money</button>
+              {%if feedbacker_files_link and not purchase.is_completed and not  feedback_request.feedbacker == user%}
+                <form method="post">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money" type="submit">Release Money</button>
+                </form>
               {% endif%}
               <script>
-                $(document).ready(function () {
+
                   $('#release-money').click(function() {
+                  var data = $(this).serialize();
                    swal({
                     title: "Are you sure?",
                     text: "This action cannot be reverted.",
                     icon: "warning",
                     buttons: ['Cancel', 'Release'],
-                    dangerMode: true
+                    dangerMode: true,
                   })
-                  .then((willDelete) => {
-                    if (willDelete) {
-                      swal("Money released!", {
-                        icon: "success",
+                  .then((willRelease) => {
+                    if (willRealease) {
+                      $.ajaxSubmit({
+                        type: 'POST',
+                        url: "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}",
+                        data: data,
+                        success: function (data) {
+                          swal("Money released!", {
+                            icon: "success",
+                          });
+                        }
                       });
                     }
                   });
                   });
-                });
 
               </script>
 

@@ -15,4 +15,5 @@ urlpatterns = [
     path('withdraw-application/', views.withdraw_application, name="withdraw-application-page"),
     path('feedback-request/<int:pk>/delete', views.RequestDeleteView.as_view(template_name='main/feedback_request_delete.html'),
          name='request-delete'),
+    path('finish-purchase/', views.finish_purchase, name='finish-purchase')
 ]
