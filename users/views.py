@@ -122,7 +122,6 @@ def view_profile(request):
         'user_to_view': user_to_view,
         'user_ratings': ratings,
         'areas': Area.objects.all(),
-        'has_premium': has_premium(request.user),
         'viewed_has_premium': has_premium(user_to_view)
     }
     return render(request, 'users/view-profile.html', context)

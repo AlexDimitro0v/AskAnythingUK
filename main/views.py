@@ -375,8 +375,8 @@ def feedback_request(request):
     if feedback_request.feedbackee != feedback_request.feedbacker and not user_is_feedbackee and not user_is_feedbacker and not user_was_rejected:
         return redirect('dashboard')
 
-    client_token = braintree.ClientToken.generate()
-
+    client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
+    print(client_tokens)
     if request_id != "":
         context = {
             'feedback_request': feedback_request,
@@ -396,7 +396,7 @@ def feedback_request(request):
             'new_request': new_request,
             'premium_request': premium_request,
             'three_or_more_applications': num_of_applications >= 3,
-            'client_token': client_token,
+            'client_tokens': client_tokens,
             'purchase': Purchase.objects.filter(feedback=feedback_request).first(),
             'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
             'feedbacker_has_premium': has_premium(feedback_request.feedbacker),
