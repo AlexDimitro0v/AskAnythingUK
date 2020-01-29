@@ -8,6 +8,7 @@ from django.utils import timezone
 from main.functions import get_time_delta
 
 
+# The feedback requests are indexed by title and text
 def search(request):
     query = request.GET.get('q')
 
@@ -27,7 +28,8 @@ def search(request):
         for feedback_request in requests:
             time_posted = feedback_request.date_posted
             time_deltas.append(get_time_delta(time_posted,curr_time))
-
+    else:
+        page_obj = None
     context = {
         'requests': requests,
         'search': query,

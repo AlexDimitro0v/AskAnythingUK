@@ -454,18 +454,27 @@ form {
 }
 
 #div_id_username, #id_username, #id_email, #id_password1, #id_password2, #id_last_name, #id_city, #id_first_name,
-#id_new_password1, #id_new_password2{
+#id_new_password1, #id_new_password2, #id_linkedin, #id_url_link_1, #id_url_link_2{
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-#div_id_email, #div_id_first_name, #div_id_last_name, #div_id_image{
+#div_id_first_name, #div_id_last_name{
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
+#linked-in{
+    text-decoration: underline;
+}
+
 #div_id_password1{
   margin-bottom: 20px;
+}
+
+
+#hint_id_username{
+    display:none;
 }
 
 #hint_id_password1, #hint_id_new_password1{

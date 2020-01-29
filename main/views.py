@@ -302,13 +302,12 @@ def new_feedback_request(request):
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
 
-            messages.success(request, "Your request has been published!")
     #       return redirect('home-page')
 
     areas = Area.objects.all()
     context = {
         "areas": areas,
-        'has_premium' : has_premium(request.user)
+        'has_premium': has_premium(request.user)
         }
     return render(request, 'main/new_feedback_request.html', context)
 
@@ -376,8 +375,7 @@ def feedback_request(request):
     if feedback_request.feedbackee != feedback_request.feedbacker and not user_is_feedbackee and not user_is_feedbacker and not user_was_rejected:
         return redirect('dashboard')
 
-    client_token = braintree.ClientToken.generate()
-
+    client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
     if request_id != "":
         context = {
             'feedback_request': feedback_request,
@@ -397,7 +395,8 @@ def feedback_request(request):
             'new_request': new_request,
             'premium_request': premium_request,
             'three_or_more_applications': num_of_applications >= 3,
-            'client_token': client_token,
+            'client_tokens': client_tokens,
+            'purchase': Purchase.objects.filter(feedback=feedback_request).first(),
             'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
             'feedbacker_has_premium': has_premium(feedback_request.feedbacker),
             'candidate_premiums': candidate_premiums
@@ -542,6 +541,18 @@ def withdraw_application(request):
     return redirect('dashboard')
 
 
+@login_required
+def finish_purchase(request):
+    feedback_request_id = request.GET.get('feedback_request', '')
+    feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
+    try:
+        purchase = Purchase.objects.get(feedback=feedback_request_id)
+    except:
+        raise Exception('This request simply does not have a Purchase instance, i.e. it is an old request. Try'
+                        'creating one manually via the admin panel.')
+    purchase.is_completed = True
+    purchase.save()
+    return redirect('dashboard')
 # =====================================================================================================================
 
 

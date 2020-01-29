@@ -30,7 +30,6 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class EditUserForm(forms.ModelForm):
-    email = forms.EmailField(required=True)
 
     class Meta:
         model = User
@@ -40,19 +39,21 @@ class EditUserForm(forms.ModelForm):
         # Disable users to edit the username field
         super(EditUserForm, self).__init__(*args, **kwargs)
         self.fields['username'].disabled = True
+        self.fields['email'].disabled = True
 
-    def clean_email(self):
-        # Get the email
-        email = self.cleaned_data.get('email')
-        logged_in_user_username = self.cleaned_data.get('username')
-
-        # Check to see if any users already exist with this email.
-        if User.objects.filter(email=email, is_active=True).exclude(username=logged_in_user_username).exists():
-            # A user was found with this as a username, raise an error.
-            raise forms.ValidationError('This email address is already in use.')
-
-        # Unable to find a user, this is fine - return the email.
-        return email
+    # Allowing users to change their emails is no longer needed
+    # def clean_email(self):
+    #     # Get the email
+    #     email = self.cleaned_data.get('email')
+    #     logged_in_user_username = self.cleaned_data.get('username')
+    #
+    #     # Check to see if any users already exist with this email.
+    #     if User.objects.filter(email=email, is_active=True).exclude(username=logged_in_user_username).exists():
+    #         # A user was found with this as a username, raise an error.
+    #         raise forms.ValidationError('This email address is already in use.')
+    #
+    #     # Unable to find a user, this is fine - return the email.
+    #     return email
 
 
 class EditProfileForm(forms.ModelForm):
@@ -64,7 +65,7 @@ class EditProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2', 'url_link_3', 'image', 'x', 'y', 'width', 'height', ]
+        fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2', 'image', 'x', 'y', 'width', 'height']
 
     def save(self):
         photo = super(EditProfileForm, self).save()

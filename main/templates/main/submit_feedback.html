@@ -113,7 +113,9 @@
                     let xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function() {
                         if(xhr.readyState == 4 && xhr.status == 200) {
-                          window.location.href = "/dashboard/";
+                        window.setTimeout(function(){
+                            window.location.href = "/dashboard/";
+                        }, 1000);
                         }
                     }
                     xhr.open('POST', "/submit-feedback/?request_id={{request_id}}", true);

@@ -7,10 +7,11 @@
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Candidates</div>
   <div class="cardbody" style="margin-top:50px; margin-bottom: 0">
-    {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums %}       <!--For username in User instance-->
+
+    {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums; token in client_tokens %}       <!--For username in User instance-->
     <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
       <span class="feedback-request-link" style="display: inline-block; padding: 5px; padding-left: 20px; padding-right: 20px">
-        <a href="{% url 'profile-page' %}?user={{candidate}}&feedback={{feedback_request.id}}">
+        <a href="{% url 'profile-page' %}?user={{candidate.id}}&feedback={{feedback_request.id}}">
           <img class="photo-circle" src="{{ candidate.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <span style="margin-left: 10px; font-weight: 600">{{candidate}}</span>
         </a>
@@ -42,7 +43,7 @@
 
             <form method="POST" action="/choose-feedbacker/">
               {% csrf_token %}
-              <div id="payment-form" style="text-align:center;">
+              <div id="payment-form{{forloop.counter}}" style="text-align:center;">
                 <span style="font-weight: 600; font-size: 1.2em; text-align: center">Payment</span>
                 <!--input elements for user card data-->
 
@@ -66,9 +67,9 @@
     <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
 
     <script>
-        $(document).ready(function() {
-          braintree.setup("{{ client_token }}", "dropin", {
-            container: "payment-form",
+       $(document).ready(function () {
+          braintree.setup("{{ token }}", "dropin", {
+            container: "payment-form{{forloop.counter}}",
             paypal: {
               singleUse: true,
               amount: "{{ feedback_request.reward }}",
@@ -79,9 +80,10 @@
         $('#yes{{forloop.counter}}').click(function(e) {
            swal({
             title: "You have successfully hired {{candidate}}!",
-            text: "The money will be put on hold. We take a 10% cut.",
+            text: "The money will be put on hold.",
             icon: "success",
-            buttons: false
+            buttons: false,
+            timer: 2000,
            });
         });
         });
@@ -92,6 +94,7 @@
         $('#choose-feedbacker{{forloop.counter}}').click(function(e) {
           $('#overlay{{forloop.counter}}').css("display","block");
           $('body').css("overflow","hidden");
+
         });
 
         $('#no{{forloop.counter}}').click(function(e) {
@@ -156,28 +159,29 @@
                       <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
-              {%if feedbacker_files_link%}
-                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money">Release Money</button>
+              {%if feedbacker_files_link and not purchase.is_completed and not feedback_request.feedbacker == user%}
+                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money" type="submit">Release Money</button>
               {% endif%}
               <script>
-                $(document).ready(function () {
                   $('#release-money').click(function() {
                    swal({
                     title: "Are you sure?",
                     text: "This action cannot be reverted.",
                     icon: "warning",
                     buttons: ['Cancel', 'Release'],
-                    dangerMode: true
+                    dangerMode: true,
                   })
                   .then((willDelete) => {
                     if (willDelete) {
-                      swal("Money released!", {
-                        icon: "success",
-                      });
+                    swal("Money released!", {
+                      icon: "success",
+                      buttons:false})
+                     window.setTimeout(function(){
+                        window.location = "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}";
+                    }, 1300);
                     }
                   });
                   });
-                });
               </script>
 
 

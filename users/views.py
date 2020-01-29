@@ -17,6 +17,7 @@ from django.utils import timezone
 from main.functions import has_premium
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 
+
 def register(request):
     context = {
         'title': 'Register',
@@ -133,8 +134,8 @@ def view_profile(request):
 
     # Main purpose of separate apps is reuseability
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
-    username = request.GET.get('user', '')
-    user_to_view = User.objects.filter(username=username).first()
+    user_id = request.GET.get('user', '')
+    user_to_view = User.objects.filter(id=user_id).first()
 
     if not user_to_view:                    # establish the independence of the app again
         user_to_view = request.user         # get the the currently logged in user
@@ -156,16 +157,18 @@ def view_profile(request):
     }
     return render(request, 'users/view-profile.html', context)
 
+
 @login_required
 def get_premium(request):
     if has_premium(request.user):
         return redirect('dashboard')
 
     context = {
-        'areas' :  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'users/get-premium.html', context)
+
 
 @login_required
 def try_premium(request):

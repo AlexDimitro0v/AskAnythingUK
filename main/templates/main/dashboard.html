@@ -36,7 +36,7 @@
         {% endif %}
 
         <div class="noselect button-corner">
-          <a href="{% url 'profile-page' %}" style="text-decoration:none; margin-right: 5px">
+          <a href="{% url 'profile-page' %}?user={{user.id}}" style="text-decoration:none; margin-right: 5px">
             <button class="btn btn-outline-info" >View Profile</button>
           </a>
           <a href="{% url 'customize-profile-page' %}" style="text-decoration:none;">
