@@ -14,6 +14,7 @@ from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Max
 from django.db.models import Min
+from django.db.models.expressions import RawSQL
 from .functions import get_time_delta, get_request_candidates, has_premium
 from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
 import braintree
@@ -78,8 +79,12 @@ def feedback_requests(request):
     max_time = feedback_requests.aggregate(Max('time_limit'))['time_limit__max']
     min_time = feedback_requests.aggregate(Min('time_limit'))['time_limit__min']
 
-    if tag_filter == "":
+    most_used_tags = []
 
+    # No tag filter specified
+    if tag_filter=="":
+
+        # Filter requests if min/max price or time specified
         if filtered_min_price:
             feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'),
                                                                area=area,
@@ -88,19 +93,9 @@ def feedback_requests(request):
                                                                time_limit__gte=filtered_min_time,
                                                                time_limit__lte=filtered_max_time).exclude(feedbackee=request.user)
 
-        feedback_requests = feedback_requests.order_by('-date_posted')
-
-        # Paginate:
-        # https://docs.djangoproject.com/en/3.0/topics/pagination/
-        page_number = request.GET.get('page', 1)        # defaults to 1 if not found
-        paginator = Paginator(feedback_requests, 5)     # each page contains 5 feedback requests
-        feedback_requests = paginator.get_page(page_number)
-        page_obj = feedback_requests
-
         # Aggregate all popular tags in the specified category
         # TODO Optimize the code below. What if there are thousands of tags?
         # Solution: Get the tags only from the feedback requests on the current page
-        most_used_tags = []
         all_used_tags = {}
         for feedback_request in feedback_requests:
             request_tag_ids = Tag.objects.filter(feedback=feedback_request)
@@ -125,8 +120,6 @@ def feedback_requests(request):
         # {tag-filter: Writing} and all the requests will be filtered in accordance to this tag
         #
         # https://stackoverflow.com/a/49872199
-        page_obj = None
-        most_used_tags = None
 
         if not filtered_max_time:
             filtered_min_price = min_price
@@ -137,7 +130,7 @@ def feedback_requests(request):
         # https://docs.djangoproject.com/en/3.0/topics/db/sql/ - useful explanation of raw
         # Get all requests that have the selected tag-filter only,
         # excluding the requests from the currently logged in user:
-        feedback_requests = FeedbackRequest.objects.raw(''' SELECT main_tag.feedback_id AS id
+        feedback_requests = FeedbackRequest.objects.filter(id__in=RawSQL(''' SELECT main_tag.feedback_id AS id
                                                             FROM main_tag
                                                             INNER JOIN main_category ON main_tag.category_id = main_category.id
                                                             INNER JOIN main_feedbackrequest ON main_tag.feedback_id = main_feedbackrequest.id
@@ -149,11 +142,44 @@ def feedback_requests(request):
                                                             AND main_feedbackrequest.reward <= %s
                                                             AND main_feedbackrequest.time_limit >= %s
                                                             AND main_feedbackrequest.time_limit <= %s
-                                                            ''', [tag_filter, request.user.id, area_filter, filtered_min_price,filtered_max_price, filtered_min_time, filtered_max_time])
+                                                            ''', [tag_filter, request.user.id, area_filter, filtered_min_price,filtered_max_price, filtered_min_time, filtered_max_time]))
+
+
+    feedback_requests = feedback_requests.order_by('-date_posted')
+
+    non_premium_requests = []
+    premium_requests = []
+    for feedback_request in feedback_requests:
+        if has_premium(feedback_request.feedbackee):
+            premium_requests.append(feedback_request)
+        else:
+            non_premium_requests.append(feedback_request)
+
+    sorted_feedback_requests = []
+    for i in range(len(feedback_requests)):
+        if (i%5 == 0 or i%5 == 1) and premium_requests:
+            sorted_feedback_requests.append(premium_requests.pop(0))
+        else:
+            if not premium_requests:
+                sorted_feedback_requests.append(non_premium_requests.pop(0))
+            elif not non_premium_requests:
+                sorted_feedback_requests.append(premium_requests.pop(0))
+            else:
+                if premium_requests[0].date_posted >= non_premium_requests[0].date_posted:
+                    sorted_feedback_requests.append(premium_requests.pop(0))
+                else:
+                    sorted_feedback_requests.append(non_premium_requests.pop(0))
+
+    # Paginate:
+    # https://docs.djangoproject.com/en/3.0/topics/pagination/
+    page_number = request.GET.get('page', 1)        # defaults to 1 if not found
+    paginator = Paginator(sorted_feedback_requests, 5)     # each page contains 5 feedback requests
+    sorted_feedback_requests = paginator.get_page(page_number)
+    page_obj = sorted_feedback_requests
 
     # Create a list of tags for each feedback request
     tags = []   # will contain nested lists of tag names
-    for feedback_request in feedback_requests:
+    for feedback_request in sorted_feedback_requests:
         # Note: Have a look at the models folder to have a clear idea about the entities below:
         request_tag_ids = Tag.objects.filter(feedback=feedback_request)   # get all tags from the feedback requests list
         request_tags = [tag.category for tag in request_tag_ids]          # get all tag categories instances
@@ -162,24 +188,24 @@ def feedback_requests(request):
 
     time_deltas = []
     curr_time = datetime.now(timezone.utc)
-    for feedback_request in feedback_requests:
+    for feedback_request in sorted_feedback_requests:
         time_posted = feedback_request.date_posted
         time_deltas.append(get_time_delta(time_posted, curr_time))
 
     premium_requests = []
-    for feedback_request in feedback_requests:
+    for feedback_request in sorted_feedback_requests:
         if has_premium(feedback_request.feedbackee):
             premium_requests.append(True)
         else: premium_requests.append(False)
 
     new_requests = []
-    for feedback_request in feedback_requests:
+    for feedback_request in sorted_feedback_requests:
         if (datetime.now(timezone.utc) - feedback_request.date_posted).total_seconds() < 86400:
             new_requests.append(True)
         else: new_requests.append(False)
 
     context = {
-        'requests': feedback_requests,
+        'requests': sorted_feedback_requests,
         'tags': tags,
         'page_obj': page_obj,
         'areas':  Area.objects.all(),
@@ -298,13 +324,12 @@ def feedback_request(request):
     feedbacker_files_link = None
 
     feedback_request = FeedbackRequest.objects.get(id=request_id)
-    # print(feedback_request.date_completed.replace(microsecond=0))
-    # print(feedback_request.date_posted.replace(microsecond=0))
-    # if feedback_request.date_completed.replace(microsecond=0) > feedback_request.date_posted.replace(microsecond=0):
-    #     print('Yes')
-    # else:
-    #     print("No")
+
     feedback_candidates = get_request_candidates(feedback_request)
+
+    candidate_premiums = []
+    for candidate in feedback_candidates:
+        candidate_premiums.append(has_premium(candidate))
 
     curr_time = datetime.now(timezone.utc)
     time_posted = feedback_request.date_posted
@@ -354,7 +379,7 @@ def feedback_request(request):
 
     if request_id != "":
         context = {
-            'feedback_request': FeedbackRequest.objects.get(id=request_id),
+            'feedback_request': feedback_request,
             'request_id': request_id,
             'user_is_candidate': user_is_candidate,
             'user_is_feedbacker': user_is_feedbacker,
@@ -373,6 +398,9 @@ def feedback_request(request):
             'three_or_more_applications': num_of_applications >= 3,
             'client_token': client_token,
             'purchase': Purchase.objects.filter(feedback=feedback_request).first()
+            'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
+            'feedbacker_has_premium': has_premium(feedback_request.feedbacker),
+            'candidate_premiums': candidate_premiums
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -383,6 +411,11 @@ def feedback_request(request):
 def apply_as_feedbacker(request):
     feedback_request_id = request.GET.get('request_id', '')
     feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
+
+    # Feedbacker already chosen, cannot apply
+    if feedback_request.feedbacker != feedback_request.feedbackee:
+        return redirect('dashboard')
+
     cursor = connections['default'].cursor()
     cursor.execute("INSERT INTO main_feedbackercandidate (feedbacker_id,feedback_id) VALUES( %s , %s )",
                    [request.user.id, feedback_request_id])
@@ -458,6 +491,7 @@ def submit_feedback(request):
     context = {
         'request_id': request.GET.get('request_id', ''),
         'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user),
     }
     return render(request, 'main/submit_feedback.html', context)
 
