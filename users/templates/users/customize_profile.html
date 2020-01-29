@@ -11,11 +11,18 @@
             <!--Without the encoding the image will not be saved-->
             {% csrf_token %}    <!-- Added Security token that Django requires-->
             <!-- Make is it looks like as one form-->
-            {{ u_form|crispy }}  <!-- Crispy Forms do the design for us -->
-            {{ p_form|crispy }}  <!-- Crispy Forms do the design for us -->
+            <div class="form-row">
+              <div class="form-group col-md-6 mb-0">
+                {{ u_form.username|as_crispy_field }}
+              </div>
+              <div class="form-group col-md-6 mb-0">
+                {{ u_form.email|as_crispy_field }}
+              </div>
+            </div>
+            {{ p_form|crispy }}
         </form>
 
-        <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
+        <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
        <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
         <div class="modal fade" role="dialog" id="modalCrop">
           <div class="modal-dialog">
@@ -102,7 +109,6 @@
                 });
 
                 /* SCRIPT TO POST TO THE SERVER */
-                let tags = [];
                 $('#submit_button').click(function() {
                     $("#customizeProfileForm").submit();
                 });

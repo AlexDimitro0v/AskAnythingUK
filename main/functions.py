@@ -4,7 +4,8 @@ from datetime import datetime
 from django.utils import timezone
 from users.models import UserProfile
 
-def get_time_delta(time_0,time_1):
+
+def get_time_delta(time_0, time_1):
         delta = time_1 - time_0
         if delta.days > 1:
             time_delta = str(delta.days) + " days"
@@ -24,6 +25,7 @@ def get_time_delta(time_0,time_1):
             time_delta = str(int(delta.seconds)) + " second"
         return time_delta
 
+
 def get_request_candidates(feedback_request):
     request_candidates = []
     # Feedbacker not assigned yet
@@ -39,6 +41,7 @@ def get_request_candidates(feedback_request):
         curr_request_candidates_ids = [curr_candidate.id for curr_candidate in curr_request_candidates_ids]
         request_candidates = User.objects.filter(pk__in=set(curr_request_candidates_ids))
     return request_candidates
+
 
 def has_premium(user):
     curr_user = UserProfile.objects.get(user=user)

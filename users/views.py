@@ -100,8 +100,8 @@ def customize_user_profile(request):
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'areas' :  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'users/customize_profile.html', context=context)
 

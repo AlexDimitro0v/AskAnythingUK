@@ -5,14 +5,14 @@
 {% block content%}
 
 <style>
-.photo-border {
-  border-radius: 100%;
-{% if viewed_has_premium %}
-  border: 8px solid #e9ca6e;
-{% else %}
-  border: 8px solid #eee;
-{% endif %}
-}
+    .photo-border {
+      border-radius: 100%;
+    {% if viewed_has_premium %}
+      border: 8px solid #e9ca6e;
+    {% else %}
+      border: 8px solid #eee;
+    {% endif %}
+    }
 </style>
 
 <div class="feedback-request">
@@ -31,15 +31,14 @@
           {% endif %}
           <p>Member Since: {{ user_to_view.date_joined|date:"d M Y" }}</p>
           {% if user_to_view.userprofile.linkedin %}
-            <p>LinkedIn Profile:</p>
-            <a href="{{ user_to_view.userprofile.linkedin }}">{{ user_to_view.userprofile.linkedin }}</a>
+            <p style="display:inline">LinkedIn Profile:</p>
+            <a href="{{ user_to_view.userprofile.linkedin }}" id="linked-in">{{ user_to_view.userprofile.linkedin }}</a>
           {% endif %}
           {% if user_to_view.userprofile.url_link_1 or user_to_view.userprofile.url_link_2 or user_to_view.userprofile.url_link_3 %}
             <p>Personal Website Links:</p>
-            <ul style="list-style-type: none">
+            <ul style="margin-left:16px">
               <li><a href="{{ user_to_view.userprofile.url_link_1 }}">{{ user_to_view.userprofile.url_link_1 }}</a></li>
               <li><a href="{{ user_to_view.userprofile.url_link_2 }}">{{ user_to_view.userprofile.url_link_2 }}</a></li>
-              <li><a href="{{ user_to_view.userprofile.url_link_3 }}">{{ user_to_view.userprofile.url_link_3 }}</a></li>
             </ul>
           {% endif %}
     </div>
