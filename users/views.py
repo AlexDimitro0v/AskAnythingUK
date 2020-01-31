@@ -100,7 +100,8 @@ def customize_user_profile(request):
 
             # Save each tag instance to database
             for tag in tags:
-                if tag=="": continue
+                if tag == "":
+                    continue
                 category_record = Category.objects.filter(name=tag)
                 if not category_record:
                     category_record = Category(name=tag)
@@ -112,9 +113,9 @@ def customize_user_profile(request):
             messages.success(request, f"Your account has been updated!")
             return redirect('profile-page')  # redirects the user to the profile page to avoid POST-GET-REDIRECT PATTERN
             # https://stackoverflow.com/questions/10827242/understanding-the-post-redirect-get-pattern
-
-    u_form = EditUserForm(instance=request.user)
-    p_form = EditProfileForm(instance=request.user.userprofile)
+    else:
+        u_form = EditUserForm(instance=request.user)
+        p_form = EditProfileForm(instance=request.user.userprofile)
 
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [str(skill.category) for skill in user_skills_ids]
@@ -140,8 +141,6 @@ def view_profile(request):
         user_to_view = request.user         # get the the currently logged in user
     else:
         user_to_view = User.objects.filter(id=user_id).first()
-
-
 
     jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F('feedbacker')))
 
