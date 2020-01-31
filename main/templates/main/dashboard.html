@@ -13,7 +13,7 @@
 }
 </style>
 
-<div class="noselect button-corner" style="position: fixed; z-index: 1; ">
+<div class="noselect button-corner sticky-button">
   <a href="{% url 'new-feedback-request-page' %}"  style="text-decoration:none;">
       <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em">Ask For Feedback</button>
   </a>
@@ -37,10 +37,10 @@
 
         <div class="noselect button-corner">
           <a href="{% url 'profile-page' %}?user={{user.id}}" style="text-decoration:none; margin-right: 5px">
-            <button class="btn btn-outline-info" >View Profile</button>
+            <button class="btn btn-outline-info small-screen-button" >View Profile</button>
           </a>
           <a href="{% url 'customize-profile-page' %}" style="text-decoration:none;">
-              <button class="btn btn-outline-info">Customize Profile</button>
+              <button class="btn btn-outline-info small-screen-button">Customize Profile</button>
           </a>
         </div>
     </div>
@@ -59,10 +59,12 @@
                 <div class="mb-3 mt-3" style="border-top: 1px solid #cbcbcb"></div>
 
                 {% if feedback_request.feedbacker != feedback_request.feedbackee %}
-                  <div style="display: inline-block; width: 100%">
-                    <img class="photo-circle" src="{{ feedback_request.feedbacker.userprofile.image.url }}" style="margin-left: 10px; margin-top: -5px"/>
-                    <span style="margin-left: 10px; font-weight: 600">{{feedback_request.feedbacker}}</span>
-                    <div class="status-info status-info-profile noselect" style="font-size: 1em;">
+                  <div class="two-columns">
+                    <span class="custom-column">
+                    <img class="profile-name-image" src="{{ feedback_request.feedbacker.userprofile.image.url }}" style="max-width: 100px; margin-bottom: 0; border-color: #ddd;"/>
+                    <span class="custom-column name-next-to-image-2">{{feedback_request.feedbacker}}</span>
+                    </span>
+                    <div class="status-info noselect custom-column" style="font-size: 1em;">
                       <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
                       Your Feedbacker
                     </div>
@@ -90,17 +92,17 @@
     {% if my_applications %}
         {% for application in my_applications %}
         <a href="{% url 'feedback-request-page' %}?request_id={{application.id}}" style="text-decoration: none;">
-        <div class="small-card small-card-hover">
-            <span class="cut-text-header" style="font-weight: 600">{{application.title}}</span>
+        <div class="small-card small-card-hover two-columns">
+            <span class="cut-text-header custom-column" style="font-weight: 600">{{application.title}}</span>
             {% if application.feedbacker == user %}
-            <div class="status-info status-info-profile noselect" style="font-size: 1em;">Application Accepted</div>
+            <div class="status-info noselect custom-column" style="font-size: 1em;">Application Accepted</div>
             {% elif application.feedbacker == application.feedbackee %}
-            <div class="status-info status-info-profile noselect" style="font-size: 1em;">
+            <div class="status-info noselect custom-column" style="font-size: 1em;">
               <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
               Application Submitted
             </div>
             {% else %}
-            <div class="status-info status-info-profile noselect" style="font-size: 1em;">
+            <div class="status-info noselect custom-column" style="font-size: 1em;">
               <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/cross4.png' %}">
               Application Rejected
             </div>

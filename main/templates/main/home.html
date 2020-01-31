@@ -4,8 +4,8 @@
 {% block content%}
     <div class="full-screen full-screen-image" style="margin-top: -100px; background-image: url({% static 'img/home-bg.jpg' %});   background-color: rgba(255,255,255,0.5);">
       <div class="container-fluid" style="max-width: 1400px">
-          <div class="row ">
-              <div class="col-6" >
+          <div class="row " id="left-column">
+              <div class="col-6" id="requests-container" >
                 <div style="background: none; width: 70%; min-width: 40px; top: 0">
                     <div class="content" >
                       <div class="content__container">
@@ -31,7 +31,8 @@
                     </a>
                 </div>
               </div>
-              <div class="col-6" style="padding-left: 80px">
+              <div class="small-screen-only"><br></div>
+              <div class="col-6" id="right-column" style="padding-left: 80px">
                 <div style="margin-bottom: 18px">
                   <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
                   <span style="color: #444" class="bold-p">Choose the best feedbacker from all candidates</span>

@@ -10,15 +10,20 @@
 
     {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums; token in client_tokens %}       <!--For username in User instance-->
     <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
-      <span class="feedback-request-link" style="display: inline-block; padding: 5px; padding-left: 20px; padding-right: 20px">
-        <a href="{% url 'profile-page' %}?user={{candidate.feedbacker.id}}&feedback={{feedback_request.id}}">
-          <img class="photo-circle" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
-          <span style="margin-left: 10px; font-weight: 600">{{candidate.feedbacker}}</span>
-        </a>
-      </span>
-      <span style="float: right">
-          <button class="btn btn-outline-info" id="choose-feedbacker{{forloop.counter}}">Choose as Feedbacker</button>
-      </span>
+      <div class="two-columns margin-columns">
+              <span class="custom-column">
+                <a href="{% url 'profile-page' %}?user={{candidate.feedbacker.id}}&feedback={{feedback_request.id}}">
+                  <img class="photo-circle profile-name-image" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; max-width: 100px; margin-bottom: 0;"/>
+                  <span class="custom-column name-next-to-image-2">{{candidate.feedbacker}}</span>
+                </a>
+              </span>
+              <div class="small-screen-only" style="margin-bottom: 10px"></div>
+              <span class="custom-column">
+                  <button class="btn btn-outline-info" id="choose-feedbacker{{forloop.counter}}">Choose as Feedbacker</button>
+              </span>
+          </div>
+
+
       <div class="border-top pt-2 mt-3"></div>
       <p style="font-size: 100%; line-height: 1.8em">
         {{candidate.application}}
@@ -35,8 +40,8 @@
 
       <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
         <div class="decorative-text-wrapper noselect">Are you sure?</div>
-        <div class="cardbody"  style="margin-top:50px">
-          <img class="large-photo-circle" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 8px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
+        <div class="cardbody"  style="margin-top:50px; margin-bottom: 50px">
+          <img class="large-photo-circle" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 8px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; "/>
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
             Are you sure you want to choose {{candidate.feedbacker}} as your feedbacker?<br>This action cannot be reverted.
           </p>
@@ -47,14 +52,15 @@
               <div id="payment-form{{forloop.counter}}" style="text-align:center;">
                 <span style="font-weight: 600; font-size: 1.2em; text-align: center">Payment</span>
                 <!--input elements for user card data-->
-
                 <input type="hidden" name="payment_method_nonce">
                 <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
                 <input name="feedbacker_username" value="{{ candidate.feedbacker }}" hidden>
-                <div class="noselect button-corner">
-                  <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
-                  <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay ${{feedback_request.reward}}</button>
-                </div>
+                <br>
+                <br>
+              </div>
+              <div class="noselect button-corner" style="position: absolute; right: 30px; bottom: 30px;">
+                <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
+                <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay ${{feedback_request.reward}}</button>
               </div>
             </form>
 
@@ -122,7 +128,7 @@
   <div class="cardbody"  style="margin-top:50px; margin-bottom: 0">
     <div class="container">
       <div class="row">
-        <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+        <div class="col-md landing-card" style="text-align: center; margin: 15px">
           <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="large-photo-circle" style="border-color: {% if feedbackee_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
           <h3 style="margin-top: 10px;">{{feedback_request.feedbackee}}</h3>
           <div class="border-top pt-4 "></div>
@@ -131,27 +137,27 @@
           </a>
         </div>
           {% if feedback_request.feedbacker == feedback_request.feedbackee%}
-            <div class="col-sm landing-card" style="text-align: center; margin: 15px;display: flex; justify-content: center; align-content: center; flex-direction: column;">
+            <div class="col-md landing-card" style="text-align: center; margin: 15px;display: flex; justify-content: center; align-content: center; flex-direction: column;">
               <p style="text-align: center; font-size: 1.2em; font-weight: 600; display: table-cell; vertical-align: middle;">No Feedbacker Yet</p>
             </div>
           {% else %}
-            <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+            <div class="col-md landing-card" style="text-align: center; margin: 15px">
             <a href="{% url 'profile-page' %}?user={{feedback_request.feedbacker.id}}&feedback={{feedback_request.id}}">
               <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="large-photo-circle" style="border-color: {% if feedbacker_has_premium %} #e9ca6e {% else %} #ccc {% endif %};"/>
               <h3 style="margin-top: 10px;">{{feedback_request.feedbacker}}</h3>
             </a>
             <div class="border-top pt-4"></div>
               {% if feedbacker_files_link != None %}
-                  <a href="{{ feedbacker_files_link }}" download="Feedbacker Files"  style="text-decoration:none;">
+                  <a href="{{ feedbacker_files_link }}" download="Feedbacker Files"  style="text-decoration:none; display: block">
                       <button class="btn btn-outline-info" >Download Feedbacker's Files</button>
                   </a>
               {% endif %}
               {% if user_is_feedbacker and feedbacker_files_link == None %}
-                  <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
+                  <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none; display: block">
                       <button class="btn btn-outline-info" >Submit Feedback</button>
                   </a>
               {% elif user_is_feedbacker %}
-                <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
+                <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none; display: block">
                     <button class="btn btn-outline-info" style="margin-top: 15px">Resubmit Feedback</button>
                 </a>
               {% endif %}
@@ -159,7 +165,7 @@
                 <p style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: -4px">No Files Yet</p>
               {% endif %}
               {% if user_is_feedbackee and feedbacker_files_link != None and not feedback_request.feedbacker_rated%}
-                  <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}"  style="text-decoration:none;">
+                  <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}"  style="text-decoration:none; display: block">
                       <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
@@ -204,10 +210,12 @@
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Description</div>
     <div class="cardbody"  style="margin-top: 60px; margin-bottom: 0">
-      <div style="margin-bottom: 18px; ">
-        <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if premium_request %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
-        <span class="bold-p">{{ feedback_request.feedbackee }}</span>
-        <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ time_delta }} ago </span>
+      <div class="two-columns margin-columns">
+        <span class="custom-column">
+          <img class="profile-name-image" style="border-color: {% if premium_request %} #e9ca6e {% else %} #ddd {% endif %};" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+          <span class="bold-p custom-column name-next-to-image">{{ feedback_request.feedbackee }}</span>
+        </span>
+        <span class="bold-p custom-column" style="font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ time_delta }} ago </span>
       </div>
       <div class="border-top pt-3 "></div>
       {% if new_request or premium_request %}
@@ -251,10 +259,8 @@
         {% csrf_token %}
         Why are you a good candidate? (Max 300 characters)<br><textarea  maxlength="300" rows="5" id="application" name="application" class="form-control"></textarea>
     </form>
-    <br>
-    <br>
-    <br>
-      <div class="button-corner">
+    <div class="large-screen-only"><br><br><br></div>
+      <div class="button-corner" style="margin-top: 20px;">
           <button class="btn btn-outline-info" id="apply" disabled>Apply as Feedbacker</button>
       </div>
 
@@ -374,8 +380,8 @@
     {% else %}
     <img src = "{% static 'img/tick4.png'%}" class="photo-circle large-photo-circle"/>
     <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Submitted</p>
-    <br>
-    <br>
+
+    <div class="large-screen-only"><br><br></div>
     <div class="button-corner">
         <button class="btn btn-outline-info" id="withdraw" >Withdraw Application</button>
     </div>
