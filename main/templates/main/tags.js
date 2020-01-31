@@ -9,6 +9,9 @@ $('#tag-input').keypress(function (e) {
         $('#tags').append("<span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>"+tagValue+"</span>");
         $('#tags').append(" ");
       }
+      else if(numOfTags >= maxTags){
+        alert("No more than " + maxTags + " tags allowed.");
+      }
     }
 
 });

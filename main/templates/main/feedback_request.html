@@ -42,7 +42,7 @@
           </p>
           <div class="border-top pt-3 mt-3"></div>
 
-            <form method="POST" action="/choose-feedbacker/">
+            <form method="POST" action="/choose-feedbacker/" id="payment-form">
               {% csrf_token %}
               <div id="payment-form{{forloop.counter}}" style="text-align:center;">
                 <span style="font-weight: 600; font-size: 1.2em; text-align: center">Payment</span>
@@ -69,24 +69,27 @@
 
     <script>
        $(document).ready(function () {
+       var form = document.getElementById('payment-form');
           braintree.setup("{{ token }}", "dropin", {
             container: "payment-form{{forloop.counter}}",
             paypal: {
               singleUse: true,
               amount: "{{ feedback_request.reward }}",
               currency: 'USD'
+            },
+              onPaymentMethodReceived: function (payload) {
+                   swal({
+                    title: "You have successfully hired {{candidate}}!",
+                    text: "The money will be put on hold.",
+                    icon: "success",
+                    buttons: false,
+                    timer: 2000,
+                   });
+                   document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
+                   form.submit()
             }
           });
 
-        $('#yes{{forloop.counter}}').click(function(e) {
-           swal({
-            title: "You have successfully hired {{candidate}}!",
-            text: "The money will be put on hold.",
-            icon: "success",
-            buttons: false,
-            timer: 2000,
-           });
-        });
         });
     </script>
 
@@ -251,9 +254,9 @@
     <br>
     <br>
     <br>
-    <div class="button-corner">
-        <button class="btn btn-outline-info" id="apply" disabled>Apply as Feedbacker</button>
-    </div>
+      <div class="button-corner">
+          <button class="btn btn-outline-info" id="apply" disabled>Apply as Feedbacker</button>
+      </div>
 
     <script>
       $(function () {
@@ -417,6 +420,29 @@
   </div>
 </div>
 {% endif %}
+
+<div id=main-container">
+    <div id="overlay_apply" class="full-screen overlay">
+      <div class="full-screen">
+      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+        <div class="decorative-text-wrapper noselect">Are you sure?</div>
+        <div class="cardbody"  style="margin-top:50px">
+          <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+            Are you sure you want to delete this feedback request?
+          </p>
+          <div class="border-top pt-2 mt-3"></div>
+
+          <div class="noselect button-corner">
+            <button class="btn btn-outline-info" id="no_delete" style="margin-right: 10px">No</button>
+            <button class="btn btn-outline-danger" id="yes_delete">Yes</button>
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+
 {% if user_is_feedbackee and feedback_request.feedbacker == feedback_request.feedbackee %}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Options</div>
