@@ -16,20 +16,20 @@
             </select>
 
             <br><br>Title<br>
-            <textarea rows='1' id="title" name="title" maxlength="50" class="form-control"></textarea>
+            <input id="title" name="title" maxlength="40" class="form-control"/>
             <div style="color: red; display: none" id="title-prompt">You must specify a title.</div>
 
-            <br>Description<br><textarea rows="15" id="description" name="maintext" class="form-control"></textarea>
+            <br>Description<br><textarea rows="15" id="description" name="maintext" class="form-control"  maxlength="1500"></textarea>
             <div style="color: red; display: none" id="description-prompt">You must specify a description.</div>
 
 
             <br>Reward (£)<br>
-            <input id="reward" name="reward" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
+            <input id="reward" name="reward" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1" max="99999">
             <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
 
 
             <br>Time limit (days)<br>
-            <input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1">
+            <input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1" max="999">
             <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
 
 
@@ -40,7 +40,6 @@
             <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
             <span style="margin-left: 10px; font-weight: 600" id="fileCount"></span>
             <span style="margin-left: 10px; font-weight: 600" id="fileSize"></span>
-
             <div style="margin-top: 0px" id="allFiles">
             </div>
 
@@ -89,6 +88,27 @@
   <script>
 
 $(document).ready(function () {
+
+      $( "#reward" ).change(function() {
+        $(this).val(parseInt($(this).val()));
+        if($(this).val() > 9999) {
+          $(this).val(9999);
+        }
+        if($(this).val() < 1) {
+          $(this).val(1);
+        }
+      });
+
+      $( "#limit" ).change(function() {
+        $(this).val(parseInt($(this).val()));
+        if($(this).val() > 999) {
+          $(this).val(999);
+        }
+        if($(this).val() < 1) {
+          $(this).val(1);
+        }
+      });
+
       let tags = [];
       let numOfTags = 0;
       let maxTags = 5;
@@ -115,7 +135,7 @@ $(document).ready(function () {
       let totalSize = 0;
       let numOfFiles;
       // Create an array of all selected files
-      let selectedFiles;
+      let selectedFiles = [];
 
       $("input[name=feedbackfiles]").change(function() {
         $('#allFiles').empty();
@@ -165,11 +185,46 @@ $(document).ready(function () {
           return;
         }
         {% endif %}
+
+        $("#title-prompt").css("display","none");
+        $("#description-prompt").css("display","none");
+        $("#reward-prompt").css("display","none");
+        $("#limit-prompt").css("display","none");
+
+        let formValid = true;
+        let nonNullSelectedFiles = selectedFiles.filter(file => file != null);
+
+        // Check that form data valid before sending request
+        if($("#title").val().trim()=="") {
+            $("#title-prompt").css("display","block");
+            formValid = false;
+        }
+        if($("#description").val().trim()=="") {
+            $("#description-prompt").css("display","block");
+            formValid = false;
+        }
+        if($("#reward").val().trim()=="") {
+            $("#reward-prompt").css("display","block");
+            formValid = false;
+        }
+        if($("#limit").val().trim()=="") {
+            $("#limit-prompt").css("display","block");
+            formValid = false;
+        }
+        if(selectedFiles.length < 1) {
+            $("#file-upload-prompt").css("display","block");
+            formValid = false;
+        }
+
+        if(!formValid) {
+          return;
+        }
+
         // Disable button to prevent multiple clicks
         $("#submit_button").attr("disabled", true);
 
         let zip = new JSZip();
-        let nonNullSelectedFiles;
+
          // Add all uploaded files to ZIP
          function addFileToZip(n) {
              if(n >= nonNullSelectedFiles.length) {
@@ -178,40 +233,6 @@ $(document).ready(function () {
                     let formData = new FormData(document.querySelector('#newFeedbackForm'));
                     formData.append('fileZip', files);
                     formData.delete('feedbackfiles');
-
-                    $("#title-prompt").css("display","none");
-                    $("#description-prompt").css("display","none");
-                    $("#reward-prompt").css("display","none");
-                    $("#limit-prompt").css("display","none");
-
-                    let formValid = true;
-
-                    // Check that form data valid before sending request
-                    if($("#title").val().trim()=="") {
-                        $("#title-prompt").css("display","block");
-                        formValid = false;
-                    }
-                    if($("#description").val().trim()=="") {
-                        $("#description-prompt").css("display","block");
-                        formValid = false;
-                    }
-                    if($("#reward").val().trim()=="") {
-                        $("#reward-prompt").css("display","block");
-                        formValid = false;
-                    }
-                    if($("#limit").val().trim()=="") {
-                        $("#limit-prompt").css("display","block");
-                        formValid = false;
-                    }
-                    if(nonNullSelectedFiles.length < 1) {
-                        $("#file-upload-prompt").css("display","block");
-                        formValid = false;
-                    }
-
-                    if(!formValid) {
-                      $("#submit_button").attr("disabled", false);
-                      return;
-                    }
 
                     let xhr = new XMLHttpRequest();
                     xhr.onreadystatechange = function() {
@@ -232,7 +253,6 @@ $(document).ready(function () {
               fileReader.readAsArrayBuffer(nonNullSelectedFiles[n]);
             }
         }
-        nonNullSelectedFiles = selectedFiles.filter(file => file != null);
         addFileToZip(0);
     });
 

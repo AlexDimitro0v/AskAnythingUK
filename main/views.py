@@ -293,6 +293,8 @@ def new_feedback_request(request):
 
             # Save each tag instance to database
             for tag in tags:
+                if tag == "":
+                    continue
                 category_record = Category.objects.filter(name=tag)
                 if not category_record:
                     category_record = Category(name=tag)
