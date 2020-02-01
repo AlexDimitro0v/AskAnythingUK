@@ -19,7 +19,7 @@ urlpatterns = [
     # - password_reset_complete shows a success message for the above
     path(
         'password-reset/',
-        auth_views.PasswordResetView.as_view(
+        views.CustomPasswordResetView.as_view(
             template_name='users/password_reset.html',
             form_class=EmailValidationOnForgotPassword,
             subject_template_name='users/password_reset_subject'

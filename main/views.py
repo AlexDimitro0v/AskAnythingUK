@@ -44,7 +44,7 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 def home(request):
     context = {
         'areas':  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'main/home.html', context)
 
@@ -439,13 +439,26 @@ def choose_feedbacker(request):
         try:
             feedback_request = FeedbackRequest.objects.get(id=request.POST['feedback_request_id'])
             feedbacker = User.objects.get(username=request.POST['feedbacker_username'])
+            candidate = User.objects.get(username=request.POST['feedbacker_username'])
+
         except FeedbackRequest.DoesNotExist:
             return redirect('/')
 
         nonce = request.POST["payment_method_nonce"]
         result = braintree.Transaction.sale({
             "amount": feedback_request.reward,
-            "payment_method_nonce": nonce
+            "payment_method_nonce": nonce,
+            "merchant_account_id": candidate.id,
+            "service_fee_amount": 10/100*feedback_request.reward,           # We take a 10% cut
+            "descriptor": {
+                "name": f"{feedbacker.username}",
+                "url": "company.com"
+            },
+            "customer": {
+                "first_name": f"{feedbacker.first_name}",
+                "last_name": f"{feedbacker.last_name}",
+                "email": f"{feedbacker.email}"
+            },
         })
 
         if result.is_success:

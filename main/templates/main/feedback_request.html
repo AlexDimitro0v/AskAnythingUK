@@ -50,6 +50,7 @@
 
                 <input type="hidden" name="payment_method_nonce">
                 <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
+                <input name="candidate" value="{{ candidate }}" hidden>
                 <input name="feedbacker_username" value="{{ candidate.feedbacker }}" hidden>
                 <div class="noselect button-corner">
                   <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>

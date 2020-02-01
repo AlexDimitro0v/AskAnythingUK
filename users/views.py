@@ -16,6 +16,20 @@ from datetime import datetime
 from django.utils import timezone
 from main.functions import has_premium
 from django.db.models import F        # used to compare 2 instances or fields of the same model
+from django.contrib.auth.views import PasswordResetView
+import braintree
+from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
+
+
+# Set up the payment gateway
+gateway = braintree.BraintreeGateway(
+    braintree.Configuration(
+        braintree.Environment.Sandbox,
+        merchant_id=BRAINTREE_MERCHANT_KEY,
+        public_key=BRAINTREE_PUBLIC_KEY,
+        private_key=BRAINTREE_PRIVATE_KEY
+    )
+)
 
 
 def register(request):
@@ -72,8 +86,37 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        # login(request, user)              # user is now logged in
-        # return redirect('home-page')
+
+        # https://www.quora.com/Are-there-any-true-marketplace-services-for-the-EU-or-the-UK-similar-to-Braintrees-Marketplace
+        # https://developers.braintreepayments.com/guides/braintree-marketplace/onboarding/python
+        merchant_account_params = {
+            'individual': {
+                'first_name': f"{user.first_name}",
+                'last_name': f"{user.last_name}",
+                'email': f"{user.email}",
+                'date_of_birth': "1981-11-19",
+                'address': {
+                    'street_address': "Test Address",
+                    'locality': "Test",
+                    'region': "Test Region",
+                    'postal_code': "33333"
+                }
+            },
+            'funding': {
+                'descriptor': f"{user.first_name} {user.last_name}",
+                'destination': braintree.MerchantAccount.FundingDestination.Bank,
+                'account_number': "1000000000",        # The Actual Account Number would be just a test number
+                'routing_number': "100000000",         # Testing
+            },
+            "tos_accepted": True,
+            "master_merchant_account_id": BRAINTREE_MERCHANT_KEY,
+            "id": f"{user.id}"
+        }
+        result = gateway.merchant_account.create(merchant_account_params)
+        # Testing:
+        if result.is_success:
+            print(result.merchant_account.status)
+            print(result.merchant_account.id)
 
         # process the data in form.cleaned_data as required:
         username = user.username
@@ -181,3 +224,44 @@ def try_premium(request):
         messages.success(request, f"Premium account activated!")
         curr_user.save()
     return redirect('dashboard')
+
+
+class CustomPasswordResetView(PasswordResetView):
+    def post(self, request, *args, **kwargs):
+        email = request.POST['email']
+
+        # https://developers.braintreepayments.com/guides/braintree-marketplace/onboarding/python
+        user = User.objects.filter(email=email).first()
+        merchant_account_params = {
+            'individual': {
+                'first_name': f"{user.first_name}",
+                'last_name': f"{user.last_name}",
+                'email': f"{user.email}",
+                'date_of_birth': "1981-11-19",
+                'address': {
+                    'street_address': "Test Address",
+                    'locality': "Test",
+                    'region': "Test Region",
+                    'postal_code': "33333"
+                }
+            },
+            'funding': {
+                'descriptor': f"{user.first_name} {user.last_name}",
+                'destination': braintree.MerchantAccount.FundingDestination.Bank,
+                'account_number': "1000000000",  # The Actual Account Number would be just a test number
+                'routing_number': "100000000",  # Testing
+            },
+            "tos_accepted": True,
+            "master_merchant_account_id": 'askanything',
+            "id": f"{user.id}"
+        }
+        result = gateway.merchant_account.create(merchant_account_params)
+        # Testing:
+        if result.is_success:
+            print(result.merchant_account.status)
+            print(result.merchant_account.id)
+        else:
+            print("Fail")
+            # The result always fails, you may find out why here:
+            # https://github.com/braintree/braintree_php/issues/72#issuecomment-126179456
+        return super(CustomPasswordResetView, self).post(request, *args, **kwargs)
