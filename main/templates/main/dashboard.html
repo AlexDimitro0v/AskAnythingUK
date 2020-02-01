@@ -47,6 +47,36 @@
 
 </div>
 
+{% if my_jobs %}
+<div class="feedback-request">
+  <div class="decorative-text-wrapper noselect">My Jobs</div>
+  <div class="cardbody" style="margin-bottom: 0">
+        {% for job in my_jobs; time_left in times_left; is_urgent in urgent %}
+        <div>
+          <a  href="{% url 'feedback-request-page' %}?request_id={{job.id}}">
+            <div class="small-card small-card-hover" style="padding: 20px">
+                <p style="text-align: center; font-size: 1.2em; font-weight: 600">{{job.title}}</p>
+                <div class="mb-3 mt-3" style="border-top: 1px solid #cbcbcb"></div>
+
+                {% if time_left == -1 %}
+                  <div class="status-info noselect custom-column" style="font-size: 1em; text-align: center; display: block; margin: 0 auto">
+                    <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                      Feedback Submitted
+                  </div>
+                {% elif time_left %}
+                  <p style="text-align: center"><strong {% if is_urgent%} style="color: #ab5468" {% endif %}>{{time_left}}</strong> left to submit feedback</p>
+                {% else %}
+                  <p style="text-align: center; color: #ab5468"><strong>Missed deadline for feedback submission</strong></p>
+                {% endif %}
+              </div>
+            </a>
+        </div>
+        {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+
 <div class="feedback-request">
   <div class="decorative-text-wrapper noselect">My Requests</div>
   <div class="cardbody" style="margin-bottom: 0">
@@ -94,9 +124,7 @@
         <a href="{% url 'feedback-request-page' %}?request_id={{application.id}}" style="text-decoration: none;">
         <div class="small-card small-card-hover two-columns">
             <span class="cut-text-header custom-column" style="font-weight: 600">{{application.title}}</span>
-            {% if application.feedbacker == user %}
-            <div class="status-info noselect custom-column" style="font-size: 1em;">Application Accepted</div>
-            {% elif application.feedbacker == application.feedbackee %}
+            {% if application.feedbacker == application.feedbackee %}
             <div class="status-info noselect custom-column" style="font-size: 1em;">
               <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
               Application Submitted
