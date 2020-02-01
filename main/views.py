@@ -549,11 +549,12 @@ def rate_feedbacker(request):
         form = FeedbackerRatingForm(request.POST)
 
         if form.is_valid():
+            overall = form.cleaned_data['overall']
             review = form.cleaned_data['review']
             quality = form.cleaned_data['quality']
             speed = form.cleaned_data['speed']
             communication = form.cleaned_data['communication']
-            rating = Rating(review=review, quality=quality, speed=speed, communication=communication, feedbackee=request.user,
+            rating = Rating(review=review, overall=overall, quality=quality, speed=speed, communication=communication, feedbackee=request.user,
                                                feedbacker=feedback_request.feedbacker)
             rating.save()
 

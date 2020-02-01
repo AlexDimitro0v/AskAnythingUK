@@ -589,8 +589,11 @@ a:hover, a:visited, a:link, a:active
 }
 
 .rating span {
-    color: #B34947;
+    color: #ab5468;
+}
 
+.rating {
+  margin: 0 auto;
 }
 
 .btn-link{
