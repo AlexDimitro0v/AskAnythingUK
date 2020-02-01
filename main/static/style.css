@@ -1025,6 +1025,17 @@ word-wrap: break-word;
   margin-left: -15rem;
 }
 
+.profile-link {
+  transition: 0.3s;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 10px;
+}
+
+.profile-link:hover {
+  background: #ddd;
+}
 
 /*
 Logo Colours

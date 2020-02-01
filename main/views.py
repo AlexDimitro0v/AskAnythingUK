@@ -463,10 +463,11 @@ def apply_as_feedbacker(request):
 
 @login_required
 def choose_feedbacker(request):
-
     if request.method == 'POST':
         try:
             feedback_request = FeedbackRequest.objects.get(id=request.POST['feedback_request_id'])
+            if feedback_request.feedbackee != request.user or feedback_request.feedbackee != feedback_request.feedbacker:
+                return redirect('dashboard')
             feedbacker = User.objects.get(username=request.POST['feedbacker_username'])
         except FeedbackRequest.DoesNotExist:
             return redirect('/')
@@ -495,11 +496,8 @@ def choose_feedbacker(request):
 
     return redirect('dashboard')
 
-
+@login_required
 def submit_feedback(request):
-    if not request.user.is_authenticated:
-        return redirect('login-page')
-
     if request.method == "POST":
         request_id = request.GET.get('request_id', '')
         form = FeedbackerCommentsForm(request.POST)
@@ -512,7 +510,7 @@ def submit_feedback(request):
             # Capping an error (just in case)
             if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
                 messages.error(request, "An error has occurred!")
-                return redirect('home-page')
+                return redirect('dashboard')
 
             feedback_request.feedbacker_comments = comments
             feedback_request.date_completed = datetime.now(tz=timezone.utc)

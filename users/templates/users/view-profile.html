@@ -118,7 +118,7 @@
 </div>
 {% endif %}
 <div class="feedback-request">
-     <div class="decorative-text-wrapper noselect">Ratings</div>
+     <div class="decorative-text-wrapper noselect">Reviews</div>
      <div style="margin-top:50px; vertical-align: middle;">
        {% if user_ratings %}
          {% for user_rating in user_ratings; curr_delta in time_deltas %}
@@ -133,28 +133,25 @@
 
 
          <div class="border-top pt-1"></div>
-         <h4 style="margin: 0 auto; text-align: center; margin-top: 15px"><strong>Overall</strong> </h4>
-         <div class="rating" id="overallRating" data-rate-value={{user_rating.overall}} style="font-size: 30px;"></div>
-         <div class="border-top pt-1 mt-2 small-screen-only"></div>
 
          <div class="two-columns" style="padding: 15px">
              <div class="custom-column">
-               <h4 style="margin: 0 auto; text-align: center"><strong>Quality</strong> </h4>
-               <div class="rating" id="compRating" data-rate-value={{user_rating.quality}} style="font-size: 25px;"></div>
+               <h4 style="margin: 0 auto; text-align: center; font-size: 0.9em"><strong>Quality</strong> </h4>
+               <div style="color: #ab5468; font-weight: 600; text-align: center;">{{ user_rating.quality }} ★</div>
              </div>
              <div class="custom-column">
-               <h4 style="margin: 0 auto; text-align: center"><strong>Speed</strong></h4>
-               <div class="rating" id="speedRating" data-rate-value={{user_rating.speed}} style="font-size: 25px;"></div>
+               <h4 style="margin: 0 auto; text-align: center; font-size: 0.9em"><strong>Speed</strong></h4>
+               <div style="color: #ab5468; font-weight: 600; text-align: center;">{{ user_rating.speed }} ★</div>
              </div>
              <div class="custom-column">
-               <h4 style="margin: 0 auto; text-align: center"><strong>Communication</strong> </h4>
-               <div class="rating" id="commRating" data-rate-value={{user_rating.communication}} style="font-size: 25px;"></div>
+               <h4 style="margin: 0 auto; text-align: center; font-size: 0.9em"><strong>Communication</strong> </h4>
+               <div style="color: #ab5468; font-weight: 600; text-align: center;">{{ user_rating.communication }} ★</div>
              </div>
          </div>
 
          <div class="border-top pt-1"></div>
-
-         <p>{{ user_rating.review }}</p>
+         <div class="rating" id="overallRating" data-rate-value={{user_rating.overall}} style="font-size: 32px; margin-left: 0"></div>
+         <p style="margin-top: 0; font-size: 0.9em">{{ user_rating.review }}</p>
         </div>
         {% endif %}
         {% endfor %}

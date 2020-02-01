@@ -11,12 +11,10 @@
     {% for candidate in feedback_candidates; curr_candidate_has_premium in candidate_premiums; token in client_tokens %}       <!--For username in User instance-->
     <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
       <div class="two-columns margin-columns">
-              <span class="custom-column">
-                <a href="{% url 'profile-page' %}?user={{candidate.feedbacker.id}}&feedback={{feedback_request.id}}">
+                <a class="custom-column profile-link" href="{% url 'profile-page' %}?user={{candidate.feedbacker.id}}&feedback={{feedback_request.id}}">
                   <img class="photo-circle profile-name-image" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 3px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; max-width: 100px; margin-bottom: 0;"/>
                   <span class="custom-column name-next-to-image-2">{{candidate.feedbacker}}</span>
                 </a>
-              </span>
               <div class="small-screen-only" style="margin-bottom: 10px"></div>
               <span class="custom-column">
                   <button class="btn btn-outline-info" id="choose-feedbacker{{forloop.counter}}">Choose as Feedbacker</button>
