@@ -1,6 +1,6 @@
 {% load static %}
 
-<div class="noselect header header2 large-screen-only" id="categories-header">
+<div class="noselect header header2" id="categories-header" style="display: table;">
     {% for area in areas %}
         <a class="header2-menu-text noselect" href="{% url 'feedback-requests-page' %}?area-filter={{ area.id }}" style="text-decoration: none">
             {{ area.name }}

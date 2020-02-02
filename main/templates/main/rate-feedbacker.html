@@ -7,82 +7,29 @@
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Rate Your Feedbacker</div>
     <div class="cardbody" style="margin-bottom: 70px">
-      <h3 style="margin-bottom: 0; text-align: center">Overall Rating</h3>
-      <div class="rating" id="overallRating" data-rate-value=0 style="font-size: 35px;"></div>
-
-      <div class="border-top pt-3 mt-2"></div>
-
-      <div class="two-columns" style="max-width: 600px; margin: 0 auto">
-        <span class="custom-column">
-        <h3 style="margin-bottom: 0; text-align: center">Quality</h3>
-        <div class="rating" id="compRating" data-rate-value=0 style="font-size: 35px;"></div>
-        </span>
-        <span class="custom-column">
-           <h3 style="margin-bottom: 0; text-align: center">Speed</h3>
-           <div class="rating" id="speedRating" data-rate-value=0 style="font-size: 35px;"></div>
-         </span>
-         <span class="custom-column">
-           <h3 style="margin-bottom: 0; text-align: center">Communication</h3>
-           <div class="rating" id="commRating" data-rate-value=0 style="font-size: 35px;"></div>
-          </span>
-      </div>
-
-
+      <h3 style="margin-bottom: 0">Quality</h3>
+      <div class="rating" id="compRating" data-rate-value=0 style="font-size: 35px;"></div>
+       <h3 style="margin-bottom: 0">Speed</h3>
+       <div class="rating" id="speedRating" data-rate-value=0 style="font-size: 35px;"></div>
+       <h3 style="margin-bottom: 0">Communication</h3>
+       <div class="rating" id="commRating" data-rate-value=0 style="font-size: 35px;"></div>
        <form action="/rate-feedbacker/?request_id={{request_id}}" method="POST" id="ratingForm">
           {% csrf_token %}
-          Review<br><textarea rows="15" id="description" name="review" class="form-control"></textarea> <br>
-          <input style="display: none;" value="0" id="overallHiddenInput" name="overall"/>
+          Review:<br><textarea rows="15" id="description" name="review" class="form-control"></textarea> <br>
           <input style="display: none;" value="0" id="speedHiddenInput" name="speed"/>
           <input style="display: none;" value="0" id="commHiddenInput" name="communication"/>
           <input style="display: none;" value="0" id="compHiddenInput" name="quality"/>
         </form>
 
         <button class="button-corner btn btn-outline-info" id="submit_button">Submit</button>
+
+        <script>
+          $('#submit_button').click(function() {
+              $("#ratingForm").submit();
+          });
+        </script>
     </div>
   </div>
-
-  <!-- Error overlay -->
-  <div id=main-container">
-  <div id="overlay_error" class="full-screen overlay">
-    <div class="full-screen">
-    <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
-      <div class="decorative-text-wrapper noselect">Error</div>
-      <div class="cardbody"  style="margin-top:50px">
-        <p style="font-weight: 600; font-size: 1.2em; text-align: center">
-          You must provide a rating in all four categories.
-        </p>
-
-        <div class="border-top pt-2 mt-3"></div>
-
-        <div class="noselect button-corner">
-          <button class="btn btn-outline-info" id="okay">Okay</button>
-      </div>
-      </div>
-    </div>
-    </div>
-  </div>
-</div>
-
-  <script>
-    $(document).ready(function () {
-      $('#submit_button').click(function() {
-          if( $('#overallHiddenInput').val() == 0 || $('#speedHiddenInput').val() == 0 || $('#commHiddenInput').val() == 0 || $('#compHiddenInput').val() == 0) {
-            $('#overlay_error').css("display","block");
-            $('body').css("overflow","hidden");
-          }
-          else {
-            $("#ratingForm").submit();
-          }
-      });
-
-      $('#okay').click(function(e) {
-        $('#overlay_error').css("display","none");
-        $('body').css("overflow","visible");
-      });
-    });
-  </script>
-
-
   <script>
     var options = {
       max_value: 5,
@@ -92,9 +39,6 @@
     $(".rating").rate(options);
 
     // Change values of hidden inputs in form when rating changes
-    $("#overallRating").on("change", function(ev, data){
-      $("#overallHiddenInput").val(data.to);
-    });
     $("#speedRating").on("change", function(ev, data){
       $("#speedHiddenInput").val(data.to);
     });

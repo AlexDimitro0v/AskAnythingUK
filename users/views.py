@@ -9,12 +9,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from main.models import Rating, Area, FeedbackRequest, Category, FeedbackerCandidate
+from main.models import Rating, Area, FeedbackRequest, Category
 from dateutil.relativedelta import relativedelta
 from .models import UserProfile, Specialism
 from datetime import datetime
 from django.utils import timezone
-from main.functions import has_premium, get_time_delta
+from main.functions import has_premium
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 
 
@@ -135,36 +135,12 @@ def view_profile(request):
 
     # Main purpose of separate apps is reuseability
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
-    user_id = int(request.GET.get('user', ''))
-
-    allow_access = False
+    user_id = request.GET.get('user', '')
 
     if not user_id:                    # establish the independence of the app again
         user_to_view = request.user         # get the the currently logged in user
-        allow_access = True
     else:
         user_to_view = User.objects.filter(id=user_id).first()
-        # User can always view their own profile
-        print(request.user.id)
-        print(user_id)
-        if user_id == request.user.id:
-            allow_access = True
-
-    # Users can only access profiles of candidates to their feedback reqests
-    # or their feedbackers
-    if not allow_access:
-        my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user)
-        for feedback_request in my_feedback_requests:
-            if feedback_request.feedbacker == request.user:
-                allow_access = True
-                break
-            user_is_candidate = FeedbackerCandidate.objects.filter(feedbacker=user_to_view,feedback=feedback_request)
-            if user_is_candidate:
-                allow_access = True
-                break
-
-    if not allow_access:
-        return redirect('dashboard')
 
     jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F('feedbacker')))
 
@@ -172,31 +148,6 @@ def view_profile(request):
     user_skills = [skill.category for skill in user_skills_ids]
 
     ratings = Rating.objects.filter(feedbacker=user_to_view)
-    time_deltas = []
-    curr_time = datetime.now(timezone.utc)
-    for rating in ratings:
-        time_posted = rating.date_posted
-        time_deltas.append(get_time_delta(time_posted, curr_time))
-
-    ratings_num = len(ratings)
-
-    overall_average = 0
-    speed_average = 0
-    comm_average = 0
-    quality_average = 0
-
-    if ratings_num:
-        for rating in ratings:
-            overall_average += rating.overall
-            speed_average += rating.speed
-            comm_average += rating.communication
-            quality_average += rating.quality
-
-        overall_average /= ratings_num
-        speed_average /= ratings_num
-        comm_average /= ratings_num
-        quality_average /= ratings_num
-
     context = {
         'user_to_view': user_to_view,
         'user_ratings': ratings,
@@ -204,13 +155,7 @@ def view_profile(request):
         'has_premium': has_premium(request.user),
         'viewed_has_premium': has_premium(user_to_view),
         'jobs_finished': jobs_finished,
-        'user_skills': user_skills,
-        'time_deltas': time_deltas,
-        'overall_average': round(overall_average,1),
-        'speed_average': round(speed_average,1),
-        'quality_average': round(quality_average,1),
-        'comm_average': round(comm_average,1),
-        'ratings_num': ratings_num
+        'user_skills': user_skills
     }
     return render(request, 'users/view-profile.html', context)
 

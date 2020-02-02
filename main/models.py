@@ -32,7 +32,6 @@ class FeedbackRequest(models.Model):
     reward = models.IntegerField(default=0)
     feedbacker_comments = models.TextField(default="")
     feedbacker_rated = models.IntegerField(default=False)
-    date_started = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
@@ -42,7 +41,6 @@ class Rating(models.Model):
     feedbackee = models.ForeignKey(User, on_delete=models.SET("Anonymous"), related_name='rating_feedbackee')
     feedbacker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rating_feedbacker')
     date_posted = models.DateTimeField(default=timezone.now)
-    overall = models.IntegerField(default=0)
     quality = models.IntegerField(default=0)
     speed = models.IntegerField(default=0)
     communication = models.IntegerField(default=0)

@@ -26,7 +26,6 @@ class FeedbackerCommentsForm(forms.Form):
 
 
 class FeedbackerRatingForm(forms.Form):
-    overall = forms.IntegerField()
     quality = forms.IntegerField()
     speed = forms.IntegerField()
     communication = forms.IntegerField()
@@ -34,7 +33,7 @@ class FeedbackerRatingForm(forms.Form):
 
     class Meta:
         model = Rating
-        fields = ["overall","quality", "speed", "communication", "review"]
+        fields = ["quality", "speed", "communication", "review"]
 
 class ApplicationForm(forms.Form):
     application = forms.CharField()
