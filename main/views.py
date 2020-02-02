@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
+from datetime import timedelta
 from django.http import Http404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Max
@@ -50,7 +51,7 @@ def home(request):
 
 
 def landing_page(request):
-    return render(request, 'main/landing-page.html')
+    return render(request, 'main/home.html')
 
 
 @login_required
@@ -233,8 +234,33 @@ def feedback_requests(request):
 def dashboard(request):
     my_feedbacker_applications_ids = FeedbackerCandidate.objects.values_list('feedback', flat=True).filter(
         feedbacker=request.user)
-    my_feedbacker_applications = FeedbackRequest.objects.filter(pk__in=set(my_feedbacker_applications_ids))
+    my_feedbacker_applications = FeedbackRequest.objects.filter(pk__in=set(my_feedbacker_applications_ids)).exclude(feedbacker=request.user)
     my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user)
+    my_jobs = FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F("feedbacker"))
+
+    fs = FileSystemStorage()
+    times_left = []
+    urgent = []
+    curr_time = datetime.now(timezone.utc)
+    for job in my_jobs:
+        if fs.exists('zip_files/' + str(job.id) +"_feedbacker.zip"):
+            times_left.append(-1)
+            urgent.append(False)
+        else:
+            deadline = job.date_started + timedelta(days=job.time_limit)
+
+            # Urgent jobs have less than one day left to submit feedback
+            if curr_time + timedelta(days=1) > deadline:
+                urgent.append(True)
+            else:
+                urgent.append(False)
+
+            if curr_time > deadline:
+                times_left.append(0)
+            else:
+                times_left.append(get_time_delta(curr_time,deadline))
+
+
 
     feedback_candidates = []
     for my_request in my_feedback_requests:
@@ -249,9 +275,12 @@ def dashboard(request):
     context = {
         'my_requests': my_feedback_requests,            # Feedback Request instances
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
+        'my_jobs': my_jobs,
         'feedback_candidates': feedback_candidates,     # User instances
         'areas':  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'has_premium': has_premium(request.user),
+        'times_left': times_left,
+        'urgent': urgent
 
     }
     return render(request, 'main/dashboard.html', context)
@@ -293,6 +322,8 @@ def new_feedback_request(request):
 
             # Save each tag instance to database
             for tag in tags:
+                if tag == "":
+                    continue
                 category_record = Category.objects.filter(name=tag)
                 if not category_record:
                     category_record = Category(name=tag)
@@ -432,10 +463,11 @@ def apply_as_feedbacker(request):
 
 @login_required
 def choose_feedbacker(request):
-
     if request.method == 'POST':
         try:
             feedback_request = FeedbackRequest.objects.get(id=request.POST['feedback_request_id'])
+            if feedback_request.feedbackee != request.user or feedback_request.feedbackee != feedback_request.feedbacker:
+                return redirect('dashboard')
             feedbacker = User.objects.get(username=request.POST['feedbacker_username'])
         except FeedbackRequest.DoesNotExist:
             return redirect('/')
@@ -448,6 +480,7 @@ def choose_feedbacker(request):
 
         if result.is_success:
             feedback_request.feedbacker = feedbacker
+            feedback_request.date_started = datetime.now(timezone.utc)
             feedback_request.save()
             purchase = Purchase(
                 feedback=feedback_request,
@@ -463,11 +496,8 @@ def choose_feedbacker(request):
 
     return redirect('dashboard')
 
-
+@login_required
 def submit_feedback(request):
-    if not request.user.is_authenticated:
-        return redirect('login-page')
-
     if request.method == "POST":
         request_id = request.GET.get('request_id', '')
         form = FeedbackerCommentsForm(request.POST)
@@ -480,7 +510,7 @@ def submit_feedback(request):
             # Capping an error (just in case)
             if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
                 messages.error(request, "An error has occurred!")
-                return redirect('home-page')
+                return redirect('dashboard')
 
             feedback_request.feedbacker_comments = comments
             feedback_request.date_completed = datetime.now(tz=timezone.utc)
@@ -517,11 +547,12 @@ def rate_feedbacker(request):
         form = FeedbackerRatingForm(request.POST)
 
         if form.is_valid():
+            overall = form.cleaned_data['overall']
             review = form.cleaned_data['review']
             quality = form.cleaned_data['quality']
             speed = form.cleaned_data['speed']
             communication = form.cleaned_data['communication']
-            rating = Rating(review=review, quality=quality, speed=speed, communication=communication, feedbackee=request.user,
+            rating = Rating(review=review, overall=overall, quality=quality, speed=speed, communication=communication, feedbackee=request.user,
                                                feedbacker=feedback_request.feedbacker)
             rating.save()
 

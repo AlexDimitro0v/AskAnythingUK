@@ -37,11 +37,11 @@
   </div>
     <div style="margin-top: 30px">
       <div class="container-fluid">
-          <div class="row justify-content-center">
+          <div class="row justify-content-center" id="requests-container">
             {% if min_price or min_time %}
               {% if min_price != max_price or min_time != max_time %}
-              <div class="col-4" style="padding: 0;">
-                <div style="margin: 0 auto; margin-top: 20px; position: absolute; width: 300px; right:0 ">
+              <div class="col-4" style="padding: 0;" id="left-column">
+                <div class="floating-window">
                   <div class="feedback-request" style="padding: 15px">
                     {% if min_price != max_price %}
                       <p class="important-text" style="margin-bottom: 5px">Price</p>
@@ -81,9 +81,9 @@
               {% endif %}
             {% endif %}
     {% if not requests and not min_price %}
-    <div style="width: 400px">
+    <div style="width: 400px; margin: 0 auto">
     {% endif %}
-    <div
+    <div id="right-column"
     {% if min_price or min_time %}
         {% if min_price != max_price or min_time != max_time %}
           class="col-8"
@@ -111,7 +111,7 @@
       </div>
 
       {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas; curr_premium in premium_requests; curr_new in new_requests %}
-      <div class="feedback-request {% if curr_premium %} premium-request {% endif %}" style="margin-left: 20px;">
+      <div class="feedback-request main-menu-request {% if curr_premium %} premium-request {% endif %}">
           <div style="margin-bottom: 18px">
             <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if curr_premium %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
             <span class="bold-p">{{ feedback_request.feedbackee }}</span>
@@ -133,15 +133,15 @@
             <p class="clickable-text cut-text"> {{ feedback_request.maintext }} </p>
           </a>
           <div class="border-top pt-2 mt-2 "></div>
-          <div style="display: flex; justify-content: space-between;">
-            <span style="margin-top: 10px">
+          <div class="two-columns">
+            <span style="margin-top: 10px" class="custom-column">
             {% if curr_tags.0 %}
                 {% for tag in curr_tags %}
                     <span class='tag' id="{{ tag }}" title="Click to filter by tag" style=" white-space:nowrap; line-height: 50px">{{ tag }}</span>
                 {% endfor %}
             {% endif %}
             </span>
-            <span style="white-space: nowrap;">
+            <span style="white-space: nowrap;"  class="custom-column">
               <span class="status-info noselect">
                 <img src = "{% static 'img/pound_icon3.png'%}" style="height: 24px;  vertical-align: middle;" />
                   £{{ feedback_request.reward }}
