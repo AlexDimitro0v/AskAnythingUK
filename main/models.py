@@ -24,16 +24,14 @@ class FeedbackRequest(models.Model):
     date_started = models.DateTimeField(default=timezone.now)
     date_completed = models.DateTimeField(default=timezone.now)
     time_limit = models.IntegerField(default=7)
-    premium = models.BooleanField(default=False)
+    reward = models.IntegerField(default=0)
     # If feedbackee(the one who posts the request) is deleted, delete the feedback request instance (do we want this?)
     feedbackee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='request_feedbackee')
     # Initially the feedbacker is set to the author (i.e. feedbackee = feedbacker)
     # Cannot delete a feedbacker of an existing request!
     feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker')
-    reward = models.IntegerField(default=0)
     feedbacker_comments = models.TextField(default="")
     feedbacker_rated = models.IntegerField(default=False)
-    date_started = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title

@@ -85,6 +85,49 @@
           </div>
         </div>
       </div>
+
+      <!-- Too many tags overlay -->
+      <div id=main-container">
+      <div id="overlay_error_tags" class="full-screen overlay">
+        <div class="full-screen">
+        <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+          <div class="decorative-text-wrapper noselect">Error</div>
+          <div class="cardbody"  style="margin-top:50px">
+            <p id="max_tags_message" style="font-weight: 600; font-size: 1.2em; text-align: center">
+              You can provide a maximum of 5 tags.
+            </p>
+
+            <div class="border-top pt-2 mt-3"></div>
+
+            <div class="noselect button-corner">
+              <button class="btn btn-outline-info" id="okay_tags">Okay</button>
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      </div>
+
+      <script>
+        $(document).ready(function () {
+          $('#submit_button').click(function() {
+              if( $('#overallHiddenInput').val() == 0 || $('#speedHiddenInput').val() == 0 || $('#commHiddenInput').val() == 0 || $('#compHiddenInput').val() == 0) {
+                $('#overlay_error').css("display","block");
+                $('body').css("overflow","hidden");
+              }
+              else {
+                $("#ratingForm").submit();
+              }
+          });
+
+          $('#okay').click(function(e) {
+            $('#overlay_error').css("display","none");
+            $('body').css("overflow","visible");
+          });
+        });
+      </script>
+
+
   <script>
 
 $(document).ready(function () {

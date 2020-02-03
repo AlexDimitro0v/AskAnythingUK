@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% block content%}
     <style>
-      #hint_id_username {
+      #hint_id_username, #id_image {
         display: none;
       }
     </style>
@@ -24,6 +24,15 @@
               </div>
             </div>
             {{ p_form|crispy }}
+            <div style="margin-top: -1rem;" >
+              <label for="id_image" class="btn btn-outline-info" style="cursor: pointer; margin-bottom:0px;">
+                  Upload Image
+              </label>
+              <span style="margin-left: 10px; font-weight: 600; display: none" id="imageCropped">
+                    <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="/static/img/tick4.png">
+                    <span style="color: #444" class="bold-p">Image cropped</span>
+              </span>
+            </div>
         </form>
         <form onsubmit="return false" style="margin-top: 15px;">
             Skills<br>
@@ -93,6 +102,7 @@
                       reader.onload = function (e) {
                         $("#image").attr("src", e.target.result);
                         $("#modalCrop").modal("show");
+                        $('#imageCropped').css('display','none');
                       }
                       reader.readAsDataURL(this.files[0]);
                     }
@@ -135,6 +145,7 @@
                     $("#id_height").val(cropData["height"]);
                     $("#id_width").val(cropData["width"]);
                     $('#modalCrop').modal('hide');
+                    $('#imageCropped').css('display','inline');
                   });
                 });
 

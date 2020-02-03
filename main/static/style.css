@@ -1,6 +1,6 @@
 @font-face {
     font-family: "Lexend";
-    src: url("fonts/LexendDeca.ttf");
+    src: url("fonts/LexendDeca-Regular.ttf");
 }
 
 :root {
@@ -38,7 +38,6 @@ a {
 textarea {
   resize: none;
   width: 100%;
-  font-family: 'Raleway';
 }
 
 h1 {
@@ -450,17 +449,13 @@ p {
   color: white;
 }
 
-textarea {
-  font-family: 'Lexend','Raleway';
-}
-
 .onelineform {
   height: 30px;
   line-height: 30px;
   max-width: 400px
 }
 
-form {
+form, input, label, textarea {
   font-family: 'Lexend',"Raleway";
 }
 

@@ -224,7 +224,8 @@ def feedback_requests(request):
         'time_deltas': time_deltas,
         'premium_requests': premium_requests,
         'new_requests': new_requests,
-        'has_premium' : has_premium(request.user)
+        'has_premium' : has_premium(request.user),
+        'title': '| Feedback Requests'
     }
 
     return render(request, 'main/feedback_requests.html', context)
@@ -280,8 +281,8 @@ def dashboard(request):
         'areas':  Area.objects.all(),
         'has_premium': has_premium(request.user),
         'times_left': times_left,
-        'urgent': urgent
-
+        'urgent': urgent,
+        'title': '| Dashboard'
     }
     return render(request, 'main/dashboard.html', context)
 
@@ -338,7 +339,8 @@ def new_feedback_request(request):
     areas = Area.objects.all()
     context = {
         "areas": areas,
-        'has_premium': has_premium(request.user)
+        'has_premium': has_premium(request.user),
+        'title': '| New Feedback Request'
         }
     return render(request, 'main/new_feedback_request.html', context)
 
@@ -430,7 +432,8 @@ def feedback_request(request):
             'purchase': Purchase.objects.filter(feedback=feedback_request).first(),
             'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
             'feedbacker_has_premium': has_premium(feedback_request.feedbacker),
-            'candidate_premiums': candidate_premiums
+            'candidate_premiums': candidate_premiums,
+            'title': '| ' + feedback_request.title
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -528,6 +531,7 @@ def submit_feedback(request):
         'request_id': request.GET.get('request_id', ''),
         'areas':  Area.objects.all(),
         'has_premium': has_premium(request.user),
+        'title': '| Submit Feedback'
     }
     return render(request, 'main/submit_feedback.html', context)
 
@@ -564,7 +568,8 @@ def rate_feedbacker(request):
     context = {
         'request_id': request.GET.get('request_id', ''),
         'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user)
+        'has_premium': has_premium(request.user),
+        'title': '| Rate Feedbacker'
     }
     return render(request, 'main/rate-feedbacker.html', context)
 

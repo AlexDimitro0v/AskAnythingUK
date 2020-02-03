@@ -125,7 +125,8 @@ def customize_user_profile(request):
         'p_form': p_form,
         'areas':  Area.objects.all(),
         'has_premium': has_premium(request.user),
-        'user_skills': user_skills
+        'user_skills': user_skills,
+        'title': '| Customize Profile'
     }
     return render(request, 'users/customize_profile.html', context=context)
 
@@ -135,7 +136,7 @@ def view_profile(request):
 
     # Main purpose of separate apps is reuseability
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
-    user_id = int(request.GET.get('user', ''))
+    user_id = request.GET.get('user', '')
 
     allow_access = False
 
@@ -143,10 +144,9 @@ def view_profile(request):
         user_to_view = request.user         # get the the currently logged in user
         allow_access = True
     else:
+        user_id = int(user_id)
         user_to_view = User.objects.filter(id=user_id).first()
         # User can always view their own profile
-        print(request.user.id)
-        print(user_id)
         if user_id == request.user.id:
             allow_access = True
 
@@ -210,7 +210,8 @@ def view_profile(request):
         'speed_average': round(speed_average,1),
         'quality_average': round(quality_average,1),
         'comm_average': round(comm_average,1),
-        'ratings_num': ratings_num
+        'ratings_num': ratings_num,
+        'title': '| ' + user_to_view.username + "'s Profile"
     }
     return render(request, 'users/view-profile.html', context)
 
@@ -222,7 +223,8 @@ def get_premium(request):
 
     context = {
         'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user)
+        'has_premium': has_premium(request.user),
+        'title': '| Get Premium'
     }
     return render(request, 'users/get-premium.html', context)
 

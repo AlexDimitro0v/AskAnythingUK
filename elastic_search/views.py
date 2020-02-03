@@ -35,7 +35,8 @@ def search(request):
         'search': query,
         'areas': Area.objects.all(),
         'page_obj': page_obj,
-        'time_deltas': time_deltas
+        'time_deltas': time_deltas,
+        'title': '| Search'
     }
 
     return render(request, 'main/search-requests.html', context)
