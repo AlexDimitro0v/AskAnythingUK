@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area, Purchase
-from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm, ApplicationForm
+from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area, Purchase, Message
+from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm, ApplicationForm, MessageForm
 from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 from django.core.paginator import Paginator
@@ -408,6 +408,21 @@ def feedback_request(request):
     if feedback_request.feedbackee != feedback_request.feedbacker and not user_is_feedbackee and not user_is_feedbacker and not user_was_rejected:
         return redirect('dashboard')
 
+
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+
+        if form.is_valid():
+            message_text = form.cleaned_data['message']
+            message = Message(message=message_text, feedback_id=request_id, author=request.user)
+            message.save()
+
+    try:
+        messages = Message.objects.filter(feedback_id=request_id)
+        messages.order_by('-date')
+    except:
+        return redirect('dashboard')
+
     client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
     if request_id != "":
         context = {
@@ -433,7 +448,8 @@ def feedback_request(request):
             'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
             'feedbacker_has_premium': has_premium(feedback_request.feedbacker),
             'candidate_premiums': candidate_premiums,
-            'title': '| ' + feedback_request.title
+            'title': '| ' + feedback_request.title,
+            'user_messages': messages,
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -451,6 +467,11 @@ def apply_as_feedbacker(request):
 
             # Feedbacker already chosen, cannot apply
             if feedback_request.feedbacker != feedback_request.feedbackee:
+                return redirect('dashboard')
+
+            # Cannot apply twice to the same feedback request
+            past_application = FeedbackerCandidate.objects.filter(feedbacker=request.user,feedback=feedback_request)
+            if past_application:
                 return redirect('dashboard')
 
             application_text = form.cleaned_data['application']

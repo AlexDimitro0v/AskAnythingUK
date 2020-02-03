@@ -393,6 +393,22 @@ textarea {
   background-color: #ddd;
 }
 
+.message-card {
+  border-radius: 10px;
+  background: #efefef;
+  line-height: 60px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: inline-block;
+  right: 0;
+  max-width: 90%;
+  text-align: left;
+}
+
+.message-card p {
+  font-family: 'Lexend';
+}
+
 .status-info {
   font-size: 1.3em;
   height: 40px;

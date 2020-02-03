@@ -91,3 +91,9 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f"{self.feedback.title} Purchase"
+
+class Message(models.Model):
+    author = models.ForeignKey(User, on_delete=models.SET("Anonymous"))
+    feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
+    message = models.TextField(default="")
+    date = models.DateTimeField(default=timezone.now)

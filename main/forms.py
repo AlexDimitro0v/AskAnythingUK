@@ -3,6 +3,7 @@ from .models import FeedbackRequest
 from .models import FeedbackerComments
 from .models import Rating
 from .models import FeedbackerCandidate
+from .models import Message
 
 
 class NewFeedbackRequestForm(forms.Form):
@@ -36,9 +37,18 @@ class FeedbackerRatingForm(forms.Form):
         model = Rating
         fields = ["overall","quality", "speed", "communication", "review"]
 
+
 class ApplicationForm(forms.Form):
     application = forms.CharField()
 
     class Meta:
         model = FeedbackerCandidate
         fields = ["application"]
+
+
+class MessageForm(forms.Form):
+    message = forms.CharField()
+
+    class Meta:
+        model = Message
+        fields = ["message"]

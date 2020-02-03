@@ -29,7 +29,7 @@
 
 
             <br>Time limit (days)<br>
-            <input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1" max="999">
+            <input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="5" max="100">
             <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
 
 
@@ -137,15 +137,15 @@ $(document).ready(function () {
         if($(this).val() > 9999) {
           $(this).val(9999);
         }
-        if($(this).val() < 1) {
-          $(this).val(1);
+        if($(this).val() < 5) {
+          $(this).val(5);
         }
       });
 
       $( "#limit" ).change(function() {
         $(this).val(parseInt($(this).val()));
-        if($(this).val() > 999) {
-          $(this).val(999);
+        if($(this).val() > 100) {
+          $(this).val(100);
         }
         if($(this).val() < 1) {
           $(this).val(1);
