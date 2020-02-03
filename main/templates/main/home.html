@@ -4,8 +4,8 @@
 {% block content%}
     <div class="full-screen full-screen-image" style="margin-top: -100px; background-image: url({% static 'img/home-bg.jpg' %});   background-color: rgba(255,255,255,0.5);">
       <div class="container-fluid" style="max-width: 1400px">
-          <div class="row ">
-              <div class="col-6" >
+          <div class="row " id="left-column">
+              <div class="col-6" id="requests-container" >
                 <div style="background: none; width: 70%; min-width: 40px; top: 0">
                     <div class="content" >
                       <div class="content__container">
@@ -31,7 +31,8 @@
                     </a>
                 </div>
               </div>
-              <div class="col-6" style="padding-left: 80px">
+              <div class="small-screen-only"><br></div>
+              <div class="col-6" id="right-column" style="padding-left: 80px">
                 <div style="margin-bottom: 18px">
                   <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
                   <span style="color: #444" class="bold-p">Choose the best feedbacker from all candidates</span>
@@ -49,14 +50,56 @@
 
             </div>
     </div>
+    <div class="full-screen" style="background-color: #fff">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+                    <img src="{% static 'img/test-icon.png' %}" style="height: 200px; text-align: center; margin: 0 auto"/>
+                    <h3 style="margin-top: 10px;">SECURITY</h3>
+                    <div class="border-top pt-1"></div>
+                    <p style="text-align: justify">
+                        We understand that users care about their data and do not want third parties to steal their private
+                        information or look through their feedback data. Therefore, we are doing everything we can to keep
+                        their data secure, from using secure protocols for data transmission to using end-to-end encryption
+                        for all files uploaded to our servers.
+                    </p>
+                </div>
+                <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+                    <img src="{% static 'img/test-icon.png' %}" style="height: 200px"/>
+                    <h3 style="margin-top: 10px;">SMART RECOMMENDATIONS</h3>
+                    <div class="border-top pt-1"></div>
+                    <p style="text-align: justify">
+                        Sometimes it is time consuming for feedbackers to look through feedback requests and find the ones
+                        they find interesting. That is why we have implemented smart natural language processing algorithms
+                        to deliver tailored recommendations straight into their email inboxes.
+                    </p>
+                </div>
+                <div class="col-sm landing-card" style="text-align: center; margin: 15px">
+                    <img src="{% static 'img/test-icon.png' %}" style="height: 200px"/>
+                    <h3 style="margin-top: 10px;">SAFEGUARDING QUALITY</h3>
+                    <div class="border-top pt-1"></div>
+                    <p style="text-align: justify">
+                        Feedbackees need assurance that they are not throwing their Money out of the window when paying for
+                        feedback. We have them covered. Our algorithms are working hard to detect feedbackers who are trying
+                        to cheat the system by writing their own reviews and not delivering good quality feedback.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="full-screen full-screen-image" style="background-image: url({% static 'img/landing-page.jpg' %});   background-color: rgba(255,255,255,0.9);">
-      <div style="background: none; width: 70%; min-width: 40px; top: 0">
-        <h1 class="large-header">Feel like helping others?</h1>
-        <h1 style="text-align: center; font-size: 1.8em; margin-bottom: 20px">Try searching existing feedback requests<br>in your area of expertise.</h1>
+      {% if user.is_authenticated %}
+        <div style="background: none; width: 70%; min-width: 40px; top: 0">
+          <h2 class="large-header">Feel like helping others?</h2>
+          <h2 style="text-align: center; font-size: 1.6em; margin-bottom: 20px; margin-top: 20px; font-weight: 600">Try searching existing feedback requests<br>in your area of expertise.</h2>
 
-        {% include "main/search-bar.html" %}
-      </div>
-
+          {% include "main/search-bar.html" %}
+        </div>
+      {% else %}
+        <a href="{% url 'registration-page' %}">
+            <button class="btn btn-outline-info" style="font-size: 2em">Sign Up</button>
+        </a>
+      {% endif %}
 
     </div>
 
