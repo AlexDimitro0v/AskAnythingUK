@@ -21,6 +21,7 @@ class FeedbackRequest(models.Model):
     title = models.CharField(max_length=100)
     maintext = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
+    date_started = models.DateTimeField(default=timezone.now)
     date_completed = models.DateTimeField(default=timezone.now)
     time_limit = models.IntegerField(default=7)
     premium = models.BooleanField(default=False)
