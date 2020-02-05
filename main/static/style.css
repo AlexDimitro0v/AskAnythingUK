@@ -881,6 +881,23 @@ word-wrap: break-word;
   border-style: solid;
 }
 
+.chat-image {
+  width: 45px;
+  height: 45px;
+  vertical-align: middle;
+  border-radius: 50%;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.chat-image-left {
+  margin-right: 10px;
+}
+
+.chat-image-right {
+  margin-left: 10px;
+}
+
 .sticky-button {
   position: fixed;
   z-index: 1;

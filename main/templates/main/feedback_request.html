@@ -467,15 +467,15 @@
                 {{ message.message }}
               </p>
              </div>
-             <img src="{{ user.userprofile.image.url }}" class="profile-name-image" style="width: 45px; border-color: {% if has_premium %} #e9ca6e {% else %} #ccc {% endif %}; margin-left: 10px; {% if prev == 0 %} opacity: 0 {% endif %}"/>
+             <img src="{{ user.userprofile.image.url }}" class="chat-image chat-image-right" style="border-color: {% if has_premium %} #e9ca6e {% else %} #ccc {% endif %}; {% if prev == 0 %} opacity: 0 {% endif %}"/>
            </div>
            {% let 0 as prev %}
          {% else %}
            <div class="messageContainer" style="display: flex;">
             {% if message.author == feedback_request.feedbackee %}
-              <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="profile-name-image" style="width: 45px; border-color: {% if feedbackee_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; margin-right: 10px; {% if prev == 1 %} opacity: 0 {% endif %}"/>
+              <img src="{{ feedback_request.feedbackee.userprofile.image.url }}" class="chat-image chat-image-left" style="border-color: {% if feedbackee_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; {% if prev == 1 %} opacity: 0 {% endif %}"/>
             {% else %}
-              <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="profile-name-image" style="width: 45px; border-color: {% if feedbacker_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; margin-right: 10px; {% if prev == 1 %} opacity: 0 {% endif %}"/>
+              <img src="{{ feedback_request.feedbacker.userprofile.image.url }}" class="chat-image chat-image-left" style="border-color: {% if feedbacker_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; {% if prev == 1 %} opacity: 0 {% endif %}"/>
             {% endif %}
 
            <div class="message-card" >
@@ -528,9 +528,9 @@
                             opacity = 1;
                           }
                           {% if request.user == feedback_request.feedbackee %}
-                            $("#all_messages").append( "<div class='messageContainer' style='display: flex;'><img src='{{ feedback_request.feedbacker.userprofile.image.url }}' class='profile-name-image' style='width: 45px; margin-right: 10px; opacity:"+ opacity +"; border-color: "+ color +"';/><div class='message-card'><p style='margin-top: 0; font-size: 0.9em;'>" + message + "</p></div>" );
+                            $("#all_messages").append( "<div class='messageContainer' style='display: flex;'><img src='{{ feedback_request.feedbacker.userprofile.image.url }}' class='chat-image chat-image-left' style='opacity:"+ opacity +"; border-color: "+ color +"';/><div class='message-card'><p style='margin-top: 0; font-size: 0.9em;'>" + message + "</p></div>" );
                           {% else %}
-                            $("#all_messages").append( "<div class='messageContainer' style='display: flex;'><img src='{{ feedback_request.feedbackee.userprofile.image.url }}' class='profile-name-image' style='width: 45px; margin-right: 10px; opacity:"+ opacity +"; border-color: "+ color +"';/><div class='message-card'><p style='margin-top: 0; font-size: 0.9em;'>" + message + "</p></div>" );
+                            $("#all_messages").append( "<div class='messageContainer' style='display: flex;'><img src='{{ feedback_request.feedbackee.userprofile.image.url }}' class='chat-image chat-image-left' style='opacity:"+ opacity +"; border-color: "+ color +"';/><div class='message-card'><p style='margin-top: 0; font-size: 0.9em;'>" + message + "</p></div>" );
                           {% endif %}
                           $('#all_messages').scrollTop($('#all_messages')[0].scrollHeight);
                         });
@@ -557,13 +557,11 @@
           let xhr = new XMLHttpRequest();
           xhr.onreadystatechange = function() {
             if(xhr.readyState == 4 && xhr.status == 200) {
-               if($( ".messageContainer" ).last().css('text-align') == 'right') {
-                  $( "#all_messages" ).append( "<div class='messageContainer' style='text-align: right; display: flex; justify-content: flex-end;'><div class='message-card' style='background: #ab5468'><p style='margin-top: 0; font-size: 0.9em; color: white'>" + $( "#message" ).val() + "</p></div><img src='{{ user.userprofile.image.url }}' class='profile-name-image' style='width: 45px; margin-left: 10px; opacity: 0'; border-color: {% if has_premium %} #e9ca6e {% else %} #ccc {% endif %};/>" );
-              }
-              else {
-                $( "#all_messages" ).append( "<div class='messageContainer' style='text-align: right; display: flex; justify-content: flex-end;'><div class='message-card' style='background: #ab5468'><p style='margin-top: 0; font-size: 0.9em; color: white'>" + $( "#message" ).val() + "</p></div><img src='{{ user.userprofile.image.url }}' class='profile-name-image' style='width: 45px; margin-left: 10px; border-color: {% if has_premium %} #e9ca6e {% else %} #ccc {% endif %};'/>" );
-              }
-
+                let opacity = 1;
+                if($( ".messageContainer" ).last().css('text-align') == 'right') {
+                  opacity = 0;
+                }
+              $( "#all_messages" ).append( "<div class='messageContainer' style='text-align: right; display: flex; justify-content: flex-end;'><div class='message-card' style='background: #ab5468'><p style='margin-top: 0; font-size: 0.9em; color: white'>" + $( "#message" ).val() + "</p></div><img src='{{ user.userprofile.image.url }}' class='chat-image chat-image-right' style='opacity: " + opacity + "; border-color: {% if has_premium %} #e9ca6e {% else %} #ccc {% endif %};'/>" );
               $( "#message" ).val( "" );
               $('#all_messages').scrollTop($('#all_messages')[0].scrollHeight);
             }
