@@ -424,13 +424,14 @@ def feedback_request(request):
                 feedback_request.new_feedbackee_message = True
                 feedback_request.save()
 
+            return redirect('home-page')
+
     messages = Message.objects.filter(feedback_id=request_id)
     messages.order_by('-date')
 
     latest_user_message_date = None
     if messages:
         latest_user_message_date = messages.latest('date').date.strftime("%Y-%m-%d %H:%M:%S.%f")
-        print(latest_user_message_date)
     client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
     if request_id != "":
         context = {
