@@ -30,7 +30,7 @@
       <div class="border-top pt-1"></div>
 
         {% if user.userprofile.description %}
-            <p style="white-space: pre-wrap;" class="cut-text">{{ user.userprofile.description }}</p>
+            <p style="white-space: pre-wrap; max-height: 400px" class="cut-text">{{ user.userprofile.description }}</p>
         {% else %}
             <p>No profile description.</p>
         {% endif %}
