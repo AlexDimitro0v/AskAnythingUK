@@ -401,8 +401,18 @@ textarea {
   margin-bottom: 10px;
   display: inline-block;
   right: 0;
-  max-width: 90%;
+  max-width: 80%;
   text-align: left;
+}
+
+.message-text {
+  margin-top: 0;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+.white {
+  color: white;
 }
 
 .message-card p {
@@ -761,7 +771,7 @@ color: #1F4D8A;
 }
 
 .clickable-header:hover {
-  color: #777;
+  color: #ab5468;
 }
 
 .clickable-text {
@@ -881,6 +891,23 @@ word-wrap: break-word;
   border-width: 3px;
   margin-right: 5px;
   border-style: solid;
+}
+
+.chat-image {
+  width: 45px;
+  height: 45px;
+  vertical-align: middle;
+  border-radius: 50%;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.chat-image-left {
+  margin-right: 10px;
+}
+
+.chat-image-right {
+  margin-left: 10px;
 }
 
 .sticky-button {
@@ -1048,6 +1075,13 @@ word-wrap: break-word;
 
 .profile-link:hover {
   background: #ddd;
+}
+
+#message:focus {
+  outline: none;
+  -webkit-appearance: none;
+  box-shadow : none;
+
 }
 
 /*

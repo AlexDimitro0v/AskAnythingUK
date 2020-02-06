@@ -82,6 +82,10 @@
         <div id="tags"></div>
             <script>
               $(document).ready(function () {
+
+                    $("#id_description").attr("maxlength", 1500)
+                    $("#id_city").attr("maxlength", 30)
+
                     let maxTags = 10;
                     let tags = {{ user_skills|safe }};
                     let numOfTags = {{ user_skills|length }};

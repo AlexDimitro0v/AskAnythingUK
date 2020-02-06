@@ -32,6 +32,8 @@ class FeedbackRequest(models.Model):
     feedbacker = models.ForeignKey(User, on_delete=models.PROTECT, related_name='request_feedbacker')
     feedbacker_comments = models.TextField(default="")
     feedbacker_rated = models.IntegerField(default=False)
+    new_feedbackee_message = models.IntegerField(default=False)
+    new_feedbacker_message = models.IntegerField(default=False)
 
     def __str__(self):
         return self.title

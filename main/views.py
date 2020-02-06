@@ -19,6 +19,8 @@ from django.db.models.expressions import RawSQL
 from .functions import get_time_delta, get_request_candidates, has_premium
 from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
 import braintree
+import json
+from django.http import HttpResponse
 
 from django.views.generic import (
     DeleteView
@@ -35,7 +37,6 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
                                   merchant_id=BRAINTREE_MERCHANT_KEY,
                                   public_key=BRAINTREE_PUBLIC_KEY,
                                   private_key=BRAINTREE_PRIVATE_KEY)
-
 
 # =====================================================================================================================
 # FUNCTION-BASED VIEWS:
@@ -408,7 +409,7 @@ def feedback_request(request):
     if feedback_request.feedbackee != feedback_request.feedbacker and not user_is_feedbackee and not user_is_feedbacker and not user_was_rejected:
         return redirect('dashboard')
 
-
+    # New message
     if request.method == "POST":
         form = MessageForm(request.POST)
 
@@ -416,13 +417,21 @@ def feedback_request(request):
             message_text = form.cleaned_data['message']
             message = Message(message=message_text, feedback_id=request_id, author=request.user)
             message.save()
+            if user_is_feedbacker and feedback_request.feedbackee.is_authenticated:
+                feedback_request.new_feedbacker_message = True
+                feedback_request.save()
+            elif user_is_feedbackee and feedback_request.feedbacker.is_authenticated:
+                feedback_request.new_feedbackee_message = True
+                feedback_request.save()
 
-    try:
-        messages = Message.objects.filter(feedback_id=request_id)
-        messages.order_by('-date')
-    except:
-        return redirect('dashboard')
+            return redirect('home-page')
 
+    messages = Message.objects.filter(feedback_id=request_id)
+    messages.order_by('-date')
+
+    latest_user_message_date = None
+    if messages:
+        latest_user_message_date = messages.latest('date').date.strftime("%Y-%m-%d %H:%M:%S.%f")
     client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
     if request_id != "":
         context = {
@@ -450,6 +459,7 @@ def feedback_request(request):
             'candidate_premiums': candidate_premiums,
             'title': '| ' + feedback_request.title,
             'user_messages': messages,
+            'latest_user_message_date': latest_user_message_date
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -618,6 +628,41 @@ def finish_purchase(request):
     purchase.save()
     return redirect('dashboard')
 
+@login_required
+def get_new_messages(request):
+    request_id = request.GET.get('request_id', '')
+    if not request_id:
+        return redirect('dashboard')
+
+    feedback_request = FeedbackRequest.objects.get(id=request_id)
+    if request.is_ajax():
+        latest_user_message_date = request.POST.get('latest_user_message_date', None)
+
+        if feedback_request.feedbackee == request.user and feedback_request.new_feedbacker_message:
+            feedback_request.new_feedbacker_message = False
+            feedback_request.save()
+
+            messages = Message.objects.filter(feedback_id=request_id,author=feedback_request.feedbacker,date__gt=latest_user_message_date)
+            messages.order_by('-date')
+
+            message_texts = []
+            for message in messages:
+                message_texts.append(message.message)
+
+            return HttpResponse(json.dumps({'has_premium': has_premium(feedback_request.feedbacker),'messages': message_texts,'newestMessage': datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}), content_type="application/json")
+        if feedback_request.feedbacker == request.user and feedback_request.new_feedbackee_message:
+            feedback_request.new_feedbackee_message = False
+            feedback_request.save()
+
+            messages = Message.objects.filter(feedback_id=request_id,author=feedback_request.feedbackee,date__gt=latest_user_message_date)
+            messages.order_by('-date')
+
+            message_texts = []
+            for message in messages:
+                message_texts.append(message.message)
+
+            return HttpResponse(json.dumps({'has_premium': has_premium(feedback_request.feedbackee),'messages': message_texts,'newestMessage': datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}), content_type="application/json")
+        return HttpResponse(json.dumps(None), content_type="application/json")
 
 # =====================================================================================================================
 

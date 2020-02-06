@@ -266,6 +266,8 @@ $(document).ready(function () {
         // Disable button to prevent multiple clicks
         $("#submit_button").attr("disabled", true);
 
+        $("#description").val($("#description").val().trim())
+
         let zip = new JSZip();
 
          // Add all uploaded files to ZIP
