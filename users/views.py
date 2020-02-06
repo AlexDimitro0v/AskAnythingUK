@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages                             # Django built-in message alerts
 from django.contrib.auth.decorators import login_required       # Django built-in login_required decorator
-from .forms import UserRegistrationForm, EditUserForm, EditProfileForm
+from .forms import UserRegistrationForm, EditUserForm, EditProfileForm, PrivateInformationForm, PublicInformationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -16,6 +16,8 @@ from datetime import datetime
 from django.utils import timezone
 from main.functions import has_premium, get_time_delta
 from django.db.models import F        # used to compare 2 instances or fields of the same model
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 def register(request):
@@ -238,3 +240,46 @@ def try_premium(request):
         messages.success(request, f"Premium account activated!")
         curr_user.save()
     return redirect('dashboard')
+
+
+def settings(request):
+    active = request.GET.get('tab', '')
+    if request.method == 'POST':
+
+        if 'password-change' in request.POST:
+            change_password_form = PasswordChangeForm(request.user, request.POST, prefix='password-change')
+            if change_password_form.is_valid():
+                user = change_password_form.save()
+                update_session_auth_hash(request, user)  # Important!
+                # Otherwise the user’s auth session will be invalidated and she/he will have to log in again.
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+
+        elif 'private-info' in request.POST:
+            private_info_form = PrivateInformationForm(request.POST, instance=request.user.userprofile, prefix='private-info')
+            if private_info_form.is_valid():
+                private_info_form.save()
+
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+
+        elif 'public-info' in request.POST:
+            public_info_form = PublicInformationForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            if public_info_form.is_valid():
+                public_info_form.save()
+
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+
+    else:
+        change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+        private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+        public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+
+    context = {'change_password_form': change_password_form,
+               'private_info_form': private_info_form,
+               'public_info_form': public_info_form,
+               'active': active,
+               }
+    return render(request, 'users/settings.html', context)
+

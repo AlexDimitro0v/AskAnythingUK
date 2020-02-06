@@ -46,6 +46,7 @@ ALLOWED_HOSTS = ['*']
 # and modules (which deal with the databases)
 INSTALLED_APPS = [
     'crispy_forms',
+    'phonenumber_field',
     'django_cleanup',           # to auto-delete old media files (like old profile images)
     'users.apps.UsersConfig',
     'main.apps.MainConfig',

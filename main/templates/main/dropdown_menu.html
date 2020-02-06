@@ -8,7 +8,7 @@
                   </a>
                   <ul class="dropdown-menu dropdown-menu-right" id="user-dropdown" style="font-size: 1.2em" >
                     <li><a href="{% url 'dashboard'%}"><span class="fa fa-user-circle" style="height: 1.2em; color: #1F4D8A;"></span> <strong>Dashboard</strong></a></li>
-                    <li><a href="#"><span class="fa fa-gear" style="height: 1.2em; color: #1F4D8A;"></span> <strong> Settings</strong></a></li>
+                    <li><a href="{% url 'settings-page' %}?tab=account"><span class="fa fa-gear" style="height: 1.2em; color: #1F4D8A;"></span> <strong> Settings</strong></a></li>
                     <li><a href="{% url 'logout-page'%}"><span class="fa fa-sign-out" style="height: 1.2em; color: #1F4D8A;"></span> <strong> Sign Out</strong></a></li>
                   </ul>
                 </li>

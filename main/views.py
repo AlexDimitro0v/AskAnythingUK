@@ -617,6 +617,8 @@ def finish_purchase(request):
     purchase.is_completed = True
     purchase.save()
     return redirect('dashboard')
+
+
 # =====================================================================================================================
 
 

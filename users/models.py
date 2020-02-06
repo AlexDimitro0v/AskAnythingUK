@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from main.models import Category
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 # Create your models here.
@@ -9,6 +10,12 @@ class UserProfile(models.Model):
     """One-to-one relationship with the existing user model"""
     city = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    phone_number = PhoneNumberField()
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     linkedin = models.URLField("LinkedIn", blank=True)
     url_link_1 = models.URLField("Personal Website Link 1", blank=True)
     url_link_2 = models.URLField("Personal Website Link 2", blank=True)

@@ -1,0 +1,166 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content%}
+<!--Credits: https://www.bootdey.com/snippets/view/bs4-Profile-Settings-page#html-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<!--The code below is adjusted using Bootsrap4-->
+<style>
+    #main-container {
+        margin-top: 95px;
+        margin-left: -10px;
+    }
+
+    .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0px 3px 5px #ccc;
+    }
+
+    .card {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #ffffff;
+        background-clip: border-box;
+        border: 1px solid #e5e9f2;
+        border-radius: .2rem;
+        width: 100%;
+        max-width: 750px;
+        height: auto;
+    }
+
+    .card-header:first-child {
+        border-radius: calc(.2rem - 1px) calc(.2rem - 1px) 0 0;
+    }
+
+    .card-header {
+        border-bottom-width: 1px;
+    }
+
+    .card-header {
+        padding: .75rem 1.25rem;
+        margin-bottom: 0;
+        color: inherit;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e5e9f2;
+    }
+
+    .list-group{
+        margin-top: 50px;
+        margin-left: -25px;
+        margin-bottom: -25px;
+    }
+
+    .list-group-item.active{
+        background-color: #43C2F0;
+        border-color: #43C2F0;
+    }
+</style>
+
+<div class="container p-0">
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+
+            <div class="card">
+                <div class="decorative-text-wrapper noselect">Profile Settings</div>
+
+                <div class="list-group list-group-flush" role="tablist">
+                    <a class="list-group-item list-group-item-action {% if active == 'account' %}active{% endif %}" data-toggle="list" href="#account" role="tab">
+                      Account
+                    </a>
+                    <a class="list-group-item list-group-item-action {% if active == 'password' %}active{% endif %}" data-toggle="list" href="#password" role="tab">
+                      Security
+                    </a>
+                    <a class="list-group-item list-group-item-action {% if active == 'billing' %}active{% endif %}" data-toggle="list" href="#billing" role="tab">
+                      Billing Information
+                    </a>
+                    <a class="list-group-item list-group-item-action {% if active == 'notifications' %}active{% endif %}" data-toggle="list" href="#notifications" role="tab">
+                      Notifications
+                    </a>
+                    <a class="list-group-item list-group-item-action {% if active == 'delete' %}active{% endif %}" data-toggle="list" href="#delete" role="tab">
+                      Delete account
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-xl-8">
+            <div class="tab-content">
+                <div class="tab-pane fade {% if active == 'account' %}show active{% endif %}" id="account" role="tabpanel">
+
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
+                        <div class="card-body" style="margin-top: 25px;">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <form method="POST" action="/settings/?tab=account" novalidate>
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                {{public_info_form|crispy }}
+                                            </div>
+                                            <button type="submit" name="public-info" class="btn btn-outline-info">Save changes</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="rounded-circle img-responsive mt-2" width="128" height="128">
+                                            <div class="mt-2">
+                                                 <a href=#"><span class="fa fa-upload fa-5x" style="color: #1F4D8A;"></span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Private info</div>
+                        <div class="card-body" style="margin-top:25px;">
+                             <form method="POST" action="/settings/?tab=account" novalidate>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{private_info_form|crispy }}
+                                </div>
+                                <button type="submit" name="private-info" class="btn btn-outline-info">Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade {% if active == 'password' %}show active{% endif %}" id="password" role="tabpanel">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Password</div>
+
+                        <div class="card-body" style="margin-top:25px;">
+
+                            <form method="POST" action="/settings/?tab=password" novalidate>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{change_password_form.old_password|as_crispy_field}}
+                                    <small><a href="#">Forgot your password?</a></small>
+                                    {{ change_password_form.new_password1|as_crispy_field }}
+                                    {{ change_password_form.new_password2|as_crispy_field }}
+                                </div>
+                                <button type="submit" name="password-change" class="btn btn-outline-info">Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="http://netdna.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+{% endblock %}

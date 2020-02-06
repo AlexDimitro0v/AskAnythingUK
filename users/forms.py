@@ -92,3 +92,17 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
         if not User.objects.filter(email__iexact=email, is_active=True).exists():
             raise forms.ValidationError("There is no user registered with the specified E-Mail address.")
         return email
+
+
+class PrivateInformationForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ['gender', 'phone_number']
+
+
+class PublicInformationForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2']
