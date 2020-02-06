@@ -10,12 +10,12 @@ class UserProfile(models.Model):
     """One-to-one relationship with the existing user model"""
     city = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberField(default='+41524204242')
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M')
     linkedin = models.URLField("LinkedIn", blank=True)
     url_link_1 = models.URLField("Personal Website Link 1", blank=True)
     url_link_2 = models.URLField("Personal Website Link 2", blank=True)
