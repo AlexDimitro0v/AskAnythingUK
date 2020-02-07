@@ -1090,6 +1090,49 @@ word-wrap: break-word;
 
 }
 
+.centered-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#image-change img {
+  transition: transform .5s ease;
+  margin-left: -5px;
+  margin-top: -5px;
+  background: black;
+
+}
+
+#image-change:hover img {
+  transform: scale(1.5);
+  opacity: 0.4;
+  filter: brightness(40%);
+}
+
+#image-change {
+  overflow: hidden;
+  height: 145px;
+  width: 145px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+#image-change p {
+  opacity: 0;
+  color: white;
+  max-width: 130px;
+  margin-top: 0;
+  font-family: "Lexend";
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+#image-change:hover p {
+  opacity: 1;
+}
+
 /*
 Logo Colours
 #43C2F0  - light upper
