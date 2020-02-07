@@ -10,7 +10,8 @@ class UserProfile(models.Model):
     """One-to-one relationship with the existing user model"""
     city = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    phone_number = PhoneNumberField(default='+41524204242')
+    phone_number = PhoneNumberField(default='+1')
+    dob = models.DateField(null=True)
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),

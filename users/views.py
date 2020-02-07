@@ -168,7 +168,7 @@ def view_profile(request):
     if not allow_access:
         return redirect('dashboard')
 
-    jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F('feedbacker')))
+    jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=user_to_view).exclude(feedbackee=F('feedbacker')))
 
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [skill.category for skill in user_skills_ids]
@@ -279,6 +279,7 @@ def settings(request):
     context = {'change_password_form': change_password_form,
                'private_info_form': private_info_form,
                'public_info_form': public_info_form,
+               'has_premium': has_premium(request.user),
                'active': active,
                }
     return render(request, 'users/settings.html', context)

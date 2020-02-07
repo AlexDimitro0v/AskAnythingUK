@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
 from .models import UserProfile
 from PIL import Image
+from django.forms.widgets import DateInput
+from crispy_forms.bootstrap import AppendedText, PrependedText
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, ButtonHolder, Submit
+from crispy_forms.layout import Field
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -98,7 +103,13 @@ class PrivateInformationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['gender', 'phone_number']
+        fields = ['gender', 'phone_number', 'dob']
+        labels = {
+            'dob': 'Date of Birth',
+        }
+        widgets = {
+            'dob': DateInput(attrs={'type': 'date'})
+        }
 
 
 class PublicInformationForm(forms.ModelForm):
@@ -106,3 +117,5 @@ class PublicInformationForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2']
+
+

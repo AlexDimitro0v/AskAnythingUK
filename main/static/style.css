@@ -498,9 +498,14 @@ form, input, label, textarea {
 #id_new_password1, #id_new_password2, #id_linkedin, #id_url_link_1, #id_url_link_2, #id_password-change-old_password,
 #div_id_password-change-old_password, #id_password-change-new_password1, #id_password-change-new_password2,
 #id_private-info-first_name, #id_private-info-last_name, #id_private-info-phone_number, #id_public-info-city,
-#id_public-info-linkedin, #id_public-info-url_link_1, #id_public-info-url_link_2{
+#id_public-info-linkedin, #id_public-info-url_link_1, #id_public-info-url_link_2, #id_private-info-dob{
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+#id_public-info-description::-webkit-input-placeholder::before {
+    color:#666;
+    content:"Tell something about yourself.";
 }
 
 #div_id_first_name, #div_id_last_name, #div_id_password-change-new_password1{

@@ -13,5 +13,5 @@ cffi>=1.0.0
 django-cleanup==4.0.0
 braintree==3.58.0
 django-elasticsearch-dsl==7.1.1
-django-phonenumber-field==2.1.11
+django-phonenumber-field==4.0.0
 phonenumbers=8.11.3

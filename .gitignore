@@ -130,4 +130,4 @@ users/migrations/
 # https://stackoverflow.com/questions/25436312/gitignore-not-working/25436481#25436481
 
 # Weird Stuff
-users/urls.py___jb_tmp___
+*.py___jb_tmp___
