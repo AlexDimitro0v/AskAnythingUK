@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages                             # Django built-in message alerts
 from django.contrib.auth.decorators import login_required       # Django built-in login_required decorator
-from .forms import UserRegistrationForm, EditUserForm, EditProfileForm, PrivateInformationForm, PublicInformationForm, \
-    NotificationsForm
+from .forms import UserRegistrationForm, PrivateInformationForm, PublicInformationForm,NotificationsForm, ProfileImageForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -84,54 +83,6 @@ def activate(request, uidb64, token):
         return redirect('login-page')      # redirects the user to the login page
     else:
         return render(request, 'users/email_confirmation_invalid.html')
-
-
-@login_required
-def customize_user_profile(request):
-    if request.method == 'POST':
-        u_form = EditUserForm(request.POST, instance=request.user)
-        # will populate the form with the current user information by passing an instance parameter
-        p_form = EditProfileForm(request.POST, request.FILES,  instance=request.user.userprofile)
-        if u_form.is_valid() and p_form.is_valid():        # check whether both forms are valid
-            u_form.save()
-            p_form.save()
-
-            tags = list(set(request.GET.get('tags', '').split(",")))
-
-            # Delete all previous skills
-            Specialism.objects.filter(feedbacker=request.user).delete()
-
-            # Save each tag instance to database
-            for tag in tags:
-                if tag == "":
-                    continue
-                category_record = Category.objects.filter(name=tag)
-                if not category_record:
-                    category_record = Category(name=tag)
-                    category_record.save()
-                else:
-                    category_record = category_record[0]
-                tag_record = Specialism(feedbacker=request.user, category=category_record)
-                tag_record.save()
-            messages.success(request, f"Your account has been updated!")
-            return redirect('profile-page')  # redirects the user to the profile page to avoid POST-GET-REDIRECT PATTERN
-            # https://stackoverflow.com/questions/10827242/understanding-the-post-redirect-get-pattern
-    else:
-        u_form = EditUserForm(instance=request.user)
-        p_form = EditProfileForm(instance=request.user.userprofile)
-
-    user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
-    user_skills = [str(skill.category) for skill in user_skills_ids]
-
-    context = {
-        'u_form': u_form,
-        'p_form': p_form,
-        'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user),
-        'user_skills': user_skills,
-        'title': '| Customize Profile'
-    }
-    return render(request, 'users/customize_profile.html', context=context)
 
 
 @login_required
@@ -243,10 +194,10 @@ def try_premium(request):
     return redirect('dashboard')
 
 
+@login_required
 def settings(request):
     active = request.GET.get('tab', '')
     if request.method == 'POST':
-        print(request.POST)
         if 'password-change' in request.POST:
             change_password_form = PasswordChangeForm(request.user, request.POST, prefix='password-change')
             if change_password_form.is_valid():
@@ -255,7 +206,9 @@ def settings(request):
                 # Otherwise the user’s auth session will be invalidated and she/he will have to log in again.
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
 
         elif 'private-info' in request.POST:
             private_info_form = PrivateInformationForm(request.POST, instance=request.user.userprofile, prefix='private-info')
@@ -264,7 +217,9 @@ def settings(request):
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                      prefix='profile-image')
 
         elif 'public-info-description' in request.POST:
             public_info_form = PublicInformationForm(request.POST, request.FILES, instance=request.user.userprofile, prefix='public-info')
@@ -291,21 +246,36 @@ def settings(request):
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
 
         elif 'notifications' in request.POST:
             notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
             if notifications_form.is_valid():
                 pass
-            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            change_password_form = PasswordChangeForm(request.user, prefix='notifications')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
 
+        elif 'profile-image-x' in request.POST:
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile, prefix='profile-image')
+            if image_form.is_valid():
+                image_form.save()
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile,
+                                                   prefix='notifications')
     else:
         change_password_form = PasswordChangeForm(request.user, prefix='password-change')
         private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
         public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-        notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+        notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
+        image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                      prefix='profile-image')
 
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [str(skill.category) for skill in user_skills_ids]
@@ -314,6 +284,7 @@ def settings(request):
                'private_info_form': private_info_form,
                'public_info_form': public_info_form,
                'notifications_form': notifications_form,
+               'image_form': image_form,
                'has_premium': has_premium(request.user),
                'active': active,
                'notifications': request.user.userprofile.notifications,
