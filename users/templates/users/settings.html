@@ -270,7 +270,7 @@
                         <div class="cardbody" style="margin-top:50px;">
                              <form method="POST" novalidate>
                                 {% csrf_token %}
-                                <div class="form-group col-md-8 ">
+                                <div class="form-group">
                                     <label class="col-form-label" for="disabled">Email address</label><br>
                                     <input maxlength="200" id="email_private_info_form" class="textinput textInput form-control"  name="disabled" value="{{email}}" disabled>
                                     {{private_info_form|crispy }}
@@ -325,4 +325,10 @@
 
 
 <script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
+<script>
+    if (document.getElementById("id_private-info-phone_number").value = "+1"){
+        document.getElementById("id_private-info-phone_number").value = ""
+        document.getElementById("id_private-info-phone_number").placeholder = "Enter a valid phone number."
+    }
+</script>
 {% endblock %}

@@ -293,7 +293,6 @@ def settings(request):
         private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
         public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
 
-
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [str(skill.category) for skill in user_skills_ids]
 
@@ -303,7 +302,7 @@ def settings(request):
                'has_premium': has_premium(request.user),
                'active': active,
                'notifications': request.user.userprofile.notifications,
-               'email': request.user.email
+               'email': request.user.email,
                'areas':  Area.objects.all(),
                'user_skills': user_skills,
                'title': '| Settings'
