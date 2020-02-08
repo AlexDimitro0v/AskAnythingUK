@@ -113,6 +113,19 @@ class PrivateInformationForm(forms.ModelForm):
 
 
 class PublicInformationForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
+        fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2']
+
+
+class NotificationsForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['notifications']
+
+
+class ProfileImageForm(forms.ModelForm):
     x = forms.FloatField(widget=forms.HiddenInput(), required=False)
     y = forms.FloatField(widget=forms.HiddenInput(), required=False)
     width = forms.FloatField(widget=forms.HiddenInput(), required=False)
@@ -121,13 +134,12 @@ class PublicInformationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2', 'image', 'x', 'y', 'width', 'height']
+        fields = ['image', 'x', 'y', 'width', 'height']
 
     def save(self):
-        photo = super(PublicInformationForm, self).save()
+        photo = super(ProfileImageForm, self).save()
         if (self.cleaned_data.get('x') and self.cleaned_data.get('y') and self.cleaned_data.get('width')
                 and self.cleaned_data.get('height')):
-
             x = self.cleaned_data.get('x')
             y = self.cleaned_data.get('y')
             w = self.cleaned_data.get('width')
@@ -139,9 +151,3 @@ class PublicInformationForm(forms.ModelForm):
             resized_image.save(photo.image.path)
 
             return photo
-
-
-class NotificationsForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ['notifications']

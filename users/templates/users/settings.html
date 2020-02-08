@@ -75,7 +75,7 @@
         margin-top:20px;
     }
 
-    #div_id_public-info-image{
+    #div_id_profile-image-image{
         display: none;
     }
 </style>
@@ -113,17 +113,23 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
                         <div class="cardbody" style="margin-top: 35px;">
-                            <form method="POST" id="public_info_form" action="/settings/?tab=account" enctype="multipart/form-data" novalidate>
+                            <form method="POST" action="/settings/?tab=account" enctype="multipart/form-data" id="profile_image_form" novalidate>
                                 {% csrf_token %}
                                 <div class="text-center" style="position: relative">
-                                  <label for="id_public-info-image" id="image-change">
+                                  <label for="id_profile-image-image" id="image-change">
                                     <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
                                     <p class="centered-text" id="image-text">
                                       Change profile image
                                     </p>
                                   </label>
-
                                 </div>
+                                <div class="form-group">
+                                    {{image_form|crispy }}
+                                </div>
+                            </form>
+
+                            <form method="POST" id="public_info_form" action="/settings/?tab=account" novalidate>
+                                {% csrf_token %}
                                 <div class="form-group">
                                     {{public_info_form|crispy }}
                                 </div>
@@ -140,8 +146,8 @@
                                 {% endfor %}
                               </span>
                             </div>
+                            <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
 
-                         <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
                         </div>
                     </div>
                     <!-- Too many tags overlay -->
@@ -269,7 +275,7 @@
 
                     $(function () {
                       /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
-                      $("#id_public-info-image").change(function () {
+                      $("#id_profile-image-image").change(function () {
                         if (this.files && this.files[0]) {
                           var reader = new FileReader();
                           reader.onload = function (e) {
@@ -313,11 +319,11 @@
                       /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
                       $(".js-crop-and-upload").click(function () {
                         var cropData = $image.cropper("getData");
-                        $("#id_public-info-x").val(cropData["x"]);
-                        $("#id_public-info-y").val(cropData["y"]);
-                        $("#id_public-info-height").val(cropData["height"]);
-                        $("#id_public-info-width").val(cropData["width"]);
-                        $("#public_info_form").submit();
+                        $("#id_profile-image-x").val(cropData["x"]);
+                        $("#id_profile-image-y").val(cropData["y"]);
+                        $("#id_profile-image-height").val(cropData["height"]);
+                        $("#id_profile-image-width").val(cropData["width"]);
+                        $("#profile_image_form").submit();
 
                       });
                     });
