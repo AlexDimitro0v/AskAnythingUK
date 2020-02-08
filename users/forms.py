@@ -117,5 +117,3 @@ class PublicInformationForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2']
-
-

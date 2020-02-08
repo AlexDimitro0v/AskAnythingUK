@@ -63,6 +63,14 @@
     a:hover{
         color: #777777
     }
+
+    #id_private-info-gender{
+        text-align-last:center;
+    }
+
+    #div_id_private-info-gender{
+        margin-top:20px;
+    }
 </style>
 
 <div class="container p-0">
@@ -72,20 +80,20 @@
             <div class="card">
                 <div class="decorative-text-wrapper noselect">Profile Settings</div>
 
-                <div class="list-group list-group-flush" role="tablist">
-                    <a class="list-group-item {% if active == 'account' %}active{% endif %}" href="/settings/?tab=account" role="tab">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item {% if active == 'account' %}active{% endif %}" href="/settings/?tab=account">
                       Account
                     </a>
-                    <a class="list-group-item {% if active == 'password' %}active{% endif %}"  href="/settings/?tab=password" role="tab">
+                    <a class="list-group-item {% if active == 'password' %}active{% endif %}"  href="/settings/?tab=password">
                       Security
                     </a>
-                    <a class="list-group-item {% if active == 'billing' %}active{% endif %}"  href="/settings/?tab=billing" role="tab">
+                    <a class="list-group-item {% if active == 'billing' %}active{% endif %}"  href="/settings/?tab=billing">
                       Billing Information
                     </a>
-                    <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications" role="tab">
+                    <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications">
                       Notifications
                     </a>
-                    <a class="list-group-item  {% if active == 'delete' %}active{% endif %}" href="/settings/?tab=delete" role="tab">
+                    <a class="list-group-item  {% if active == 'delete' %}active{% endif %}" href="/settings/?tab=delete">
                       Delete account
                     </a>
                 </div>
@@ -113,12 +121,11 @@
                                         <div class="text-center">
                                             <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="rounded-circle img-responsive mt-2" width="128" height="128">
                                             <div class="mt-2">
-                                                 <a href=#"><span class="fa fa-upload fa-5x" style="color: #1F4D8A;"></span></a>
+                                                 <a href=#"><span class="fa fa-upload fa-3x" style="color: #1F4D8A;"></span></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
 
                         </div>
                     </div>
@@ -128,7 +135,9 @@
                         <div class="card-body" style="margin-top:25px;">
                              <form method="POST" novalidate>
                                 {% csrf_token %}
-                                <div class="form-group">
+                                <div class="form-group col-md-8 ">
+                                    <label class="col-form-label" for="disabled">Email address</label><br>
+                                    <input maxlength="200" id="email_private_info_form" class="textinput textInput form-control"  name="disabled" value="{{email}}" disabled>
                                     {{private_info_form|crispy }}
                                 </div>
                                 <button type="submit" name="private-info" class="btn btn-outline-info">Save changes</button>
@@ -157,6 +166,22 @@
 
                         </div>
                     </div>
+
+                </div>
+
+                <div class="tab-pane fade {% if active == 'notifications' %}show active{% endif %}" id="notifications">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Notifications</div>
+
+                        <div class="card-body" style="margin-top:25px;">
+
+                            <form method="POST" action="/settings/?tab=notiications" novalidate>
+                                {% csrf_token %}
+                                <button type="submit" name="notifications" class="btn btn-outline-info">Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,6 +189,12 @@
 
 </div>
 
-
 <script>$('#id_public-info-description').attr('placeholder', 'Tell something about yourself.');</script>
+<script>
+    if (document.getElementById("id_private-info-phone_number").value = "+1"){
+        document.getElementById("id_private-info-phone_number").value = ""
+        document.getElementById("id_private-info-phone_number").placeholder = "Enter a valid phone number."
+    }
+</script>
+
 {% endblock %}

@@ -208,10 +208,10 @@ def view_profile(request):
         'jobs_finished': jobs_finished,
         'user_skills': user_skills,
         'time_deltas': time_deltas,
-        'overall_average': round(overall_average,1),
-        'speed_average': round(speed_average,1),
-        'quality_average': round(quality_average,1),
-        'comm_average': round(comm_average,1),
+        'overall_average': round(overall_average, 1),
+        'speed_average': round(speed_average, 1),
+        'quality_average': round(quality_average, 1),
+        'comm_average': round(comm_average, 1),
         'ratings_num': ratings_num,
         'title': '| ' + user_to_view.username + "'s Profile"
     }
@@ -281,6 +281,8 @@ def settings(request):
                'public_info_form': public_info_form,
                'has_premium': has_premium(request.user),
                'active': active,
+               'notifications': request.user.userprofile.notifications,
+               'email': request.user.email
                }
     return render(request, 'users/settings.html', context)
 
