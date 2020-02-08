@@ -8,10 +8,10 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html', redirect_authenticated_user=True), name="login-page"),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name="logout-page"),
     path('profile-page/', views.view_profile, name="profile-page"),
-    path('customize-profile/', views.customize_user_profile, name="customize-profile-page"),
     path('get-premium/', views.get_premium, name="get-premium-page"),
     path('try-premium/', views.try_premium, name="try-premium-page"),
     path('activate/<slug:uidb64>/<slug:token>)/', views.activate, name='activate'),
+    path('settings/', views.settings, name='settings-page'),
     # 4 built-in views for password reset:
     # - password_reset sends the mail
     # - password_reset_done shows a success message for the above
@@ -40,6 +40,5 @@ urlpatterns = [
         'password-reset-complete/',
         auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'),
         name='password_reset_complete'
-    ),
-    path('settings/', views.settings, name='settings-page')
+    )
 ]

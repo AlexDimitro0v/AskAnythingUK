@@ -316,7 +316,7 @@
                         $image.cropper("zoom", -0.1);
                       });
 
-                      /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
+                      /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
                       $(".js-crop-and-upload").click(function () {
                         var cropData = $image.cropper("getData");
                         $("#id_profile-image-x").val(cropData["x"]);
