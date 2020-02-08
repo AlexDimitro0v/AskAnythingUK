@@ -4,6 +4,18 @@
 {% load multifor %}
 {% load let %}
 
+
+  {% if feedback_request.feedbacker_comments != "" and feedback_request.feedbacker_comments != "-" %}
+  <div class="large-area">
+    <div class="decorative-text-wrapper noselect">Comments from feedbacker</div>
+    <div class="cardbody" style="margin-bottom: 0; ">
+      <p style="white-space: pre-wrap">
+        {{feedback_request.feedbacker_comments}}
+      </p>
+   </div>
+  </div>
+  {% endif %}
+
 {% if user_is_feedbackee and feedback_candidates and feedback_request.feedbacker == feedback_request.feedbackee %}
 <div class="large-area">
   <div class="decorative-text-wrapper noselect">Candidates</div>
@@ -150,7 +162,7 @@
                       <button class="btn btn-outline-info" >Download Feedbacker's Files</button>
                   </a>
               {% endif %}
-              {% if user_is_feedbacker and feedbacker_files_link == None %}
+              {% if user_is_feedbacker and feedback_request.feedbacker_comments == "" %}
                   <a href="{%url 'submit-feedback-page'%}?request_id={{ request_id }}"  style="text-decoration:none; display: block">
                       <button class="btn btn-outline-info" >Submit Feedback</button>
                   </a>
@@ -160,14 +172,18 @@
                 </a>
               {% endif %}
               {% if user_is_feedbackee and feedbacker_files_link == None %}
-                <p style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: -4px">No Files Yet</p>
+                {% if feedback_request.feedbacker_comments == "" %}
+                  <p style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: -4px">No Files Yet</p>
+                {% else %}
+                  <p style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: -4px">No Files Were Submitted</p>
+                {% endif %}
               {% endif %}
-              {% if user_is_feedbackee and feedbacker_files_link != None and not feedback_request.feedbacker_rated %}
+              {% if user_is_feedbackee and feedback_request.feedbacker_comments != "" and not feedback_request.feedbacker_rated %}
                   <a href="{%url 'rate-feedbacker-page'%}?request_id={{ request_id }}"  style="text-decoration:none; display: block">
                       <button class="btn btn-outline-info" style="margin-top: 10px">Rate Feedbacker</button>
                   </a>
               {% endif %}
-              {%if feedbacker_files_link and not purchase.is_completed and not feedback_request.feedbacker == user%}
+              {%if feedback_request.feedbacker_comments != "" and not purchase.is_completed and not feedback_request.feedbacker == user%}
                   <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money" type="submit">Release Money</button>
               {% endif%}
               <script>

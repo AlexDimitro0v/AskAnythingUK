@@ -539,6 +539,10 @@ def submit_feedback(request):
         if form.is_valid():
             comments = form.cleaned_data['comments']
 
+            # Default value
+            if comments == "":
+                comments = "-"
+
             feedback_request = FeedbackRequest.objects.get(id=request_id)
 
             # Capping an error (just in case)
@@ -547,6 +551,7 @@ def submit_feedback(request):
                 return redirect('dashboard')
 
             feedback_request.feedbacker_comments = comments
+
             feedback_request.date_completed = datetime.now(tz=timezone.utc)
             feedback_request.save()
 

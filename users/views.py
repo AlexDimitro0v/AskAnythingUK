@@ -168,7 +168,7 @@ def view_profile(request):
     if not allow_access:
         return redirect('dashboard')
 
-    jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=user_to_view).exclude(feedbackee=F('feedbacker')))
+    jobs_finished = len(FeedbackRequest.objects.filter(feedbacker=user_to_view).exclude(feedbacker_comments="").exclude(feedbackee=F('feedbacker')))
 
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [skill.category for skill in user_skills_ids]

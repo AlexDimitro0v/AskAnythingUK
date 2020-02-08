@@ -10,9 +10,14 @@
           $('#tags').append("<span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>"+tagValue+"</span>");
           $('#tags').append(" ");
         }
-        else if(numOfTags >= maxTags){
-          $('#overlay_error_tags').css("display","block");
-          $('body').css("overflow","hidden");
+        else if(numOfTags >= maxTags) {
+          if( $("#overlay_error_tags").css('display') == 'block') {
+            $('#okay_tags').click();
+          }
+          else {
+            $('#overlay_error_tags').css("display","block");
+            $('body').css("overflow","hidden");
+          }
         }
       }
 
@@ -23,7 +28,6 @@
     $(this).remove();
     numOfTags--;
    });
-
 
   $('#okay_tags').click(function(e) {
     $('#overlay_error_tags').css("display","none");
