@@ -245,7 +245,7 @@ def try_premium(request):
 def settings(request):
     active = request.GET.get('tab', '')
     if request.method == 'POST':
-
+        print(request.POST)
         if 'password-change' in request.POST:
             change_password_form = PasswordChangeForm(request.user, request.POST, prefix='password-change')
             if change_password_form.is_valid():
@@ -263,18 +263,39 @@ def settings(request):
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
 
-        elif 'public-info' in request.POST:
+        elif 'public-info-description' in request.POST:
             public_info_form = PublicInformationForm(request.POST, instance=request.user.userprofile, prefix='public-info')
             if public_info_form.is_valid():
                 public_info_form.save()
 
+            tags = list(set(request.GET.get('tags', '').split(",")))
+
+            # Delete all previous skills
+            Specialism.objects.filter(feedbacker=request.user).delete()
+
+            # Save each tag instance to database
+            for tag in tags:
+                if tag == "":
+                    continue
+                category_record = Category.objects.filter(name=tag)
+                if not category_record:
+                    category_record = Category(name=tag)
+                    category_record.save()
+                else:
+                    category_record = category_record[0]
+                tag_record = Specialism(feedbacker=request.user, category=category_record)
+                tag_record.save()
+
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
-
     else:
         change_password_form = PasswordChangeForm(request.user, prefix='password-change')
         private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
         public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+
+
+    user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
+    user_skills = [str(skill.category) for skill in user_skills_ids]
 
     context = {'change_password_form': change_password_form,
                'private_info_form': private_info_form,
@@ -283,6 +304,8 @@ def settings(request):
                'active': active,
                'notifications': request.user.userprofile.notifications,
                'email': request.user.email
+               'areas':  Area.objects.all(),
+               'user_skills': user_skills,
+               'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)
-

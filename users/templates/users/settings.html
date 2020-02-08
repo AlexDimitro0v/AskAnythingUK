@@ -51,7 +51,8 @@
 
     .list-group{
         margin-top: 50px;
-        margin-left: -25px;
+        margin-left: -30px;
+        margin-right: -30px;
         margin-bottom: -25px;
     }
 
@@ -106,33 +107,167 @@
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
-                        <div class="card-body" style="margin-top: 25px;">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <form method="POST" action="/settings/?tab=account" novalidate>
+                        <div class="cardbody" style="margin-top: 25px;">
+                                        <div class="text-center" style="position: relative">
+                                          <span id="image-change">
+                                            <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
+                                            <p class="centered-text" id="image-text">
+                                              Change profile image
+                                            </p>
+                                          </span>
+
+                                        </div>
+                                        <form method="POST" id="public_info_form" action="/settings/?tab=account" novalidate>
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 {{public_info_form|crispy }}
                                             </div>
-                                            <button type="submit" name="public-info" class="btn btn-outline-info">Save changes</button>
                                         </form>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-center">
-                                            <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="rounded-circle img-responsive mt-2" width="128" height="128">
-                                            <div class="mt-2">
-                                                 <a href=#"><span class="fa fa-upload fa-3x" style="color: #1F4D8A;"></span></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <form onsubmit="return false" style="margin-top: 15px;">
+                                            Skills<br>
+                                            <input id="tag-input" class="form-control" maxlength="30" style="max-width: 200px; margin-top: 0" >
+                                        </form>
 
+                                        <div style="margin-top: 10px;">
+                                          <span id="tags">
+                                            {% for skill in user_skills %}
+                                              <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
+                                            {% endfor %}
+                                          </span>
+                                        </div>
+
+                                        <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
+                                       <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
+                                        <div class="modal fade" role="dialog" id="modalCrop">
+                                          <div class="modal-dialog">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h4 class="modal-title">Crop the photo</h4>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <img src="" id="image" style="max-width: 100%;">
+                                              </div>
+                                              <div class="modal-footer">
+                                                <div class="btn-group pull-left" role="group">
+                                                  <button type="button" class="btn btn-default js-zoom-in">
+                                                    <span class="fa fa-search-plus"></span>
+                                                  </button>
+                                                  <button type="button" class="btn btn-default js-zoom-out">
+                                                    <span class="fa fa-search-minus"></span>
+                                                  </button>
+                                                </div>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Go back</button>
+                                                <button type="button" class="btn btn-primary js-crop-and-upload">Crop</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                       </div>
+                                     <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
                         </div>
                     </div>
+                    <!-- Too many tags overlay -->
+                    <div id=main-container">
+                    <div id="overlay_error_tags" class="full-screen overlay">
+                      <div class="full-screen">
+                      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+                        <div class="decorative-text-wrapper noselect">Error</div>
+                        <div class="cardbody"  style="margin-top:50px">
+                          <p id="max_tags_message" style="font-weight: 600; font-size: 1.2em; text-align: center">
+                            You can provide a maximum of 10 tags.
+                          </p>
+
+                          <div class="border-top pt-2 mt-3"></div>
+
+                          <div class="noselect button-corner">
+                            <button class="btn btn-outline-info" id="okay_tags">Okay</button>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                    </div>
+
+                    <script>
+                      $(document).ready(function () {
+
+                            $("#id_description").attr("maxlength", 1500)
+                            $("#id_city").attr("maxlength", 30)
+
+                            let maxTags = 10;
+                            let tags = {{ user_skills|safe }};
+                            let numOfTags = {{ user_skills|length }};
+
+                            {% include "main/tags.js" %}
+
+                            /* SCRIPT TO POST TO THE SERVER */
+                            $('#submit_button').click(function() {
+                                $("#public_info_form").attr('action',"/settings/?tab=account&tags="+tags);
+                                $("#public_info_form").submit();
+                            });
+                        });
+
+                        $(function () {
+                          /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
+                          $("#id_image").change(function () {
+                            if (this.files && this.files[0]) {
+                              var reader = new FileReader();
+                              reader.onload = function (e) {
+                                $("#image").attr("src", e.target.result);
+                                $("#modalCrop").modal("show");
+                                $('#imageCropped').css('display','none');
+                              }
+                              reader.readAsDataURL(this.files[0]);
+                            }
+                          });
+
+                          /* SCRIPTS TO HANDLE THE CROPPER BOX */
+                          var $image = $("#image");
+                          var cropBoxData;
+                          var canvasData;
+                          $("#modalCrop").on("shown.bs.modal", function () {
+                            $image.cropper({
+                              viewMode: 1,
+                              aspectRatio: 1/1,
+                              minCropBoxWidth: 100,
+                              minCropBoxHeight: 100,
+                              ready: function () {
+                                $image.cropper("setCanvasData", canvasData);
+                                $image.cropper("setCropBoxData", cropBoxData);
+                              }
+                            });
+                          }).on("hidden.bs.modal", function () {
+                            cropBoxData = $image.cropper("getCropBoxData");
+                            canvasData = $image.cropper("getCanvasData");
+                            $image.cropper("destroy");
+                          });
+
+                          $(".js-zoom-in").click(function () {
+                            $image.cropper("zoom", 0.1);
+                          });
+
+                          $(".js-zoom-out").click(function () {
+                            $image.cropper("zoom", -0.1);
+                          });
+
+                          /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
+                          $(".js-crop-and-upload").click(function () {
+                            var cropData = $image.cropper("getData");
+                            $("#id_x").val(cropData["x"]);
+                            $("#id_y").val(cropData["y"]);
+                            $("#id_height").val(cropData["height"]);
+                            $("#id_width").val(cropData["width"]);
+                            $('#modalCrop').modal('hide');
+                            $('#imageCropped').css('display','inline');
+                          });
+                        });
+
+                    </script>
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Private info</div>
-                        <div class="card-body" style="margin-top:25px;">
+                        <div class="cardbody" style="margin-top:50px;">
                              <form method="POST" novalidate>
                                 {% csrf_token %}
                                 <div class="form-group col-md-8 ">
@@ -140,9 +275,8 @@
                                     <input maxlength="200" id="email_private_info_form" class="textinput textInput form-control"  name="disabled" value="{{email}}" disabled>
                                     {{private_info_form|crispy }}
                                 </div>
-                                <button type="submit" name="private-info" class="btn btn-outline-info">Save changes</button>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="private-info">Save changes</button>
                             </form>
-
                         </div>
                     </div>
 
@@ -151,7 +285,7 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Password</div>
 
-                        <div class="card-body" style="margin-top:25px;">
+                        <div class="cardbody" style="margin-top:25px;">
 
                             <form method="POST" action="/settings/?tab=password" novalidate>
                                 {% csrf_token %}
@@ -161,7 +295,7 @@
                                     {{ change_password_form.new_password1|as_crispy_field }}
                                     {{ change_password_form.new_password2|as_crispy_field }}
                                 </div>
-                                <button type="submit" name="password-change" class="btn btn-outline-info">Save changes</button>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="password-change">Save changes</button>
                             </form>
 
                         </div>
@@ -189,12 +323,6 @@
 
 </div>
 
-<script>$('#id_public-info-description').attr('placeholder', 'Tell something about yourself.');</script>
-<script>
-    if (document.getElementById("id_private-info-phone_number").value = "+1"){
-        document.getElementById("id_private-info-phone_number").value = ""
-        document.getElementById("id_private-info-phone_number").placeholder = "Enter a valid phone number."
-    }
-</script>
 
+<script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
 {% endblock %}
