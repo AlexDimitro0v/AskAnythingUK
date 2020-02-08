@@ -3,7 +3,9 @@
 {% load crispy_forms_tags %}
 {% block content%}
 <!--Credits: https://www.bootdey.com/snippets/view/bs4-Profile-Settings-page#html-->
-
+<!--Bootsrap Toggles-->
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <!--The code below is adjusted using Bootsrap4-->
 <style>
     #main-container {
@@ -110,7 +112,7 @@
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
-                        <div class="cardbody" style="margin-top: 25px;">
+                        <div class="cardbody" style="margin-top: 35px;">
                             <form method="POST" id="public_info_form" action="/settings/?tab=account" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 <div class="text-center" style="position: relative">
@@ -185,7 +187,7 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Password</div>
 
-                        <div class="cardbody" style="margin-top:25px;">
+                        <div class="cardbody" style="margin-top:35px;">
 
                             <form method="POST" action="/settings/?tab=password" novalidate>
                                 {% csrf_token %}
@@ -207,11 +209,14 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Notifications</div>
 
-                        <div class="card-body" style="margin-top:25px;">
+                        <div class="card-body" style="margin-top:35px;">
 
                             <form method="POST" action="/settings/?tab=notiications" novalidate>
                                 {% csrf_token %}
-                                <button type="submit" name="notifications" class="btn btn-outline-info">Save changes</button>
+                                <label class="col-form-label">Email Notifications</label><br>
+                                <input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+                                <br>
+                                <button type="submit" name="notifications" style="margin-top:20px;" class="btn btn-outline-info">Save changes</button>
                             </form>
 
                         </div>

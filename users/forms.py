@@ -139,3 +139,9 @@ class PublicInformationForm(forms.ModelForm):
             resized_image.save(photo.image.path)
 
             return photo
+
+
+class NotificationsForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['notifications']
