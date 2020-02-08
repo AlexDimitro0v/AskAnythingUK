@@ -74,7 +74,12 @@
             $("#ratingForm").submit();
           }
       });
-
+      $(document).keypress(function (e) {
+          if (e.which == 13 && $("#overlay_error").css('display') == 'block') {
+            e.preventDefault();
+            $('#okay').click();
+          }
+      });
       $('#okay').click(function(e) {
         $('#overlay_error').css("display","none");
         $('body').css("overflow","visible");
