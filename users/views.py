@@ -160,7 +160,7 @@ def view_profile(request):
             if feedback_request.feedbacker == request.user:
                 allow_access = True
                 break
-            user_is_candidate = FeedbackerCandidate.objects.filter(feedbacker=user_to_view,feedback=feedback_request)
+            user_is_candidate = FeedbackerCandidate.objects.filter(feedbacker=user_to_view, feedback=feedback_request)
             if user_is_candidate:
                 allow_access = True
                 break
@@ -264,7 +264,7 @@ def settings(request):
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
 
         elif 'public-info-description' in request.POST:
-            public_info_form = PublicInformationForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            public_info_form = PublicInformationForm(request.POST, request.FILES, instance=request.user.userprofile, prefix='public-info')
             if public_info_form.is_valid():
                 public_info_form.save()
 
