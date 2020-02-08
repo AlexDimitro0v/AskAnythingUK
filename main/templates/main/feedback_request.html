@@ -45,13 +45,13 @@
     </div>
 
     <div id=main-container">
-    <div id="overlay{{forloop.counter}}" class="full-screen overlay">
+    <div id="overlay{{forloop.counter}}" class="full-screen overlay" style="margin-top:  -80px;">
 
       <div class="full-screen">
 
       <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
         <div class="decorative-text-wrapper noselect">Are you sure?</div>
-        <div class="cardbody"  style="margin-top:20px; margin-bottom: 50px">
+        <div class="cardbody"  style="margin-top: 40px; margin-bottom: 50px">
           <img class="large-photo-circle" src="{{ candidate.feedbacker.userprofile.image.url }}" style="border: 8px solid {% if curr_candidate_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; "/>
           <p style="font-weight: 600; font-size: 1.2em; text-align: center">
             Are you sure you want to choose {{candidate.feedbacker}} as your feedbacker?<br>This action cannot be reverted.
@@ -66,8 +66,6 @@
                 <input type="hidden" name="payment_method_nonce">
                 <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
                 <input name="feedbacker_username" value="{{ candidate.feedbacker }}" hidden>
-                <br>
-                <br>
               </div>
               <div class="noselect button-corner" style="position: absolute; right: 30px; bottom: 30px;">
                 <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
