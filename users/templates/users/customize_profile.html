@@ -94,8 +94,8 @@
 
                     /* SCRIPT TO POST TO THE SERVER */
                     $('#submit_button').click(function() {
-                        $("#customizeProfileForm").attr('action',"/customize-profile/?tags="+tags);
-                        $("#customizeProfileForm").submit();
+                        $("#customizeProfileForm").attr('action',"/customize-profile/?tags="+encodeURIComponent(tags));
+                       $("#customizeProfileForm").submit();
                     });
                 });
 

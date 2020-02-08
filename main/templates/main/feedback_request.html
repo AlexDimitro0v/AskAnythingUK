@@ -7,11 +7,16 @@
 
   {% if feedback_request.feedbacker_comments != "" and feedback_request.feedbacker_comments != "-" %}
   <div class="large-area">
-    <div class="decorative-text-wrapper noselect">Comments from feedbacker</div>
-    <div class="cardbody" style="margin-bottom: 0; ">
-      <p style="white-space: pre-wrap">
-        {{feedback_request.feedbacker_comments}}
-      </p>
+    <div class="decorative-text-wrapper noselect">Feedbacker Comments</div>
+    <div class="cardbody" style="margin-bottom: 0; margin-top: 65px ">
+      <div class="two-columns margin-columns">
+        <span class="custom-column">
+          <img class="profile-name-image" style="border-color: {% if premium_request %} #e9ca6e {% else %} #ddd {% endif %};" src="{{ feedback_request.feedbacker.userprofile.image.url }}">
+          <span class="bold-p custom-column name-next-to-image">{{ feedback_request.feedbacker }}</span>
+        </span>
+      </div>
+      <div class="border-top pt-2"></div>
+      <p style="white-space: pre-wrap">{{feedback_request.feedbacker_comments}}</p>
    </div>
   </div>
   {% endif %}
@@ -34,14 +39,10 @@
               </span>
           </div>
 
-
       <div class="border-top pt-2 mt-3"></div>
       <p style="font-size: 100%; line-height: 1.8em">
         {{candidate.application}}
       </p>
-      <div>
-
-      </div>
     </div>
 
     <div id=main-container">

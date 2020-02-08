@@ -262,7 +262,7 @@
 
                         /* SCRIPT TO POST TO THE SERVER */
                         $('#submit_button').click(function() {
-                            $("#public_info_form").attr('action',"/settings/?tab=account&tags="+tags);
+                            $("#public_info_form").attr('action',"/settings/?tab=account&tags="+encodeURIComponent(tags));
                             $("#public_info_form").submit();
                         });
                     });

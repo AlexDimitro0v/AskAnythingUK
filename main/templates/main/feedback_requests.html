@@ -194,9 +194,9 @@
       $('.tag').click(function(e) {
         let tagValue = e.target.id;
         {% if min_price %}
-        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+tagValue+"&area-filter={{area_filter_id}}        &min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
+        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+encodeURIComponent(tagValue)+"&area-filter={{area_filter_id}}&min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
         {% else %}
-        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+tagValue+"&area-filter={{area_filter_id}}");
+        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+encodeURIComponent(tagValue)+"&area-filter={{area_filter_id}}");
         {% endif %}
         $('#tagFilterForm').submit();
 

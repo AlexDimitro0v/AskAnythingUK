@@ -149,6 +149,10 @@ def feedback_requests(request):
                                                             AND main_feedbackrequest.time_limit <= %s
                                                             ''', [tag_filter, request.user.id, area_filter, filtered_min_price,filtered_max_price, filtered_min_time, filtered_max_time]))
 
+    # Exclude all requests for which the user has already applied
+    my_feedbacker_applications_ids = FeedbackerCandidate.objects.values_list('feedback', flat=True).filter(feedbacker=request.user)
+    feedback_requests = feedback_requests.exclude(pk__in=set(my_feedbacker_applications_ids))
+
     feedback_requests = feedback_requests.order_by('-date_posted')
 
     non_premium_requests = []
@@ -541,6 +545,17 @@ def choose_feedbacker(request):
 
 @login_required
 def submit_feedback(request):
+    request_id = request.GET.get('request_id', '')
+    try:
+        feedback_request = FeedbackRequest.objects.get(id=request_id)
+    except:
+        return redirect('dashboard')
+
+    # Only the feedbacker of the request can submit feedback
+    if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
+            messages.error(request, "An error has occurred!")
+            return redirect('dashboard')
+
     if request.method == "POST":
         request_id = request.GET.get('request_id', '')
         form = FeedbackerCommentsForm(request.POST)
@@ -551,13 +566,6 @@ def submit_feedback(request):
             # Default value
             if comments == "":
                 comments = "-"
-
-            feedback_request = FeedbackRequest.objects.get(id=request_id)
-
-            # Capping an error (just in case)
-            if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
-                messages.error(request, "An error has occurred!")
-                return redirect('dashboard')
 
             feedback_request.feedbacker_comments = comments
 
@@ -584,7 +592,8 @@ def submit_feedback(request):
         'request_id': request.GET.get('request_id', ''),
         'areas':  Area.objects.all(),
         'has_premium': has_premium(request.user),
-        'title': '| Submit Feedback'
+        'title': '| Submit Feedback',
+        'feedbacker_comments': feedback_request.feedbacker_comments
     }
     return render(request, 'main/submit_feedback.html', context)
 
