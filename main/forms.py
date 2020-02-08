@@ -35,7 +35,7 @@ class FeedbackerRatingForm(forms.Form):
 
     class Meta:
         model = Rating
-        fields = ["overall","quality", "speed", "communication", "review"]
+        fields = ["overall", "quality", "speed", "communication", "review"]
 
 
 class ApplicationForm(forms.Form):

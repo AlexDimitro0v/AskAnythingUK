@@ -3,7 +3,9 @@
 {% load crispy_forms_tags %}
 {% block content%}
 <!--Credits: https://www.bootdey.com/snippets/view/bs4-Profile-Settings-page#html-->
-
+<!--Bootsrap Toggles-->
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <!--The code below is adjusted using Bootsrap4-->
 <style>
     #main-container {
@@ -64,8 +66,19 @@
     a:hover{
         color: #777777
     }
-</style>
 
+    #id_private-info-gender{
+        text-align-last:center;
+    }
+
+    #div_id_private-info-gender{
+        margin-top:20px;
+    }
+
+    #div_id_public-info-image{
+        display: none;
+    }
+</style>
 <div class="container p-0">
     <div class="row">
         <div class="col-md-5 col-xl-4">
@@ -73,20 +86,20 @@
             <div class="card">
                 <div class="decorative-text-wrapper noselect">Profile Settings</div>
 
-                <div class="list-group list-group-flush" role="tablist">
-                    <a class="list-group-item {% if active == 'account' %}active{% endif %}" href="/settings/?tab=account" role="tab">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item {% if active == 'account' %}active{% endif %}" href="/settings/?tab=account">
                       Account
                     </a>
-                    <a class="list-group-item {% if active == 'password' %}active{% endif %}"  href="/settings/?tab=password" role="tab">
+                    <a class="list-group-item {% if active == 'password' %}active{% endif %}"  href="/settings/?tab=password">
                       Security
                     </a>
-                    <a class="list-group-item {% if active == 'billing' %}active{% endif %}"  href="/settings/?tab=billing" role="tab">
+                    <a class="list-group-item {% if active == 'billing' %}active{% endif %}"  href="/settings/?tab=billing">
                       Billing Information
                     </a>
-                    <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications" role="tab">
+                    <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications">
                       Notifications
                     </a>
-                    <a class="list-group-item  {% if active == 'delete' %}active{% endif %}" href="/settings/?tab=delete" role="tab">
+                    <a class="list-group-item  {% if active == 'delete' %}active{% endif %}" href="/settings/?tab=delete">
                       Delete account
                     </a>
                 </div>
@@ -99,64 +112,36 @@
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
-                        <div class="cardbody" style="margin-top: 25px;">
-                                        <div class="text-center" style="position: relative">
-                                          <span id="image-change">
-                                            <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
-                                            <p class="centered-text" id="image-text">
-                                              Change profile image
-                                            </p>
-                                          </span>
+                        <div class="cardbody" style="margin-top: 35px;">
+                            <form method="POST" id="public_info_form" action="/settings/?tab=account" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                <div class="text-center" style="position: relative">
+                                  <label for="id_public-info-image" id="image-change">
+                                    <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
+                                    <p class="centered-text" id="image-text">
+                                      Change profile image
+                                    </p>
+                                  </label>
 
-                                        </div>
-                                        <form method="POST" id="public_info_form" action="/settings/?tab=account" novalidate>
-                                            {% csrf_token %}
-                                            <div class="form-group">
-                                                {{public_info_form|crispy }}
-                                            </div>
-                                        </form>
-                                        <form onsubmit="return false" style="margin-top: 15px;">
-                                            Skills<br>
-                                            <input id="tag-input" class="form-control" maxlength="30" style="max-width: 200px; margin-top: 0" >
-                                        </form>
+                                </div>
+                                <div class="form-group">
+                                    {{public_info_form|crispy }}
+                                </div>
+                            </form>
+                            <form onsubmit="return false" style="margin-top: 15px;">
+                                Skills<br>
+                                <input id="tag-input" class="form-control" maxlength="30" style="max-width: 200px; margin-top: 0" >
+                            </form>
 
-                                        <div style="margin-top: 10px;">
-                                          <span id="tags">
-                                            {% for skill in user_skills %}
-                                              <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
-                                            {% endfor %}
-                                          </span>
-                                        </div>
+                            <div style="margin-top: 10px;">
+                              <span id="tags">
+                                {% for skill in user_skills %}
+                                  <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
+                                {% endfor %}
+                              </span>
+                            </div>
 
-                                        <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
-                                       <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
-                                        <div class="modal fade" role="dialog" id="modalCrop">
-                                          <div class="modal-dialog">
-                                            <div class="modal-content">
-                                              <div class="modal-header">
-                                                <h4 class="modal-title">Crop the photo</h4>
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img src="" id="image" style="max-width: 100%;">
-                                              </div>
-                                              <div class="modal-footer">
-                                                <div class="btn-group pull-left" role="group">
-                                                  <button type="button" class="btn btn-default js-zoom-in">
-                                                    <span class="fa fa-search-plus"></span>
-                                                  </button>
-                                                  <button type="button" class="btn btn-default js-zoom-out">
-                                                    <span class="fa fa-search-minus"></span>
-                                                  </button>
-                                                </div>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Go back</button>
-                                                <button type="button" class="btn btn-primary js-crop-and-upload">Crop</button>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                       </div>
-                                     <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
+                         <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
                         </div>
                     </div>
                     <!-- Too many tags overlay -->
@@ -181,81 +166,6 @@
                     </div>
                     </div>
 
-                    <script>
-                      $(document).ready(function () {
-
-                            $("#id_description").attr("maxlength", 1500)
-                            $("#id_city").attr("maxlength", 30)
-
-                            let maxTags = 10;
-                            let tags = {{ user_skills|safe }};
-                            let numOfTags = {{ user_skills|length }};
-
-                            {% include "main/tags.js" %}
-
-                            /* SCRIPT TO POST TO THE SERVER */
-                            $('#submit_button').click(function() {
-                                $("#public_info_form").attr('action',"/settings/?tab=account&tags="+tags);
-                                $("#public_info_form").submit();
-                            });
-                        });
-
-                        $(function () {
-                          /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
-                          $("#id_image").change(function () {
-                            if (this.files && this.files[0]) {
-                              var reader = new FileReader();
-                              reader.onload = function (e) {
-                                $("#image").attr("src", e.target.result);
-                                $("#modalCrop").modal("show");
-                                $('#imageCropped').css('display','none');
-                              }
-                              reader.readAsDataURL(this.files[0]);
-                            }
-                          });
-
-                          /* SCRIPTS TO HANDLE THE CROPPER BOX */
-                          var $image = $("#image");
-                          var cropBoxData;
-                          var canvasData;
-                          $("#modalCrop").on("shown.bs.modal", function () {
-                            $image.cropper({
-                              viewMode: 1,
-                              aspectRatio: 1/1,
-                              minCropBoxWidth: 100,
-                              minCropBoxHeight: 100,
-                              ready: function () {
-                                $image.cropper("setCanvasData", canvasData);
-                                $image.cropper("setCropBoxData", cropBoxData);
-                              }
-                            });
-                          }).on("hidden.bs.modal", function () {
-                            cropBoxData = $image.cropper("getCropBoxData");
-                            canvasData = $image.cropper("getCanvasData");
-                            $image.cropper("destroy");
-                          });
-
-                          $(".js-zoom-in").click(function () {
-                            $image.cropper("zoom", 0.1);
-                          });
-
-                          $(".js-zoom-out").click(function () {
-                            $image.cropper("zoom", -0.1);
-                          });
-
-                          /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
-                          $(".js-crop-and-upload").click(function () {
-                            var cropData = $image.cropper("getData");
-                            $("#id_x").val(cropData["x"]);
-                            $("#id_y").val(cropData["y"]);
-                            $("#id_height").val(cropData["height"]);
-                            $("#id_width").val(cropData["width"]);
-                            $('#modalCrop').modal('hide');
-                            $('#imageCropped').css('display','inline');
-                          });
-                        });
-
-                    </script>
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Private info</div>
@@ -263,6 +173,8 @@
                              <form method="POST" novalidate>
                                 {% csrf_token %}
                                 <div class="form-group">
+                                    <label class="col-form-label" for="disabled">Email address</label><br>
+                                    <input maxlength="200" id="email_private_info_form" class="textinput textInput form-control"  name="disabled" value="{{email}}" disabled>
                                     {{private_info_form|crispy }}
                                 </div>
                                 <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="private-info">Save changes</button>
@@ -275,7 +187,7 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Password</div>
 
-                        <div class="cardbody" style="margin-top:25px;">
+                        <div class="cardbody" style="margin-top:35px;">
 
                             <form method="POST" action="/settings/?tab=password" novalidate>
                                 {% csrf_token %}
@@ -290,8 +202,127 @@
 
                         </div>
                     </div>
+
+                </div>
+
+                <div class="tab-pane fade {% if active == 'notifications' %}show active{% endif %}" id="notifications">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Notifications</div>
+
+                        <div class="card-body" style="margin-top:35px;">
+
+                            <form method="POST" action="/settings/?tab=notiications" novalidate>
+                                {% csrf_token %}
+                                <label class="col-form-label">Email Notifications</label><br>
+                                <input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
+                                <br>
+                                <button type="submit" name="notifications" style="margin-top:20px;" class="btn btn-outline-info">Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
+               <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
+                <div class="modal fade" role="dialog" id="modalCrop">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Crop the photo</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <img src="" id="image" style="max-width: 100%;">
+                      </div>
+                      <div class="modal-footer">
+                        <div class="btn-group pull-left" role="group">
+                          <button type="button" class="btn btn-default js-zoom-in">
+                            <span class="fa fa-search-plus"></span>
+                          </button>
+                          <button type="button" class="btn btn-default js-zoom-out">
+                            <span class="fa fa-search-minus"></span>
+                          </button>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Go back</button>
+                        <button type="button" class="btn btn-primary js-crop-and-upload">Crop</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+               </div>
+                <script>
+                  $(document).ready(function () {
+
+                        let maxTags = 10;
+                        let tags = {{ user_skills|safe }};
+                        let numOfTags = {{ user_skills|length }};
+
+                        {% include "main/tags.js" %}
+
+                        /* SCRIPT TO POST TO THE SERVER */
+                        $('#submit_button').click(function() {
+                            $("#public_info_form").attr('action',"/settings/?tab=account&tags="+tags);
+                            $("#public_info_form").submit();
+                        });
+                    });
+
+                    $(function () {
+                      /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
+                      $("#id_public-info-image").change(function () {
+                        if (this.files && this.files[0]) {
+                          var reader = new FileReader();
+                          reader.onload = function (e) {
+                            $("#image").attr("src", e.target.result);
+                            $("#modalCrop").modal("show");
+                            $('#imageCropped').css('display','none');
+                          }
+                          reader.readAsDataURL(this.files[0]);
+                        }
+                      });
+
+                      /* SCRIPTS TO HANDLE THE CROPPER BOX */
+                      var $image = $("#image");
+                      var cropBoxData;
+                      var canvasData;
+                      $("#modalCrop").on("shown.bs.modal", function () {
+                        $image.cropper({
+                          viewMode: 1,
+                          aspectRatio: 1/1,
+                          minCropBoxWidth: 100,
+                          minCropBoxHeight: 100,
+                          ready: function () {
+                            $image.cropper("setCanvasData", canvasData);
+                            $image.cropper("setCropBoxData", cropBoxData);
+                          }
+                        });
+                      }).on("hidden.bs.modal", function () {
+                        cropBoxData = $image.cropper("getCropBoxData");
+                        canvasData = $image.cropper("getCanvasData");
+                        $image.cropper("destroy");
+                      });
+
+                      $(".js-zoom-in").click(function () {
+                        $image.cropper("zoom", 0.1);
+                      });
+
+                      $(".js-zoom-out").click(function () {
+                        $image.cropper("zoom", -0.1);
+                      });
+
+                      /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
+                      $(".js-crop-and-upload").click(function () {
+                        var cropData = $image.cropper("getData");
+                        $("#id_public-info-x").val(cropData["x"]);
+                        $("#id_public-info-y").val(cropData["y"]);
+                        $("#id_public-info-height").val(cropData["height"]);
+                        $("#id_public-info-width").val(cropData["width"]);
+                        $("#public_info_form").submit();
+
+                      });
+                    });
+
+                </script>
         </div>
     </div>
 
@@ -299,4 +330,10 @@
 
 
 <script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
+<script>
+    if (document.getElementById("id_private-info-phone_number").value = "+1"){
+        document.getElementById("id_private-info-phone_number").value = ""
+        document.getElementById("id_private-info-phone_number").placeholder = "Enter a valid phone number."
+    }
+</script>
 {% endblock %}

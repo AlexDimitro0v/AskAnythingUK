@@ -22,6 +22,8 @@ import braintree
 import json
 from django.http import HttpResponse
 
+from django.core.mail import EmailMessage
+
 from django.views.generic import (
     DeleteView
 )
@@ -41,12 +43,13 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 # =====================================================================================================================
 # FUNCTION-BASED VIEWS:
 
+
 # Redirect unauthenticated users to landing page
 @login_required(login_url='landing-page')
 def home(request):
     context = {
         'areas':  Area.objects.all(),
-        'has_premium' : has_premium(request.user)
+        'has_premium': has_premium(request.user)
     }
     return render(request, 'main/home.html', context)
 
@@ -84,7 +87,7 @@ def feedback_requests(request):
     most_used_tags = []
 
     # No tag filter specified
-    if tag_filter=="":
+    if tag_filter == "":
 
         # Filter requests if min/max price or time specified
         if filtered_min_price:
@@ -146,7 +149,6 @@ def feedback_requests(request):
                                                             AND main_feedbackrequest.time_limit <= %s
                                                             ''', [tag_filter, request.user.id, area_filter, filtered_min_price,filtered_max_price, filtered_min_time, filtered_max_time]))
 
-
     feedback_requests = feedback_requests.order_by('-date_posted')
 
     non_premium_requests = []
@@ -159,7 +161,7 @@ def feedback_requests(request):
 
     sorted_feedback_requests = []
     for i in range(len(feedback_requests)):
-        if (i%5 == 0 or i%5 == 1) and premium_requests:
+        if (i % 5 == 0 or i % 5 == 1) and premium_requests:
             sorted_feedback_requests.append(premium_requests.pop(0))
         else:
             if not premium_requests:
@@ -174,7 +176,7 @@ def feedback_requests(request):
 
     # Paginate:
     # https://docs.djangoproject.com/en/3.0/topics/pagination/
-    page_number = request.GET.get('page', 1)        # defaults to 1 if not found
+    page_number = request.GET.get('page', 1)               # defaults to 1 if not found
     paginator = Paginator(sorted_feedback_requests, 5)     # each page contains 5 feedback requests
     sorted_feedback_requests = paginator.get_page(page_number)
     page_obj = sorted_feedback_requests
@@ -261,8 +263,6 @@ def dashboard(request):
                 times_left.append(0)
             else:
                 times_left.append(get_time_delta(curr_time,deadline))
-
-
 
     feedback_candidates = []
     for my_request in my_feedback_requests:
@@ -524,11 +524,20 @@ def choose_feedbacker(request):
             )
             purchase.save()
 
+            mail_subject = 'You are hired.'
+            to_email = feedback_request.feedbacker.email
+            message = f"Hi, {feedback_request.feedbackee},\nYou have been chosen as a feedbacker."
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+
             messages.success(request, f"Feedbacker has been chosen successfully!")
         else:
             messages.error(request, f"Problem with payment method")
 
     return redirect('dashboard')
+
 
 @login_required
 def submit_feedback(request):
@@ -554,6 +563,14 @@ def submit_feedback(request):
 
             feedback_request.date_completed = datetime.now(tz=timezone.utc)
             feedback_request.save()
+
+            mail_subject = 'You received feedback.'
+            to_email = feedback_request.feedbackee.email
+            message = f"Hi, {feedback_request.feedbackee},\nYou have received feedback."
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
 
             feedbackZIPFile = request.FILES['fileZip']
             fs = FileSystemStorage()

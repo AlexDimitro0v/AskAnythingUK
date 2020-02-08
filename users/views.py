@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages                             # Django built-in message alerts
 from django.contrib.auth.decorators import login_required       # Django built-in login_required decorator
-from .forms import UserRegistrationForm, EditUserForm, EditProfileForm, PrivateInformationForm, PublicInformationForm
+from .forms import UserRegistrationForm, EditUserForm, EditProfileForm, PrivateInformationForm, PublicInformationForm, \
+    NotificationsForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -160,7 +161,7 @@ def view_profile(request):
             if feedback_request.feedbacker == request.user:
                 allow_access = True
                 break
-            user_is_candidate = FeedbackerCandidate.objects.filter(feedbacker=user_to_view,feedback=feedback_request)
+            user_is_candidate = FeedbackerCandidate.objects.filter(feedbacker=user_to_view, feedback=feedback_request)
             if user_is_candidate:
                 allow_access = True
                 break
@@ -208,10 +209,10 @@ def view_profile(request):
         'jobs_finished': jobs_finished,
         'user_skills': user_skills,
         'time_deltas': time_deltas,
-        'overall_average': round(overall_average,1),
-        'speed_average': round(speed_average,1),
-        'quality_average': round(quality_average,1),
-        'comm_average': round(comm_average,1),
+        'overall_average': round(overall_average, 1),
+        'speed_average': round(speed_average, 1),
+        'quality_average': round(quality_average, 1),
+        'comm_average': round(comm_average, 1),
         'ratings_num': ratings_num,
         'title': '| ' + user_to_view.username + "'s Profile"
     }
@@ -254,6 +255,7 @@ def settings(request):
                 # Otherwise the user’s auth session will be invalidated and she/he will have to log in again.
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
 
         elif 'private-info' in request.POST:
             private_info_form = PrivateInformationForm(request.POST, instance=request.user.userprofile, prefix='private-info')
@@ -262,9 +264,10 @@ def settings(request):
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
 
         elif 'public-info-description' in request.POST:
-            public_info_form = PublicInformationForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            public_info_form = PublicInformationForm(request.POST, request.FILES, instance=request.user.userprofile, prefix='public-info')
             if public_info_form.is_valid():
                 public_info_form.save()
 
@@ -288,11 +291,21 @@ def settings(request):
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+
+        elif 'notifications' in request.POST:
+            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
+            if notifications_form.is_valid():
+                pass
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+
     else:
         change_password_form = PasswordChangeForm(request.user, prefix='password-change')
         private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
         public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-
+        notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
 
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [str(skill.category) for skill in user_skills_ids]
@@ -300,8 +313,11 @@ def settings(request):
     context = {'change_password_form': change_password_form,
                'private_info_form': private_info_form,
                'public_info_form': public_info_form,
+               'notifications_form': notifications_form,
                'has_premium': has_premium(request.user),
                'active': active,
+               'notifications': request.user.userprofile.notifications,
+               'email': request.user.email,
                'areas':  Area.objects.all(),
                'user_skills': user_skills,
                'title': '| Settings'
