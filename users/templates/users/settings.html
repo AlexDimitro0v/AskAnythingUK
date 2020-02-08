@@ -72,8 +72,11 @@
     #div_id_private-info-gender{
         margin-top:20px;
     }
-</style>
 
+    #div_id_public-info-image{
+        display: none;
+    }
+</style>
 <div class="container p-0">
     <div class="row">
         <div class="col-md-5 col-xl-4">
@@ -108,63 +111,35 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
                         <div class="cardbody" style="margin-top: 25px;">
-                                        <div class="text-center" style="position: relative">
-                                          <span id="image-change">
-                                            <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
-                                            <p class="centered-text" id="image-text">
-                                              Change profile image
-                                            </p>
-                                          </span>
+                            <form method="POST" id="public_info_form" action="/settings/?tab=account" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                <div class="text-center" style="position: relative">
+                                  <label for="id_public-info-image" id="image-change">
+                                    <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
+                                    <p class="centered-text" id="image-text">
+                                      Change profile image
+                                    </p>
+                                  </label>
 
-                                        </div>
-                                        <form method="POST" id="public_info_form" action="/settings/?tab=account" novalidate>
-                                            {% csrf_token %}
-                                            <div class="form-group">
-                                                {{public_info_form|crispy }}
-                                            </div>
-                                        </form>
-                                        <form onsubmit="return false" style="margin-top: 15px;">
-                                            Skills<br>
-                                            <input id="tag-input" class="form-control" maxlength="30" style="max-width: 200px; margin-top: 0" >
-                                        </form>
+                                </div>
+                                <div class="form-group">
+                                    {{public_info_form|crispy }}
+                                </div>
+                            </form>
+                            <form onsubmit="return false" style="margin-top: 15px;">
+                                Skills<br>
+                                <input id="tag-input" class="form-control" maxlength="30" style="max-width: 200px; margin-top: 0" >
+                            </form>
 
-                                        <div style="margin-top: 10px;">
-                                          <span id="tags">
-                                            {% for skill in user_skills %}
-                                              <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
-                                            {% endfor %}
-                                          </span>
-                                        </div>
+                            <div style="margin-top: 10px;">
+                              <span id="tags">
+                                {% for skill in user_skills %}
+                                  <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
+                                {% endfor %}
+                              </span>
+                            </div>
 
-                                        <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
-                                       <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
-                                        <div class="modal fade" role="dialog" id="modalCrop">
-                                          <div class="modal-dialog">
-                                            <div class="modal-content">
-                                              <div class="modal-header">
-                                                <h4 class="modal-title">Crop the photo</h4>
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <img src="" id="image" style="max-width: 100%;">
-                                              </div>
-                                              <div class="modal-footer">
-                                                <div class="btn-group pull-left" role="group">
-                                                  <button type="button" class="btn btn-default js-zoom-in">
-                                                    <span class="fa fa-search-plus"></span>
-                                                  </button>
-                                                  <button type="button" class="btn btn-default js-zoom-out">
-                                                    <span class="fa fa-search-minus"></span>
-                                                  </button>
-                                                </div>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Go back</button>
-                                                <button type="button" class="btn btn-primary js-crop-and-upload">Crop</button>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                       </div>
-                                     <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
+                         <button class="button-corner btn btn-outline-info custom-column small-screen-button" id="submit_button">Save changes</button>
                         </div>
                     </div>
                     <!-- Too many tags overlay -->
@@ -189,81 +164,6 @@
                     </div>
                     </div>
 
-                    <script>
-                      $(document).ready(function () {
-
-                            $("#id_description").attr("maxlength", 1500)
-                            $("#id_city").attr("maxlength", 30)
-
-                            let maxTags = 10;
-                            let tags = {{ user_skills|safe }};
-                            let numOfTags = {{ user_skills|length }};
-
-                            {% include "main/tags.js" %}
-
-                            /* SCRIPT TO POST TO THE SERVER */
-                            $('#submit_button').click(function() {
-                                $("#public_info_form").attr('action',"/settings/?tab=account&tags="+tags);
-                                $("#public_info_form").submit();
-                            });
-                        });
-
-                        $(function () {
-                          /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
-                          $("#id_image").change(function () {
-                            if (this.files && this.files[0]) {
-                              var reader = new FileReader();
-                              reader.onload = function (e) {
-                                $("#image").attr("src", e.target.result);
-                                $("#modalCrop").modal("show");
-                                $('#imageCropped').css('display','none');
-                              }
-                              reader.readAsDataURL(this.files[0]);
-                            }
-                          });
-
-                          /* SCRIPTS TO HANDLE THE CROPPER BOX */
-                          var $image = $("#image");
-                          var cropBoxData;
-                          var canvasData;
-                          $("#modalCrop").on("shown.bs.modal", function () {
-                            $image.cropper({
-                              viewMode: 1,
-                              aspectRatio: 1/1,
-                              minCropBoxWidth: 100,
-                              minCropBoxHeight: 100,
-                              ready: function () {
-                                $image.cropper("setCanvasData", canvasData);
-                                $image.cropper("setCropBoxData", cropBoxData);
-                              }
-                            });
-                          }).on("hidden.bs.modal", function () {
-                            cropBoxData = $image.cropper("getCropBoxData");
-                            canvasData = $image.cropper("getCanvasData");
-                            $image.cropper("destroy");
-                          });
-
-                          $(".js-zoom-in").click(function () {
-                            $image.cropper("zoom", 0.1);
-                          });
-
-                          $(".js-zoom-out").click(function () {
-                            $image.cropper("zoom", -0.1);
-                          });
-
-                          /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
-                          $(".js-crop-and-upload").click(function () {
-                            var cropData = $image.cropper("getData");
-                            $("#id_x").val(cropData["x"]);
-                            $("#id_y").val(cropData["y"]);
-                            $("#id_height").val(cropData["height"]);
-                            $("#id_width").val(cropData["width"]);
-                            $('#modalCrop').modal('hide');
-                            $('#imageCropped').css('display','inline');
-                          });
-                        });
-
-                    </script>
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Private info</div>
@@ -318,6 +218,106 @@
                     </div>
                 </div>
             </div>
+                <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
+               <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
+                <div class="modal fade" role="dialog" id="modalCrop">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Crop the photo</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <img src="" id="image" style="max-width: 100%;">
+                      </div>
+                      <div class="modal-footer">
+                        <div class="btn-group pull-left" role="group">
+                          <button type="button" class="btn btn-default js-zoom-in">
+                            <span class="fa fa-search-plus"></span>
+                          </button>
+                          <button type="button" class="btn btn-default js-zoom-out">
+                            <span class="fa fa-search-minus"></span>
+                          </button>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Go back</button>
+                        <button type="button" class="btn btn-primary js-crop-and-upload">Crop</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+               </div>
+                <script>
+                  $(document).ready(function () {
+
+                        let maxTags = 10;
+                        let tags = {{ user_skills|safe }};
+                        let numOfTags = {{ user_skills|length }};
+
+                        {% include "main/tags.js" %}
+
+                        /* SCRIPT TO POST TO THE SERVER */
+                        $('#submit_button').click(function() {
+                            $("#public_info_form").attr('action',"/settings/?tab=account&tags="+tags);
+                            $("#public_info_form").submit();
+                        });
+                    });
+
+                    $(function () {
+                      /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
+                      $("#id_public-info-image").change(function () {
+                        if (this.files && this.files[0]) {
+                          var reader = new FileReader();
+                          reader.onload = function (e) {
+                            $("#image").attr("src", e.target.result);
+                            $("#modalCrop").modal("show");
+                            $('#imageCropped').css('display','none');
+                          }
+                          reader.readAsDataURL(this.files[0]);
+                        }
+                      });
+
+                      /* SCRIPTS TO HANDLE THE CROPPER BOX */
+                      var $image = $("#image");
+                      var cropBoxData;
+                      var canvasData;
+                      $("#modalCrop").on("shown.bs.modal", function () {
+                        $image.cropper({
+                          viewMode: 1,
+                          aspectRatio: 1/1,
+                          minCropBoxWidth: 100,
+                          minCropBoxHeight: 100,
+                          ready: function () {
+                            $image.cropper("setCanvasData", canvasData);
+                            $image.cropper("setCropBoxData", cropBoxData);
+                          }
+                        });
+                      }).on("hidden.bs.modal", function () {
+                        cropBoxData = $image.cropper("getCropBoxData");
+                        canvasData = $image.cropper("getCanvasData");
+                        $image.cropper("destroy");
+                      });
+
+                      $(".js-zoom-in").click(function () {
+                        $image.cropper("zoom", 0.1);
+                      });
+
+                      $(".js-zoom-out").click(function () {
+                        $image.cropper("zoom", -0.1);
+                      });
+
+                      /* SCRIPT TO COLLECT THE IMAGE DATA AND CLOSE THE MODAL */
+                      $(".js-crop-and-upload").click(function () {
+                        var cropData = $image.cropper("getData");
+                        $("#id_public-info-x").val(cropData["x"]);
+                        $("#id_public-info-y").val(cropData["y"]);
+                        $("#id_public-info-height").val(cropData["height"]);
+                        $("#id_public-info-width").val(cropData["width"]);
+                        $('#modalCrop').modal('hide');
+                        $('#imageCropped').css('display','inline');
+                      });
+                    });
+
+                </script>
         </div>
     </div>
 
