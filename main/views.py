@@ -23,7 +23,7 @@ import json
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-
+import sweetify
 from django.views.generic import (
     DeleteView
 )
@@ -340,8 +340,6 @@ def new_feedback_request(request):
                     category_record = category_record[0]
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
-
-    #       return redirect('home-page')
 
     areas = Area.objects.all()
     context = {
@@ -718,12 +716,12 @@ def get_new_messages(request):
             for message in messages:
                 message_texts.append(message.message)
 
-            return HttpResponse(json.dumps({'has_premium': has_premium(feedback_request.feedbacker),'messages': message_texts,'newestMessage': datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}), content_type="application/json")
+            return HttpResponse(json.dumps({'has_premium': has_premium(feedback_request.feedbacker), 'messages': message_texts,'newestMessage': datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}), content_type="application/json")
         if feedback_request.feedbacker == request.user and feedback_request.new_feedbackee_message:
             feedback_request.new_feedbackee_message = False
             feedback_request.save()
 
-            messages = Message.objects.filter(feedback_id=request_id,author=feedback_request.feedbackee,date__gt=latest_user_message_date)
+            messages = Message.objects.filter(feedback_id=request_id, author=feedback_request.feedbackee, date__gt=latest_user_message_date)
             messages.order_by('-date')
 
             message_texts = []

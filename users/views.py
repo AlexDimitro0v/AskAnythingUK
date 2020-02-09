@@ -208,6 +208,10 @@ def settings(request):
                 user = change_password_form.save()
                 update_session_auth_hash(request, user)  # Important!
                 # Otherwise the user’s auth session will be invalidated and she/he will have to log in again.
+                sweetify.success(request, 'You successfully changed your password', icon='success', toast=True,
+                                 position='top-end',
+                                 timer=2000
+                                 )
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
@@ -218,6 +222,10 @@ def settings(request):
             private_info_form = PrivateInformationForm(request.POST, instance=request.user.userprofile, prefix='private-info')
             if private_info_form.is_valid():
                 private_info_form.save()
+                sweetify.success(request, 'You successfully updated your profile', icon='success', toast=True,
+                                 position='top-end',
+                                 timer=2000
+                                 )
             else:
                 sweetify.error(request, 'Please correct the error below.', icon="error", toast=True, position="bottom-end")
 
@@ -225,13 +233,16 @@ def settings(request):
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
-                                      prefix='profile-image')
+                                          prefix='profile-image')
 
         elif 'public-info-description' in request.POST:
             public_info_form = PublicInformationForm(request.POST, request.FILES, instance=request.user.userprofile, prefix='public-info')
             if public_info_form.is_valid():
                 public_info_form.save()
-
+                sweetify.success(request, 'You successfully updated your profile', icon='success', toast=True,
+                                 position='top-end',
+                                 timer=2000
+                                 )
             tags = list(set(request.GET.get('tags', '').split(",")))
 
             # Delete all previous skills
