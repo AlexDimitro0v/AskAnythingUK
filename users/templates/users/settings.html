@@ -20,6 +20,7 @@
 
     .card {
         position: relative;
+        opacity: 1;
         display: -ms-flexbox;
         display: flex;
         -ms-flex-direction: column;
@@ -199,7 +200,7 @@
                                 {% csrf_token %}
                                 <div class="form-group">
                                     {{change_password_form.old_password|as_crispy_field}}
-                                    <small><a href="{% url 'password_reset' %}">Forgot your password?</a></small>
+                                    <small><a style="text-decoration: underline; color: #0056b3;" href="{% url 'password_reset' %}">Forgot your password?</a></small>
                                     {{ change_password_form.new_password1|as_crispy_field }}
                                     {{ change_password_form.new_password2|as_crispy_field }}
                                 </div>
@@ -336,10 +337,4 @@
 
 
 <script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
-<script>
-    if (document.getElementById("id_private-info-phone_number").value = "+1"){
-        document.getElementById("id_private-info-phone_number").value = ""
-        document.getElementById("id_private-info-phone_number").placeholder = "Enter a valid phone number."
-    }
-</script>
 {% endblock %}

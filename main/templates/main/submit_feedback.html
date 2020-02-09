@@ -14,7 +14,7 @@
       <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
       <span style="margin-left: 10px; font-weight: 600" id="fileCount"></span>
       <span style="margin-left: 10px; font-weight: 600" id="fileSize"></span>
-      <div style="margin-top: 10px" id="allFiles"></div>
+      <div style="margin-top: 0px;" id="allFiles"></div>
       <br>
       Comments:<br>
       <textarea rows="15" name="comments" id="comments" class="form-control" maxlength=2000>{{feedbacker_comments}}</textarea>
@@ -75,7 +75,8 @@
               title: "You have successfully submitted your feedback!",
               text: "The feedbackee will review the feedback and then release your reward.",
               icon: "success",
-              buttons: false
+              showCancelButton: false,
+              timer: 5500,
             });
 
             let fileFormName = "submitFeedbackForm";
