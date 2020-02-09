@@ -1202,7 +1202,15 @@ word-wrap: break-word;
   opacity: 1;
   height: auto;
   transition: 1s ease;
+}
 
+#no_messages {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 300px;
 }
 
 

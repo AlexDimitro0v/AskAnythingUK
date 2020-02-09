@@ -573,9 +573,9 @@
     <div class="decorative-text-wrapper noselect">Messages</div>
     <div class="cardbody" style="margin-bottom: 0; ">
 
-      <div class="border-top border-bottom" id="all_messages"  style="max-height: 500px; overflow-y: auto; padding-top: 20px; padding-bottom: 10px; padding-left: 30px; padding-right: 30px; margin-left: -30px; margin-right: -30px">
+      <div class="border-top border-bottom" id="all_messages"  style="min-height: 300px; max-height: 500px; overflow-y: auto; padding-top: 20px; padding-bottom: 10px; padding-left: 30px; padding-right: 30px; margin-left: -30px; margin-right: -30px">
         {% if not user_messages %}
-          <p id="no_messages" style="text-align: center; font-size: 1.2em; font-weight: 600; margin-top: 0; margin-bottom: 10px">No Messages Yet</p>
+          <p id="no_messages">No Messages Yet</p>
 
         {% else %}
         {% let -1 as prev %}
