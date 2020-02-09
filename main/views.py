@@ -543,7 +543,7 @@ def choose_feedbacker(request):
             current_site = get_current_site(request)                        # get current site
             mail_subject = f"AskAnything"
             to_email = feedback_request.feedbacker.email
-            message = f"Hi, {feedback_request.feedbacker},\n{feedback_request.feebackee} has chosen you as a feedbacker" \
+            message = f"Hi, {feedback_request.feedbacker},\n{feedback_request.feedbackee} has chosen you as a feedbacker" \
                       f"for '{feedback_request}'.\n\n" \
                       f"Login to see the updates:\nhttp://{current_site}\n\nThank you for using our service,\n" \
                       f"Your AskAnything team."
