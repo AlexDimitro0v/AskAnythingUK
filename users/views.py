@@ -18,6 +18,7 @@ from main.functions import has_premium, get_time_delta
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+import sweetify
 
 
 def register(request):
@@ -196,6 +197,9 @@ def try_premium(request):
 
 @login_required
 def settings(request):
+    # Proper way to handle multiple forms:
+    # https://stackoverflow.com/questions/1395807/proper-way-to-handle-multiple-forms-on-one-page-in-django
+    # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
     if request.method == 'POST':
         if 'password-change' in request.POST:
@@ -214,6 +218,8 @@ def settings(request):
             private_info_form = PrivateInformationForm(request.POST, instance=request.user.userprofile, prefix='private-info')
             if private_info_form.is_valid():
                 private_info_form.save()
+            else:
+                sweetify.error(request, 'Please correct the error below.', icon="error", toast=True, position="bottom-end")
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')

@@ -47,6 +47,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'crispy_forms',
     'phonenumber_field',
+    'sweetify',
     'django_cleanup',           # to auto-delete old media files (like old profile images)
     'users.apps.UsersConfig',
     'main.apps.MainConfig',
@@ -160,6 +161,7 @@ MEDIA_URL = '/media/'                           # how we will access our media t
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'     # Crispy Forms will be using Bootstrap for styling
+SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 
 # Email Server (Using Gmail SMTP)

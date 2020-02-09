@@ -21,7 +21,7 @@ from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BR
 import braintree
 import json
 from django.http import HttpResponse
-
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 
 from django.views.generic import (
@@ -231,7 +231,7 @@ def feedback_requests(request):
         'time_deltas': time_deltas,
         'premium_requests': premium_requests,
         'new_requests': new_requests,
-        'has_premium' : has_premium(request.user),
+        'has_premium': has_premium(request.user),
         'title': '| Feedback Requests'
     }
 
@@ -484,7 +484,7 @@ def apply_as_feedbacker(request):
                 return redirect('dashboard')
 
             # Cannot apply twice to the same feedback request
-            past_application = FeedbackerCandidate.objects.filter(feedbacker=request.user,feedback=feedback_request)
+            past_application = FeedbackerCandidate.objects.filter(feedbacker=request.user, feedback=feedback_request)
             if past_application:
                 return redirect('dashboard')
 
@@ -495,6 +495,18 @@ def apply_as_feedbacker(request):
                                               application=application_text,
                                               )
             application.save()
+            current_site = get_current_site(request)                        # get current site
+            mail_subject = 'New candidate for your feedback request'
+            to_email = feedback_request.feedbackee.email
+            message = f"Hi, {feedback_request.feedbackee},\nYou have a new candidate for your Request: '{feedback_request}'." \
+                      f"\n\nLogin to see the updates:\nhttp://{current_site}\n\nThank you for using our service,\n" \
+                      f"Your AskAnything team."
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            if feedback_request.feedbackee.userprofile.notifications:
+                email.send()
+
             messages.success(request, f"Your application has been processed!")
     return redirect('dashboard')
 
@@ -528,13 +540,18 @@ def choose_feedbacker(request):
             )
             purchase.save()
 
-            mail_subject = 'You are hired.'
+            current_site = get_current_site(request)                        # get current site
+            mail_subject = f"AskAnything"
             to_email = feedback_request.feedbacker.email
-            message = f"Hi, {feedback_request.feedbackee},\nYou have been chosen as a feedbacker."
+            message = f"Hi, {feedback_request.feedbacker},\n{feedback_request.feebackee} has chosen you as a feedbacker" \
+                      f"for '{feedback_request}'.\n\n" \
+                      f"Login to see the updates:\nhttp://{current_site}\n\nThank you for using our service,\n" \
+                      f"Your AskAnything team."
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-            email.send()
+            if feedback_request.feedbacker.userprofile.notifications:
+                email.send()
 
             messages.success(request, f"Feedbacker has been chosen successfully!")
         else:
@@ -572,13 +589,18 @@ def submit_feedback(request):
             feedback_request.date_completed = datetime.now(tz=timezone.utc)
             feedback_request.save()
 
+            current_site = get_current_site(request)                        # get current site
+            message = f"Hi, {feedback_request.feedbackee},\nYou have received feedback." \
+                      f"for your request: '{feedback_request}'.\n\n" \
+                      f"Login to see the updates:\nhttp://{current_site}\n\nThank you for using our service,\n" \
+                      f"Your AskAnything team."
             mail_subject = 'You received feedback.'
             to_email = feedback_request.feedbackee.email
-            message = f"Hi, {feedback_request.feedbackee},\nYou have received feedback."
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-            email.send()
+            if feedback_request.feedbackee.userprofile.notifications:
+                email.send()
 
             feedbackZIPFile = request.FILES['fileZip']
             fs = FileSystemStorage()
@@ -622,6 +644,19 @@ def rate_feedbacker(request):
                                                feedbacker=feedback_request.feedbacker)
             rating.save()
 
+            current_site = get_current_site(request)  # get current site
+            message = f"Hi, {feedback_request.feedbacker},\nYou have been rated for your work on." \
+                      f": '{feedback_request}'.\n\n" \
+                      f"Login to see the updates:\nhttp://{current_site}\n\nThank you for using our service,\n" \
+                      f"Your AskAnything team."
+            mail_subject = 'You have been rated.'
+            to_email = feedback_request.feedbacker.email
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+
+            if feedback_request.feedbacker.userprofile.notifications:
+                email.send()
             feedback_request.feedbacker_rated = True
             feedback_request.save()
             messages.success(request, 'You have successfully rated your feedbacker!')
@@ -658,6 +693,7 @@ def finish_purchase(request):
     purchase.is_completed = True
     purchase.save()
     return redirect('dashboard')
+
 
 @login_required
 def get_new_messages(request):

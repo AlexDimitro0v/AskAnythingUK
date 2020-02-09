@@ -28,6 +28,12 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <!--Sweet Alerts (To replace Django messages)-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <!-- Include a polyfill for ES6 Promises (optional) for IE11 -->
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill9/dist/polyfill.js"></script>
+
     <!-- Raleway website font -->
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
@@ -87,9 +93,8 @@
 
             <a class="header-menu-text noselect" href="/" style="text-decoration: none">
                 <img class="photo-circle" style="margin-top: -4px" src="{% static 'img/logo.png' %}"/>
-            <h2 class="header-menu-text noselect" style="color: #1F4D8A; font-family: 'Raleway'; font-weight: 600; font-size: 21px;">AskAnything</h2>
+                <h2 class="header-menu-text noselect" style="color: #1F4D8A; font-family: 'Raleway'; font-weight: 600; font-size: 21px;">AskAnything</h2>
             </a>
-
         </span>
 
 
@@ -104,7 +109,6 @@
           {% else %}
               <a href="{% url 'login-page' %}" class="header-menu-text noselect" ><button class="btn btn-outline-info">Log In</button></a>
               <a href="{% url 'registration-page' %}" class="header-menu-text noselect" ><button class="btn btn-outline-info">Sign Up</button></a>
-            </div>
           {% endif %}
         </span>
     </div>
@@ -147,5 +151,7 @@
       }
     });
   </script>
+{% load sweetify %}
+{% sweetify %}
 </body>
 </html>
