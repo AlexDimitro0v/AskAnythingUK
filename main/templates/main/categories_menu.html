@@ -2,7 +2,7 @@
 
 <div class="noselect header header2 large-screen-only" id="categories-header">
     {% for area in areas %}
-        <a class="header2-menu-text noselect" href="{% url 'feedback-requests-page' %}?area-filter={{ area.id }}" style="text-decoration: none">
+        <a class="header2-menu-text noselect" href="{% url 'feedback-requests-page' %}?area-filter={{ area.id }}" style="text-decoration: none; {% if area_filter_id == forloop.counter %} color: #1f4d8a; padding-bottom: 2px;  {% endif %}">
             {{ area.name }}
         </a>
     {% endfor %}

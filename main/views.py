@@ -78,6 +78,10 @@ def feedback_requests(request):
     # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/f_query.html
     feedback_requests = FeedbackRequest.objects.filter(feedbackee=F('feedbacker'), area=area).exclude(feedbackee=request.user)
 
+    # Exclude all requests for which the user has already applied
+    my_feedbacker_applications_ids = FeedbackerCandidate.objects.values_list('feedback', flat=True).filter(feedbacker=request.user)
+    feedback_requests = feedback_requests.exclude(pk__in=set(my_feedbacker_applications_ids))
+
     # Get minimum and maximum values of price and time limit for all feedback requests in a given category
     max_price = feedback_requests.aggregate(Max('reward'))['reward__max']
     min_price = feedback_requests.aggregate(Min('reward'))['reward__min']
@@ -149,8 +153,6 @@ def feedback_requests(request):
                                                             AND main_feedbackrequest.time_limit <= %s
                                                             ''', [tag_filter, request.user.id, area_filter, filtered_min_price,filtered_max_price, filtered_min_time, filtered_max_time]))
 
-    # Exclude all requests for which the user has already applied
-    my_feedbacker_applications_ids = FeedbackerCandidate.objects.values_list('feedback', flat=True).filter(feedbacker=request.user)
     feedback_requests = feedback_requests.exclude(pk__in=set(my_feedbacker_applications_ids))
 
     feedback_requests = feedback_requests.order_by('-date_posted')
@@ -217,7 +219,7 @@ def feedback_requests(request):
         'tags': tags,
         'page_obj': page_obj,
         'areas':  Area.objects.all(),
-        'area_filter_id': area_filter,
+        'area_filter_id': int(area_filter),
         'tag_filter': tag_filter,
         'min_price': min_price,
         'max_price': max_price,

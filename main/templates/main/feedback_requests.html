@@ -160,20 +160,37 @@
               <span class="step-links" style="margin: 0 auto;">
                   {% if page_obj.has_previous %}
       <!-- Put parameters by setting ? in the url https://www.searchenginejournal.com/technical-seo/url-parameter-handling/#close-->
-                      <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+
+                      {% if filtered_max_price %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.previous_page_number }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">&lt; Previous</a>
+                      {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.previous_page_number }}&tag-filter={{tag_filter}}">&lt; Previous</a>
+                      {% endif %}
                   {% endif %}
 
                   {% for num in page_obj.paginator.page_range %}
                       {% if page_obj.number == num %}
-                          <a class="btn btn-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}">{{ num }}</a>
+                          {% if filtered_max_price %}
+                            <a class="btn btn-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% else %}
+                            <a class="btn btn-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% endif %}
                       <!--Show the 3 adjacent pages (from both sides)-->
                       {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                          <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}">{{ num }}</a>
+                          {% if filtered_max_price %}
+                            <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% else %}
+                            <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% endif %}
                       {% endif %}
                   {% endfor %}
 
                   {% if page_obj.has_next %}
-                      <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.next_page_number }}">Next &gt;</a>
+                      {% if filtered_max_price %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.next_page_number }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">Next &gt;</a>
+                      {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.next_page_number }}&tag-filter={{tag_filter}}">Next &gt;</a>
+                      {% endif %}
                   {% endif %}
               </span>
           </div>
