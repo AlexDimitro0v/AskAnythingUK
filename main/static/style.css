@@ -688,7 +688,17 @@ color: #1F4D8A;
     justify-content: center;
     padding-top: 50px;
     padding-bottom: 50px;
+    overflow: auto;
+}
 
+.full-screen .large-area {
+  margin-bottom: 0;
+}
+
+.full-screen .full-screen {
+  padding-top: 0;
+  padding-bottom: 0;
+  min-height: calc(100vh - 100px);
 }
 
 .full-screen-image {
