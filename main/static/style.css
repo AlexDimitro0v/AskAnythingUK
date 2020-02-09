@@ -187,6 +187,32 @@ input {
   border: 8px solid #eee;
 }
 
+.reward-percentage {
+  margin: 0 auto;
+  line-height: 184px;
+  font-size: 1em;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.reward-percentage:first-of-type {
+  border-right: 1px #dee2e6 solid;
+}
+
+.reward-percentage p {
+  font-family: "Lexend";
+}
+
+.reward-percentage:first-of-type p {
+  color: #ab5468
+}
+
+
+
 .premium-request {
   border-left: 5px solid #e9ca6e;
 }
@@ -1132,6 +1158,43 @@ word-wrap: break-word;
 #image-change:hover p {
   opacity: 1;
 }
+
+.select-box {
+  width: 150px;
+  border-radius: 5px;
+  border: 2px solid #dee2e6;
+  height: 75px;
+  cursor: pointer;
+  vertical-align: middle;
+  display: inline-flex;
+  transition: 0.3s;
+  font-weight: 600;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 10px;
+}
+.select-box:hover {
+  border: 2px solid #ab5468;
+}
+
+.select-box-selected {
+  border: 2px solid #ab5468;
+}
+
+.charity-container {
+  transition: 1s ease;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.charity-container-active {
+  opacity: 1;
+  height: auto;
+  transition: 1s ease;
+
+}
+
 
 /*
 Logo Colours

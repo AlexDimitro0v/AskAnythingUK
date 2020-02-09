@@ -507,7 +507,10 @@ def apply_as_feedbacker(request):
             if feedback_request.feedbackee.userprofile.notifications:
                 email.send()
 
-            messages.success(request, f"Your application has been processed!")
+            sweetify.success(request, 'Your application has been processed!', icon='success', toast=True,
+                             position='top-end',
+                             timer=2000
+                             )
     return redirect('dashboard')
 
 
@@ -677,7 +680,7 @@ def withdraw_application(request):
 
     application = FeedbackerCandidate.objects.get(feedbacker=request.user, feedback_id=feedback_request_id)
     application.delete()
-    messages.success(request, f"Your application has been withdrawn!")
+    sweetify.success(request, "Your application has been withdrawn", icon='success', toast=True,position='top-end',timer=2000)
     return redirect('dashboard')
 
 
@@ -692,6 +695,7 @@ def finish_purchase(request):
                         'creating one manually via the admin panel.')
     purchase.is_completed = True
     purchase.save()
+    sweetify.success(request, "Reward released", icon='success', toast=True,position='top-end',timer=2000)
     return redirect('dashboard')
 
 

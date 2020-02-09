@@ -4,7 +4,37 @@
 {% load multifor %}
 {% load let %}
 
+<style>
+/* Slider styling*/
 
+ .ui-widget-content, .ui-slider-range-min {
+      border-width: 0px;
+     border-radius: 25px;
+     height: 15px
+ }
+
+ .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+   border-width: 0px;
+   background: #ab5468;
+   cursor: pointer;
+   height: 28px;
+   width: 28px;
+   cursor: pointer;
+   border-radius: 100px;
+   z-index: 1;
+ }
+
+ .ui-state-default:active, .ui-widget-content:active .ui-state-default:active, .ui-widget-header:active .ui-state-default:active {
+   background: #ab5468;
+ }
+
+ .ui-widget-header {
+     border-width: 0px;
+     background: #ab5468;
+     opacity: 0.7;
+
+ }
+</style>
   {% if feedback_request.feedbacker_comments != "" and feedback_request.feedbacker_comments != "-" %}
   <div class="large-area">
     <div class="decorative-text-wrapper noselect">Feedbacker Comments</div>
@@ -183,28 +213,104 @@
                   </a>
               {% endif %}
               {%if feedback_request.feedbacker_comments != "" and not purchase.is_completed and not feedback_request.feedbacker == user%}
-                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money" type="submit">Release Money</button>
+                  <button class="btn btn-outline-info" style="margin-top: 10px" id="release-money" type="submit">Release Reward</button>
+
+                  <div id=main-container">
+                  <div id="overlay_reward" class="full-screen overlay" style="margin-top:  -80px;">
+
+                    <div class="full-screen">
+
+                    <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+                      <div class="decorative-text-wrapper noselect">Release Reward</div>
+                      <div class="cardbody"  style="margin-top: 50px; margin-bottom: 50px">
+
+                        <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                          Based on the quality of feedback, you can decrease feedbacker's reward by up to 50%. The remaining funds will be donated to a charity of your choice.
+                        </p>
+                        <div class="border-top pt-1 mt-4"></div>
+
+
+                        <div style="display: flex; margin-top: 20px; margin-bottom: 20px">
+                          <div class="reward-percentage" style="padding: 10px">
+                            <p class="bold-p">For Feedbacker</p>
+                            <p class="bold-p" id="feedbacker-reward" style="font-size: 1.7em; margin-top: 0">£{{feedback_request.reward}}</p>
+                          </div>
+                          <div class="reward-percentage" style="padding: 10px; border-color: #1F4D8A">
+                            <p class="bold-p">For Charity</p>
+                            <p class="bold-p" id="charity-reward" style="font-size: 1.7em; margin-top: 0">£0</p>
+                          </div>
+                        </div>
+                        <div id ="slider-reward" style="width: 95%; max-width: 350px; margin: 0 auto; margin-top: 30px; margin-bottom: 30px"></div>
+                        <div class="charity-container">
+                        <div class="border-top pt-1 mt-4"></div>
+                        <p class="bold-p">Choose Charity</p>
+                          <div class="select-box select-box-selected" id="charity1">
+                            <p>Against Malaria Foundation</p>
+                          </div>
+                          <div class="select-box" id="charity1">
+                            <p>Against Malaria Foundation</p>
+                          </div>
+                          <div class="select-box" id="charity1">
+                            <p>Against Malaria Foundation</p>
+                          </div>
+                          <div class="select-box" id="charity1">
+                            <p>Against Malaria Foundation</p>
+                          </div>
+                        </div>
+                        <div class="border-top pt-1 mt-4"></div>
+                          <div class="noselect button-corner" style="position: absolute; right: 30px; bottom: 30px;">
+                            <button type ='button' class="btn btn-outline-info" id="no-release" style="margin-right: 10px">Cancel</button>
+                            <button type="submit" class="btn btn-outline-info" id="yes-release">Release</button>
+                          </div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
               {% endif%}
               <script>
-                  $('#release-money').click(function() {
-                   swal({
-                    title: "Are you sure?",
-                    text: "This action cannot be reverted.",
-                    icon: "warning",
-                    buttons: ['Cancel', 'Release'],
-                    dangerMode: true,
-                  })
-                  .then((willDelete) => {
-                    if (willDelete) {
-                    swal("Money released!", {
-                      icon: "success",
-                      buttons:false})
-                     window.setTimeout(function(){
-                        window.location = "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}";
-                    }, 1300);
-                    }
+                $(document).ready(function () {
+                  $('#release-money').click(function(e) {
+                    $('#overlay_reward').css("display","block");
+                    $('body').css("overflow","hidden");
+
                   });
+                  $('#no-release').click(function(e) {
+                    $('#overlay_reward').css("display","none");
+                    $('body').css("overflow","visible");
                   });
+                  $('#yes-release').click(function(e) {
+                    window.location = "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}";
+                  });
+                });
+
+                $(function() {
+                   $( "#slider-reward" ).slider({
+                      range:"min",
+                      min: {{feedback_request.reward}}/2,
+                      max: {{feedback_request.reward}},
+                      value:  {{feedback_request.reward}} ,
+                      slide: function( event, ui ) {
+                        $( '#feedbacker-reward').text("£" + ui.value);
+                        $('#charity-reward').text("£" + ({{feedback_request.reward}}- ui.value));
+                        if($('#charity-reward').text() == "£0") {
+                            $('.charity-container').removeClass("charity-container-active");
+                        }
+                        else {
+                          $('.charity-container').addClass("charity-container-active");
+                        }
+                      }
+                   });
+                })
+
+                $( ".select-box" ).each(function(index) {
+                  $(this).on("click", function(){
+                    $('.select-box').each(function(i, obj) {
+                      $(this).removeClass("select-box-selected")
+                    });
+                      $(this).addClass("select-box-selected")
+                  });
+              });
               </script>
 
 
