@@ -47,11 +47,7 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 # Redirect unauthenticated users to landing page
 @login_required(login_url='landing-page')
 def home(request):
-    context = {
-        'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user)
-    }
-    return render(request, 'main/home.html', context)
+    return render(request, 'main/home.html')
 
 
 def landing_page(request):
@@ -218,7 +214,6 @@ def feedback_requests(request):
         'requests': sorted_feedback_requests,
         'tags': tags,
         'page_obj': page_obj,
-        'areas':  Area.objects.all(),
         'area_filter_id': int(area_filter),
         'tag_filter': tag_filter,
         'min_price': min_price,
@@ -233,7 +228,6 @@ def feedback_requests(request):
         'time_deltas': time_deltas,
         'premium_requests': premium_requests,
         'new_requests': new_requests,
-        'has_premium': has_premium(request.user),
         'title': '| Feedback Requests'
     }
 
@@ -285,8 +279,6 @@ def dashboard(request):
         'my_applications': my_feedbacker_applications,  # Feedback Request instances
         'my_jobs': my_jobs,
         'feedback_candidates': feedback_candidates,     # User instances
-        'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user),
         'times_left': times_left,
         'urgent': urgent,
         'title': '| Dashboard'
@@ -343,8 +335,6 @@ def new_feedback_request(request):
 
     areas = Area.objects.all()
     context = {
-        "areas": areas,
-        'has_premium': has_premium(request.user),
         'title': '| New Feedback Request'
         }
     return render(request, 'main/new_feedback_request.html', context)
@@ -448,11 +438,9 @@ def feedback_request(request):
             'user_is_feedbackee': user_is_feedbackee,
             'user_was_rejected': user_was_rejected,
             'time_delta': time_delta,
-            'areas':  Area.objects.all(),
             'feedback_candidates': feedback_candidates,
             'date_posted': feedback_request.date_posted.replace(microsecond=0),
             'date_completed': feedback_request.date_completed.replace(microsecond=0),
-            'has_premium': has_premium(request.user),
             'new_request': new_request,
             'premium_request': premium_request,
             'three_or_more_applications': num_of_applications >= 3,
@@ -584,8 +572,6 @@ def submit_feedback(request):
 
     context = {
         'request_id': request.GET.get('request_id', ''),
-        'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user),
         'title': '| Submit Feedback',
         'feedbacker_comments': feedback_request.feedbacker_comments
     }
@@ -625,8 +611,6 @@ def rate_feedbacker(request):
 
     context = {
         'request_id': request.GET.get('request_id', ''),
-        'areas':  Area.objects.all(),
-        'has_premium': has_premium(request.user),
         'title': '| Rate Feedbacker'
     }
     return render(request, 'main/rate-feedbacker.html', context)

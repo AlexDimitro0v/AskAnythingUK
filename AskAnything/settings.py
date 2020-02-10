@@ -92,7 +92,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'main.context_processors.notifications_processor'
+                'main.context_processors.notifications_processor',
+                'main.context_processors.logged_in_universal_processor'
             ],
 
         },

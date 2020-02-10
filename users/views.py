@@ -155,8 +155,6 @@ def view_profile(request):
     context = {
         'user_to_view': user_to_view,
         'user_ratings': ratings,
-        'areas': Area.objects.all(),
-        'has_premium': has_premium(request.user),
         'viewed_has_premium': has_premium(user_to_view),
         'jobs_finished': jobs_finished,
         'user_skills': user_skills,
@@ -302,11 +300,9 @@ def settings(request):
                'public_info_form': public_info_form,
                'notifications_form': notifications_form,
                'image_form': image_form,
-               'has_premium': has_premium(request.user),
                'active': active,
                'notifications': request.user.userprofile.notifications,
                'email': request.user.email,
-               'areas':  Area.objects.all(),
                'user_skills': user_skills,
                'title': '| Settings'
                }

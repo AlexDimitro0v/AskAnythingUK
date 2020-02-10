@@ -1,8 +1,8 @@
 from django.utils import timezone
 from datetime import timedelta
 from datetime import datetime
-from .models import Notification
-from .functions import get_time_delta
+from .models import Notification, Area
+from .functions import get_time_delta, has_premium
 from django.contrib.auth.decorators import login_required
 
 def notifications_processor(request):
@@ -20,3 +20,13 @@ def notifications_processor(request):
          }
          notifications.append(notification)
      return {'notifications_all': notifications}
+
+
+def logged_in_universal_processor(request):
+    if not request.user.is_authenticated:
+        return {}
+    context = {
+        'areas':  Area.objects.all(),
+        'has_premium': has_premium(request.user)
+    }
+    return context
