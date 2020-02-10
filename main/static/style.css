@@ -1245,7 +1245,7 @@ word-wrap: break-word;
 }
 
 .user-item {
-  height: 65px;
+  height: 60px;
 }
 
 .custom-dropdown-item-in {
@@ -1255,15 +1255,16 @@ word-wrap: break-word;
 }
 
 .user-item-in {
-  line-height: 45px;
-  height: 45px;
+  line-height: 40px;
+  height: 40px;
 }
 
 .notification-text {
-  line-height: 1.1em;
+  line-height: 1.2em;
   margin-top: 8px;
   font-family: "Lexend";
-  font-size: 0.9em
+  font-size: 0.9em;
+  max-width: 280px;
 }
 
 .notification-time {
@@ -1285,7 +1286,6 @@ word-wrap: break-word;
   margin-left: 10px;
   margin-top: 15px;
   position: fixed;
-  display: none;
 }
 
 /*

@@ -9,11 +9,11 @@
        </a>
        <div class="dropdown-menu dropdown-menu-right" id="notifications-dropdown" style="font-size: 1.2em" >
          {% for notification in notifications_all %}
-         <a href="{{notification.link}}" style="text-decoration: none">
+         <a href="{{notification.link}}&notification_id={{notification.id}}" style="text-decoration: none">
          <div class="custom-dropdown-item">
              <span class="custom-dropdown-item-in">
                {% if notification.other_user %}
-               <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: -10px; border-radius: 100px; margin-right: 10px" src="{{ notification.other_user.userprofile.image.url }}">
+               <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: -10px; border-radius: 100px; margin-right: 15px" src="{{ notification.other_user.userprofile.image.url }}">
                {% endif %}
              </span>
              <span class="custom-dropdown-item-in">
@@ -25,15 +25,24 @@
                  <div class="notification-text">Feedback submitted for <strong>{{notification.title}}</strong></div>
                {% elif notification.type == "FeedbackerRated" %}
                  <div class="notification-text">A new rating for feedback on <strong>{{notification.title}}</strong></div>
+               {% elif notification.type == "NewMessage" %}
+                  <div class="notification-text">New message(s) by <strong>{{notification.other_user}}</strong> on <strong>{{notification.title}}</strong></div>
                {% endif %}
-               <div class="notification-text notification-time">{{notification.time}} ago</div>
+               <div class="notification-text notification-time">
+                 {{notification.time}} ago
+                 {% if not notification.seen %}
+                 <span class="notification-dot" style="margin-left: 6px; margin-top: 4px"></span>
+                 {% endif %}
+               </div>
+
              </span>
          </div>
          </a>
          {% endfor %}
        </div>
      </li>
+     {% if not all_seen %}
      <div class="notification-dot"></div>
-
+     {% endif %}
    </ul>
  </span>

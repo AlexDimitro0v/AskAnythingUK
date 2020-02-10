@@ -342,6 +342,16 @@ def new_feedback_request(request):
 
 @login_required
 def feedback_request(request):
+    notification_id = request.GET.get('notification_id', '')
+    if notification_id:
+        try:
+            notification = Notification.objects.get(id=notification_id)
+            if notification.user == request.user:
+                notification.seen = True
+                notification.save()
+        except:
+            pass
+
     request_id = request.GET.get('request_id', '')
     user_is_feedbacker = False
     user_is_candidate = False
@@ -411,12 +421,19 @@ def feedback_request(request):
             message_text = form.cleaned_data['message']
             message = Message(message=message_text, feedback_id=request_id, author=request.user)
             message.save()
-            if user_is_feedbacker and feedback_request.feedbackee.is_authenticated:
-                feedback_request.new_feedbacker_message = True
-                feedback_request.save()
-            elif user_is_feedbackee and feedback_request.feedbacker.is_authenticated:
-                feedback_request.new_feedbackee_message = True
-                feedback_request.save()
+            if user_is_feedbacker:
+                if feedback_request.feedbackee.userprofile.is_online:
+                    feedback_request.new_feedbacker_message = True
+                    feedback_request.save()
+                else:
+                    notifications.new_message_notification(feedback_request,get_current_site(request),feedback_request.feedbacker,feedback_request.feedbackee)
+
+            elif user_is_feedbackee:
+                if feedback_request.feedbacker.userprofile.is_online:
+                    feedback_request.new_feedbackee_message = True
+                    feedback_request.save()
+                else:
+                    notifications.new_message_notification(feedback_request,get_current_site(request),feedback_request.feedbackee,feedback_request.feedbacker)
 
             return redirect('home-page')
 

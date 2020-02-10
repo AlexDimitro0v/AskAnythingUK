@@ -59,3 +59,20 @@ def feedbacker_rated_notification(feedback_request,current_site):
 
     notification = Notification(user=feedback_request.feedbacker,other_user=feedback_request.feedbackee, feedback_request=feedback_request,type="FeedbackerRated")
     notification.save()
+
+def new_message_notification(feedback_request,current_site,sender,receiver):
+    message = f"Hi, {receiver},\nYou have received a new message on." \
+                    f": '{feedback_request}'.\n\n" \
+                    f"Login to see the updates:\nhttp://{current_site}\n\nThank you for using our service,\n" \
+                    f"Your AskAnything team."
+    mail_subject = 'New message'
+    to_email = receiver.email
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if receiver.userprofile.notifications:
+        email.send()
+
+    past_messages = Notification.objects.filter(feedback_request=feedback_request,type="NewMessage")
+    past_messages.delete()
+
+    notification = Notification(user=receiver,other_user=sender, feedback_request=feedback_request,type="NewMessage")
+    notification.save()

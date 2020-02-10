@@ -19,7 +19,8 @@ from django.db.models import F        # used to compare 2 instances or fields of
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 import sweetify
-
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.dispatch import receiver
 
 def register(request):
     context = {
@@ -307,3 +308,14 @@ def settings(request):
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)
+
+
+@receiver(user_logged_in)
+def got_online(sender, user, request, **kwargs):
+    user.userprofile.is_online = True
+    user.userprofile.save()
+
+@receiver(user_logged_out)
+def got_offline(sender, user, request, **kwargs):
+    user.userprofile.is_online = False
+    user.userprofile.save()
