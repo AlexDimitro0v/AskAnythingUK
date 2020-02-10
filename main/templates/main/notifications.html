@@ -1,0 +1,39 @@
+{% load static %}
+
+ <!-- Any HTML here will be styled with Bootstrap CSS -->
+ <span class="bootstrap">
+   <ul class="nav navbar-default" style="background-color:transparent; ">
+     <li class="dropdown" id="notifications-button">
+       <a data-toggle="dropdown" style="height: 65px; background-color:transparent;">
+           <img class="photo-circle"  src="{% static 'img/bell_icon.png' %}"/>
+       </a>
+       <div class="dropdown-menu dropdown-menu-right" id="notifications-dropdown" style="font-size: 1.2em" >
+         {% for notification in notifications_all %}
+         <a href="{{notification.link}}" style="text-decoration: none">
+         <div class="custom-dropdown-item">
+             <span class="custom-dropdown-item-in">
+               {% if notification.other_user %}
+               <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: -10px; border-radius: 100px; margin-right: 10px" src="{{ notification.other_user.userprofile.image.url }}">
+               {% endif %}
+             </span>
+             <span class="custom-dropdown-item-in">
+               {% if notification.type == "Candidate" %}
+                 <div class="notification-text">New candidate on <strong>{{notification.title}}</strong></div>
+               {% elif notification.type == "FeedbackerChosen" %}
+                 <div class="notification-text">You were chosen as feedbacker for <strong>{{notification.title}}</strong></div>
+               {% elif notification.type == "FeedbackSubmitted" %}
+                 <div class="notification-text">Feedback submitted for <strong>{{notification.title}}</strong></div>
+               {% elif notification.type == "FeedbackerRated" %}
+                 <div class="notification-text">A new rating for feedback on <strong>{{notification.title}}</strong></div>
+               {% endif %}
+               <div class="notification-text notification-time">{{notification.time}} ago</div>
+             </span>
+         </div>
+         </a>
+         {% endfor %}
+       </div>
+     </li>
+     <div class="notification-dot"></div>
+
+   </ul>
+ </span>

@@ -36,6 +36,7 @@
  }
 </style>
   {% if feedback_request.feedbacker_comments != "" and feedback_request.feedbacker_comments != "-" %}
+  {% if user == feedback_request.feedbacker or user == feedback_request.feedbackee %}
   <div class="large-area">
     <div class="decorative-text-wrapper noselect">Feedbacker Comments</div>
     <div class="cardbody" style="margin-bottom: 0; margin-top: 65px ">
@@ -49,6 +50,7 @@
       <p style="white-space: pre-wrap">{{feedback_request.feedbacker_comments}}</p>
    </div>
   </div>
+  {% endif %}
   {% endif %}
 
 {% if user_is_feedbackee and feedback_candidates and feedback_request.feedbacker == feedback_request.feedbackee %}
@@ -569,6 +571,7 @@
 
 
   {% if feedback_request.feedbacker != feedback_request.feedbackee %}
+  {% if user == feedback_request.feedbacker or user == feedback_request.feedbackee %}
   <div class="large-area">
     <div class="decorative-text-wrapper noselect">Messages</div>
     <div class="cardbody" style="margin-bottom: 0; ">
@@ -722,6 +725,7 @@
       });
     });
   </script>
+  {% endif %}
   {% endif %}
 
 

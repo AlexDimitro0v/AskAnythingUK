@@ -100,3 +100,11 @@ class Message(models.Model):
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
     message = models.TextField(default="")
     date = models.DateTimeField(default=timezone.now)
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_receiver')
+    other_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_trigger', null=True)
+    feedback_request = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+    type = models.CharField(max_length=20)
+    seen = models.IntegerField(default=0)

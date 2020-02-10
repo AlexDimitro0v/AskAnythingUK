@@ -101,6 +101,9 @@
             {% if not has_premium %}
               <a href="{% url 'get-premium-page' %}" class="header-menu-text noselect large-screen-only" style="margin-right: 10px;"><button style="margin-right: 10px; font-size: 0.9em" class="btn btn-outline-danger">Get Premium</button></a>
             {% endif %}
+            {% if notifications_all %}
+              {% include "main/notifications.html" %}
+            {% endif %}
               {% include "main/dropdown_menu.html" %}
             </div>
           {% else %}
