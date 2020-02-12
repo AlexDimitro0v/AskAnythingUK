@@ -22,11 +22,13 @@
                {% elif notification.type == "FeedbackerChosen" %}
                  <div class="notification-text">You were chosen as feedbacker for <strong>{{notification.title}}</strong></div>
                {% elif notification.type == "FeedbackSubmitted" %}
-                 <div class="notification-text">Feedback submitted for <strong>{{notification.title}}</strong></div>
+                 <div class="notification-text">You have received feedback on <strong>{{notification.title}}</strong></div>
                {% elif notification.type == "FeedbackerRated" %}
-                 <div class="notification-text">A new rating for feedback on <strong>{{notification.title}}</strong></div>
+                 <div class="notification-text">You have received a new rating for feedback on <strong>{{notification.title}}</strong></div>
                {% elif notification.type == "NewMessage" %}
                   <div class="notification-text">New message(s) by <strong>{{notification.other_user}}</strong> on <strong>{{notification.title}}</strong></div>
+               {% elif notification.type == "Recommendation" %}
+                  <div class="notification-text">We think you may be interested in this feedback request: <strong>{{notification.title}}</strong></div>
                {% endif %}
                <div class="notification-text notification-time">
                  {{notification.time}} ago

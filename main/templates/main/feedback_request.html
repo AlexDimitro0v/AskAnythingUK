@@ -40,14 +40,20 @@
   <div class="large-area">
     <div class="decorative-text-wrapper noselect">Feedbacker Comments</div>
     <div class="cardbody" style="margin-bottom: 0; margin-top: 65px ">
-      <div class="two-columns margin-columns">
-        <span class="custom-column">
-          <img class="profile-name-image" style="border-color: {% if premium_request %} #e9ca6e {% else %} #ddd {% endif %};" src="{{ feedback_request.feedbacker.userprofile.image.url }}">
-          <span class="bold-p custom-column name-next-to-image">{{ feedback_request.feedbacker }}</span>
-        </span>
+      <div style="margin-bottom: 20px; display: block; background: #eee; border-radius: 10px; box-shadow: 0px 0px 0px #ccc;" class="feedback-request">
+        <div class="two-columns margin-columns">
+                  <a class="custom-column profile-link" href="{% url 'profile-page' %}?user={{feedback_request.feedbacker.id}}&feedback={{feedback_request.id}}">
+                    <img class="photo-circle profile-name-image" src="{{ feedback_request.feedbacker.userprofile.image.url }}" style="border: 3px solid {% if feedbacker_has_premium %} #e9ca6e {% else %} #ccc {% endif %}; max-width: 100px; margin-bottom: 0;"/>
+                    <span class="custom-column name-next-to-image-2">{{ feedback_request.feedbacker }}</span>
+                  </a>
+                <div class="small-screen-only" style="margin-bottom: 10px"></div>
+            </div>
+
+        <div class="border-top pt-2 mt-3"></div>
+        <p style="font-size: 100%; line-height: 1.8em">
+          {{feedback_request.feedbacker_comments}}
+        </p>
       </div>
-      <div class="border-top pt-2"></div>
-      <p style="white-space: pre-wrap">{{feedback_request.feedbacker_comments}}</p>
    </div>
   </div>
   {% endif %}

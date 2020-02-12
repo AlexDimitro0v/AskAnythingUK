@@ -21,6 +21,7 @@ from django.contrib.auth import update_session_auth_hash
 import sweetify
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
+from main.smart_recommendations import get_most_common
 
 def register(request):
     context = {
@@ -128,6 +129,8 @@ def view_profile(request):
     user_skills = [skill.category for skill in user_skills_ids]
 
     ratings = Rating.objects.filter(feedbacker=user_to_view)
+    ratings.order_by('-date_posted')
+
     time_deltas = []
     curr_time = datetime.now(timezone.utc)
     for rating in ratings:
@@ -237,7 +240,10 @@ def settings(request):
         elif 'public-info-description' in request.POST:
             public_info_form = PublicInformationForm(request.POST, request.FILES, instance=request.user.userprofile, prefix='public-info')
             if public_info_form.is_valid():
+                description = public_info_form.cleaned_data['description']
                 public_info_form.save()
+                request.user.userprofile.most_common_words = get_most_common(description)
+                request.user.userprofile.save()
                 sweetify.success(request, 'You successfully updated your profile', icon='success', toast=True,
                                  position='top-end',
                                  timer=2000

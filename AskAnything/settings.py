@@ -58,7 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'multiforloop',
-    'django_elasticsearch_dsl'
+    'django_elasticsearch_dsl',
+    'mailer'
 ]
 
 ELASTICSEARCH_DSL = {
@@ -166,8 +167,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'     # Crispy Forms will be using Bootstrap f
 SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 
+EMAIL_BACKEND = "mailer.backend.DbBackend"
+
 # Email Server (Using Gmail SMTP)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+MAILER_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

@@ -24,6 +24,7 @@ import main.notifications as notifications
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 import sweetify
+from .smart_recommendations import get_most_common, get_recommended_feedbackers
 from django.views.generic import (
     DeleteView
 )
@@ -302,7 +303,7 @@ def new_feedback_request(request):
             maintext = form.cleaned_data['maintext']
             reward = form.cleaned_data['reward']
             time_limit = form.cleaned_data['timelimit']
-
+            most_common_words = get_most_common(maintext)
             area = Area.objects.get(id=area_id)
 
             feedback_request = FeedbackRequest(area=area,
@@ -311,9 +312,15 @@ def new_feedback_request(request):
                                                feedbackee=request.user,
                                                reward=reward,
                                                feedbacker=request.user,
-                                               time_limit=time_limit
+                                               time_limit=time_limit,
+                                               most_common_words= most_common_words
                                                )
             feedback_request.save()
+
+            recommended_users = get_recommended_feedbackers(most_common_words)
+            for u in recommended_users:
+                if not u == request.user:
+                    notifications.recommended_request_notification(feedback_request,get_current_site(request),u)    
 
             # Save each attached zip file
             feedbackZIPFile = request.FILES['fileZip']

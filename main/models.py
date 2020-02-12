@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
 
 # https://stackoverflow.com/questions/14663523/foreign-key-django-model
 # https://stackoverflow.com/questions/6928692/how-to-express-a-one-to-many-relationship-in-django
@@ -34,7 +35,11 @@ class FeedbackRequest(models.Model):
     feedbacker_rated = models.IntegerField(default=False)
     new_feedbackee_message = models.IntegerField(default=False)
     new_feedbacker_message = models.IntegerField(default=False)
-
+    most_common_words = ArrayField(
+            models.CharField(max_length=30, blank=True),
+            size=30,
+            default = list()
+        )
     def __str__(self):
         return self.title
 

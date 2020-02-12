@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from main.models import Category
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.postgres.fields import ArrayField
 
 
 # Create your models here.
@@ -26,7 +27,11 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)   # if the user is deleted then also delete the profile
     premium_ends = models.DateTimeField(default=timezone.now)
     is_online = models.BooleanField(default=False)
-
+    most_common_words = ArrayField(
+            models.CharField(max_length=30, blank=True),
+            size=30,
+            default = list()
+        )
     def __str__(self):
         return f"{self.user.username} Profile"
 
