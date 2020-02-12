@@ -24,6 +24,9 @@ import main.notifications as notifications
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 import sweetify
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 from .smart_recommendations import get_most_common, get_recommended_feedbackers
 from django.views.generic import (
     DeleteView
@@ -320,7 +323,7 @@ def new_feedback_request(request):
             recommended_users = get_recommended_feedbackers(most_common_words)
             for u in recommended_users:
                 if not u == request.user:
-                    notifications.recommended_request_notification(feedback_request,get_current_site(request),u)    
+                    notifications.recommended_request_notification(feedback_request,get_current_site(request),u)
 
             # Save each attached zip file
             feedbackZIPFile = request.FILES['fileZip']

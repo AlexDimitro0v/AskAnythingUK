@@ -2,17 +2,27 @@ from .models import Notification
 from datetime import datetime
 from django.utils import timezone
 from django.core.mail import EmailMessage
-
+from mailer import send_html_mail
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 def new_candidate_notification(feedback_request,current_site,candidate):
-    mail_subject = 'New candidate for your feedback request'
-    to_email = feedback_request.feedbackee.email
-    message = f"Hi, {feedback_request.feedbackee},\nYou have a new candidate for your Request: '{feedback_request}'." \
-                f"\n\nLogin to see the updates:\nhttp://{current_site}/feedback-request/?request_id={feedback_request.id}\n\nThank you for using our service,\n" \
-                f"Your AskAnything team."
-    email = EmailMessage(mail_subject, message, to=[to_email])
-
     if feedback_request.feedbackee.userprofile.notifications:
+        html_message = render_to_string(
+                'main/email-template.html',
+                {
+                    'title': feedback_request,
+                    'user': feedback_request.feedbackee,
+                    'message': f"You have a new candidate for <strong>{feedback_request}</strong>. Click the link below to learn more.",
+                    'link': f"http://localhost:8000/feedback-request/?request_id={feedback_request.id}",
+                }
+            )
+        email_subject = f'New candidate for {feedback_request}'
+        to_list =  feedback_request.feedbackee.email
+        email = EmailMultiAlternatives(
+                email_subject, '-', 'from_email',  [to_list])
+        email.attach_alternative(html_message, "text/html")
         email.send()
 
     notification = Notification(user=feedback_request.feedbackee, other_user=candidate,feedback_request=feedback_request,type="Candidate")
@@ -20,14 +30,21 @@ def new_candidate_notification(feedback_request,current_site,candidate):
 
 
 def chosen_as_feedbacker_notification(feedback_request,current_site):
-    mail_subject = f"AskAnything"
-    to_email = feedback_request.feedbacker.email
-    message = f"Hi, {feedback_request.feedbacker},\n{feedback_request.feedbackee} has chosen you as a feedbacker" \
-                    f"for '{feedback_request}'.\n\n" \
-                    f"Login to see the updates:\nhttp://{current_site}/feedback-request/?request_id={feedback_request.id}\n\nThank you for using our service,\n" \
-                    f"Your AskAnything team."
-    email = EmailMessage(mail_subject, message, to=[to_email])
     if feedback_request.feedbacker.userprofile.notifications:
+        html_message = render_to_string(
+                'main/email-template.html',
+                {
+                    'title': feedback_request,
+                    'user': feedback_request.feedbacker,
+                    'message': f"Your application for <strong>{feedback_request}</strong> has been successful. Click the link below to learn more.",
+                    'link': f"http://localhost:8000/feedback-request/?request_id={feedback_request.id}",
+                }
+            )
+        email_subject = f'Application for {feedback_request} successful'
+        to_list =  feedback_request.feedbacker.email
+        email = EmailMultiAlternatives(
+                email_subject, '-', 'from_email',  [to_list])
+        email.attach_alternative(html_message, "text/html")
         email.send()
 
     notification = Notification(user=feedback_request.feedbacker, other_user=feedback_request.feedbackee, feedback_request=feedback_request,type="FeedbackerChosen")
