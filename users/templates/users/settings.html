@@ -7,6 +7,8 @@
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <!--The code below is adjusted using Bootsrap4-->
+<script src="{% static 'js/card' %}"></script>
+
 <style>
     #main-container {
         margin-top: 95px;
@@ -209,8 +211,35 @@
 
                         </div>
                     </div>
-
                 </div>
+
+                <div class="tab-pane fade {% if active == 'billing' %}show active{% endif %}" id="billing">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Billing</div>
+
+                        <div class="cardbody" style="margin-top:35px;">
+                            <div class='card-wrapper'></div>
+                            <form id="card" method="POST" action="/settings/?tab=billing" novalidate>
+                                {% csrf_token %}
+                                <label class="col-form-label">Number</label><br>
+                                <input maxlength="200" id="card_number" class="textinput textInput form-control" name="number" placeholder="Card Number">
+                                <label style="margin-top: 15px;" class="col-form-label">Name</label><br>
+                                <input maxlength="30" id="name" class="textinput textInput form-control" name="name" value="{{user.first_name}} {{user.last_name}} ">
+                                <label style="margin-top: 15px;" class="col-form-label">Expiry</label><br>
+                                <input maxlength="200" id="card_expiry" class="textinput textInput form-control" name="expiry" placeholder="MM / YY">
+                                <label style="margin-top: 15px;" class="col-form-label">CCV</label><br>
+                                <input maxlength="200" id="ccv" class="textinput textInput form-control"  name="cvc" placeholder="CCV">
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="password-change" >Save changes</button>
+                            </form>
+                            <script>
+                                $('#card').card({
+                                    container: '.card-wrapper', // *required*
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="tab-pane fade {% if active == 'notifications' %}show active{% endif %}" id="notifications">
                     <div class="card">
@@ -222,8 +251,7 @@
                                 {% csrf_token %}
                                 <label class="col-form-label">Email Notifications</label><br>
                                 <input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
-                                <br>
-                                <button type="submit" name="notifications" style="margin-top:20px;" class="btn btn-outline-info">Save changes</button>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="password-change" >Save changes</button>
                             </form>
 
                         </div>

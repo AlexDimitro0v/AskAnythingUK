@@ -525,7 +525,7 @@ form, input, label, textarea {
 #div_id_password-change-old_password, #id_password-change-new_password1, #id_password-change-new_password2,
 #id_private-info-first_name, #id_private-info-last_name, #id_private-info-phone_number, #id_public-info-city,
 #id_public-info-linkedin, #id_public-info-url_link_1, #id_public-info-url_link_2, #id_private-info-dob,
-#email_private_info_form{
+#email_private_info_form, #card_number, #name, #card_expiry, #ccv{
   margin-top: 0px;
   margin-bottom: 0px;
 }

@@ -1,7 +1,6 @@
 from .models import Notification
 from datetime import datetime
 from django.utils import timezone
-from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
