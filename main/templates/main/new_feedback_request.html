@@ -62,7 +62,7 @@
 
 
         <!-- Files too large overlay -->
-        <div id=main-container">
+        <div id="main-container">
         <div id="overlay_toolarge" class="full-screen overlay">
           <div class="full-screen">
           <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
@@ -190,7 +190,7 @@
               toast: true,
               position: 'top-end',
               showConfirmButton: false,
-              timer: 2000,
+              timer: 1500,
               timerProgressBar: true,
               onOpen: (toast) => {
                 toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -214,7 +214,6 @@
     });
 
   });
-        </script>
-    </div>
+    </script>
 </div>
 {% endblock %}

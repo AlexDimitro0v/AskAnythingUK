@@ -13,7 +13,7 @@ function addFileToZip(n) {
                if(xhr.readyState == 4 && xhr.status == 200) {
                window.setTimeout(function(){
                    window.location.href = "/dashboard/";
-               }, 2000);
+               }, 1500);
                }
            }
            xhr.open('POST', postAction, true);

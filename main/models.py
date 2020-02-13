@@ -38,8 +38,9 @@ class FeedbackRequest(models.Model):
     most_common_words = ArrayField(
             models.CharField(max_length=30, blank=True),
             size=30,
-            default = list()
+            default=list()
         )
+
     def __str__(self):
         return self.title
 
@@ -105,6 +106,7 @@ class Message(models.Model):
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
     message = models.TextField(default="")
     date = models.DateTimeField(default=timezone.now)
+
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_receiver')

@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib import messages                             # Django built-in message alerts
 from django.contrib.auth.decorators import login_required       # Django built-in login_required decorator
-from .forms import UserRegistrationForm, PrivateInformationForm, PublicInformationForm,NotificationsForm, ProfileImageForm
+from .forms import UserRegistrationForm, PrivateInformationForm, PublicInformationForm, NotificationsForm, ProfileImageForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -22,6 +21,7 @@ import sweetify
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 from main.smart_recommendations import get_most_common
+
 
 def register(request):
     context = {
@@ -52,7 +52,11 @@ def register(request):
                 mail_subject, message, to=[to_email]
             )
             email.send()
-            return render(request, 'users/email_confirmation.html')
+            sweetify.warning(request, 'Please verify your email address to complete the registration.',
+                             buttons=False,
+                             icon='warning'
+                             )
+            return redirect('landing-page')
 
     # if a GET (or any other method), create a blank form
     else:
@@ -82,10 +86,14 @@ def activate(request, uidb64, token):
 
         # process the data in form.cleaned_data as required:
         username = user.username
-        messages.success(request, f"Account created for {username}! You are now able to log in.")
+        sweetify.success(request, f"Account created for {username}! You are now able to log in.", icon='success',
+                         toast=True,
+                         position='bottom-end',
+                         )
         return redirect('login-page')      # redirects the user to the login page
     else:
-        return render(request, 'users/email_confirmation_invalid.html')
+        sweetify.error(request, 'The email confirmation link is invalid.', icon="error", toast=True, position="bottom-end")
+        return redirect('landing-page')
 
 
 @login_required
@@ -192,7 +200,10 @@ def try_premium(request):
     if datetime.now(timezone.utc) > curr_user.premium_ends:
         plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
         curr_user.premium_ends = plus_one_month
-        messages.success(request, f"Premium account activated!")
+        sweetify.success(request, "Premium account activated!", icon='success',
+                         toast=True,
+                         position='bottom-end',
+                         )
         curr_user.save()
     return redirect('dashboard')
 
@@ -210,9 +221,9 @@ def settings(request):
                 user = change_password_form.save()
                 update_session_auth_hash(request, user)  # Important!
                 # Otherwise the user’s auth session will be invalidated and she/he will have to log in again.
-                sweetify.success(request, 'You successfully changed your password', icon='success', toast=True,
-                                 position='top-end',
-                                 timer=2000
+                sweetify.success(request, "You successfully changed your password", icon='success',
+                                 toast=True,
+                                 position='bottom-end',
                                  )
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
@@ -224,12 +235,12 @@ def settings(request):
             private_info_form = PrivateInformationForm(request.POST, instance=request.user.userprofile, prefix='private-info')
             if private_info_form.is_valid():
                 private_info_form.save()
-                sweetify.success(request, 'You successfully updated your profile', icon='success', toast=True,
-                                 position='top-end',
-                                 timer=2000
+                sweetify.success(request, "You successfully updated your profile", icon='success',
+                                 toast=True,
+                                 position='bottom-end',
                                  )
             else:
-                sweetify.error(request, 'Please correct the error below.', icon="error", toast=True, position="bottom-end")
+                sweetify.error(request, 'Please correct the error below', icon="error", toast=True, position="bottom-end")
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
@@ -244,9 +255,9 @@ def settings(request):
                 public_info_form.save()
                 request.user.userprofile.most_common_words = get_most_common(description)
                 request.user.userprofile.save()
-                sweetify.success(request, 'You successfully updated your profile', icon='success', toast=True,
-                                 position='top-end',
-                                 timer=2000
+                sweetify.success(request, "You successfully updated your profile", icon='success',
+                                 toast=True,
+                                 position='bottom-end',
                                  )
             tags = list(set(request.GET.get('tags', '').split(",")))
 
@@ -320,6 +331,7 @@ def settings(request):
 def got_online(sender, user, request, **kwargs):
     user.userprofile.is_online = True
     user.userprofile.save()
+
 
 @receiver(user_logged_out)
 def got_offline(sender, user, request, **kwargs):

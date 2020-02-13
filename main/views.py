@@ -2,7 +2,6 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating, Area, Purchase, Message, Notification
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm, ApplicationForm, MessageForm
-from django.contrib import messages   # Django built-in message alerts
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 from django.core.paginator import Paginator
 from django.db import connections
@@ -343,7 +342,6 @@ def new_feedback_request(request):
                 tag_record = Tag(feedback=feedback_request, category=category_record)
                 tag_record.save()
 
-    areas = Area.objects.all()
     context = {
         'title': '| New Feedback Request'
         }
@@ -514,8 +512,8 @@ def apply_as_feedbacker(request):
             notifications.new_candidate_notification(feedback_request, get_current_site(request), request.user)
 
             sweetify.success(request, 'Your application has been processed!', icon='success', toast=True,
-                             position='top-end',
-                             timer=2000
+                             position='bottom-end',
+                             padding='1.5rem'
                              )
     return redirect('dashboard')
 
@@ -551,9 +549,15 @@ def choose_feedbacker(request):
 
             notifications.chosen_as_feedbacker_notification(feedback_request, get_current_site(request))
 
-            messages.success(request, f"Feedbacker has been chosen successfully!")
+            # Swal in the html code - sweetify redundant:
+            # sweetify.success(request, 'Feedbacker has been chosen successfully!', icon='success', toast=True,
+            #                  position='bottom-end',
+            #                  timer=2000,
+            #                  padding='1.5rem'
+            #                  )
         else:
-            messages.error(request, f"Problem with payment method")
+            sweetify.error(request, 'Problem with payment method', icon="error", toast=True, position="bottom-end",
+                           padding='1.5rem')
 
     return redirect('dashboard')
 
@@ -568,7 +572,6 @@ def submit_feedback(request):
 
     # Only the feedbacker of the request can submit feedback
     if(feedback_request.feedbacker != request.user or feedback_request.feedbacker == feedback_request.feedbackee):
-            messages.error(request, "An error has occurred!")
             return redirect('dashboard')
 
     if request.method == "POST":
@@ -594,7 +597,6 @@ def submit_feedback(request):
             # Delete any previously submitted feedback
             fs.delete('zip_files/' + str(feedback_request.id) + '_feedbacker.zip')
             fs.save('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
-            messages.success(request, "Feedback submitted!")
             return redirect('dashboard')
 
     context = {
@@ -633,7 +635,10 @@ def rate_feedbacker(request):
 
             feedback_request.feedbacker_rated = True
             feedback_request.save()
-            messages.success(request, 'You have successfully rated your feedbacker!')
+            sweetify.success(request, 'You have successfully rated your feedbacker!', icon='success', toast=True,
+                             position='bottom-end',
+                             padding='1.5rem'
+                             )
             return redirect('dashboard')
 
     context = {
@@ -649,7 +654,9 @@ def withdraw_application(request):
 
     application = FeedbackerCandidate.objects.get(feedbacker=request.user, feedback_id=feedback_request_id)
     application.delete()
-    sweetify.success(request, "Your application has been withdrawn", icon='success', toast=True,position='top-end',timer=2000)
+    sweetify.success(request, "Your application has been withdrawn", icon='success', toast=True, position='bottom-end',
+                     padding='1.5rem'
+                     )
     return redirect('dashboard')
 
 
@@ -664,7 +671,7 @@ def finish_purchase(request):
                         'creating one manually via the admin panel.')
     purchase.is_completed = True
     purchase.save()
-    sweetify.success(request, "Reward released", icon='success', toast=True,position='top-end',timer=2000)
+    sweetify.success(request, "Reward released", icon='success', toast=True, position='bottom-end', padding='1.5rem')
     return redirect('dashboard')
 
 
@@ -740,7 +747,10 @@ class RequestDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             fs = FileSystemStorage()
             fs.delete('zip_files/' + str(feedback_request.id) + '.zip')
             feedback_request.delete()
-            messages.success(request, 'You have successfully deleted your feedback request.')
+            sweetify.success(request, "You have successfully deleted your feedback request", icon='success', toast=True,
+                             position='bottom-end',
+                             padding='1.5rem'
+                             )
             return redirect('dashboard')
         else:
             raise Http404

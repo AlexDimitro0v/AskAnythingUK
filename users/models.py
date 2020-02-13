@@ -30,8 +30,9 @@ class UserProfile(models.Model):
     most_common_words = ArrayField(
             models.CharField(max_length=30, blank=True),
             size=30,
-            default = list()
+            default=list()
         )
+
     def __str__(self):
         return f"{self.user.username} Profile"
 

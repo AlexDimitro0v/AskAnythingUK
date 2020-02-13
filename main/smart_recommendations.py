@@ -5,6 +5,7 @@ from nltk.corpus import stopwords
 from users.models import UserProfile
 from django.contrib.auth.models import User
 
+
 def get_most_common(text):
     # First conert everything to lowercase
     text = text.lower()
@@ -12,7 +13,7 @@ def get_most_common(text):
     tokens = word_tokenize(text)
 
     # Remove stopwords and punctuation from text
-    stop_words= stopwords.words('english')
+    stop_words = stopwords.words('english')
     clean_tokens = []
     for token in tokens:
         if token not in stop_words and token not in list(".,():[]{}!%&?") and token[0] != "'":
@@ -22,7 +23,7 @@ def get_most_common(text):
     lemmatizer = WordNetLemmatizer()
     for i in range(len(clean_tokens)):
         if clean_tokens[i] != "us":
-            clean_tokens[i] = lemmatizer.lemmatize(clean_tokens[i],pos="n")
+            clean_tokens[i] = lemmatizer.lemmatize(clean_tokens[i], pos="n")
 
     # Get the frequency distribution of words and take the 30 most common words
     freq = nltk.FreqDist(clean_tokens)
@@ -32,6 +33,7 @@ def get_most_common(text):
         most_common_list.append(w[0])
 
     return most_common_list
+
 
 def get_recommended_feedbackers(words1):
     recommended_users = []
