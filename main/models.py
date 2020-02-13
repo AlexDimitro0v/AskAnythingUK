@@ -40,6 +40,11 @@ class FeedbackRequest(models.Model):
             size=30,
             default=list()
         )
+    most_common_words_numbers = ArrayField(
+                models.IntegerField(default=0),
+                size=30,
+                default=list()
+            )
 
     def __str__(self):
         return self.title
