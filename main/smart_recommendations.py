@@ -28,20 +28,28 @@ def get_most_common(text):
     # Get the frequency distribution of words and take the 30 most common words
     freq = nltk.FreqDist(clean_tokens)
     most_common = freq.most_common(30)
-    most_common_list = []
-    for w in most_common:
-        most_common_list.append(w[0])
 
-    return most_common_list
+    return most_common
 
 
-def get_recommended_feedbackers(words1):
+def get_recommended_feedbackers(words1,frequencies1):
     recommended_users = []
     for user in User.objects.all():
-        matches = 0
-        for w in user.userprofile.most_common_words:
-            if w in words1:
-                matches += 1
-        if matches >= 5:
+        words2 = user.userprofile.most_common_words
+        frequencies2 = user.userprofile.most_common_words_numbers
+        if not words2: continue
+        if len(frequencies2) < len(words2): continue
+        total = 0
+        w1_square = 0
+        w2_square = 0
+        for i in range(0,len(words1)):
+            for j in range(0,len(words2)):
+                if words1[i][0] == words2[j][0]:
+                    total += frequencies1[1]*frequencies2[1]
+            w1_square += frequencies1[i]**(2)
+            w2_square += frequencies2[i]**(2)
+        total = total/(w1_square**(1/2) * w2_square**(1/2))
+        if total > 0.3:
+            print(user)
             recommended_users.append(user)
     return recommended_users

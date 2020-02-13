@@ -254,7 +254,15 @@ def settings(request):
             if public_info_form.is_valid():
                 description = public_info_form.cleaned_data['description']
                 public_info_form.save()
-                request.user.userprofile.most_common_words = get_most_common(description)
+
+                most_common = get_most_common(description)
+                most_common_words = []
+                most_common_words_numbers = []
+                for w in most_common:
+                    most_common_words.append(w[0])
+                    most_common_words_numbers.append(w[1])
+                request.user.userprofile.most_common_words = most_common_words
+                request.user.userprofile.most_common_words_numbers = most_common_words_numbers
                 request.user.userprofile.save()
                 sweetify.success(request, "You successfully updated your profile", icon='success',
                                  toast=True,

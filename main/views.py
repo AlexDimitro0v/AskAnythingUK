@@ -305,7 +305,13 @@ def new_feedback_request(request):
             maintext = form.cleaned_data['maintext']
             reward = form.cleaned_data['reward']
             time_limit = form.cleaned_data['timelimit']
-            most_common_words = get_most_common(maintext)
+            most_common = get_most_common(maintext)
+            most_common_words = []
+            most_common_words_numbers = []
+            for w in most_common:
+                most_common_words.append(w[0])
+                most_common_words_numbers.append(w[1])
+
             area = Area.objects.get(id=area_id)
 
             feedback_request = FeedbackRequest(area=area,
@@ -315,11 +321,12 @@ def new_feedback_request(request):
                                                reward=reward,
                                                feedbacker=request.user,
                                                time_limit=time_limit,
-                                               most_common_words= most_common_words
+                                               most_common_words=most_common_words,
+                                               most_common_words_numbers=most_common_words_numbers
                                                )
             feedback_request.save()
 
-            recommended_users = get_recommended_feedbackers(most_common_words)
+            recommended_users = get_recommended_feedbackers(most_common_words, most_common_words_numbers)
             for u in recommended_users:
                 if not u == request.user:
                     notifications.recommended_request_notification(feedback_request, get_current_site(request), u)
