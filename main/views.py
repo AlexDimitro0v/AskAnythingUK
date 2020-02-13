@@ -322,7 +322,7 @@ def new_feedback_request(request):
             recommended_users = get_recommended_feedbackers(most_common_words)
             for u in recommended_users:
                 if not u == request.user:
-                    notifications.recommended_request_notification(feedback_request,get_current_site(request),u)
+                    notifications.recommended_request_notification(feedback_request, get_current_site(request), u)
 
             # Save each attached zip file
             feedbackZIPFile = request.FILES['fileZip']
@@ -434,14 +434,14 @@ def feedback_request(request):
                     feedback_request.new_feedbacker_message = True
                     feedback_request.save()
                 else:
-                    notifications.new_message_notification(feedback_request,get_current_site(request),feedback_request.feedbacker,feedback_request.feedbackee)
+                    notifications.new_message_notification(feedback_request, get_current_site(request), feedback_request.feedbacker, feedback_request.feedbackee)
 
             elif user_is_feedbackee:
                 if feedback_request.feedbacker.userprofile.is_online:
                     feedback_request.new_feedbackee_message = True
                     feedback_request.save()
                 else:
-                    notifications.new_message_notification(feedback_request,get_current_site(request),feedback_request.feedbackee,feedback_request.feedbacker)
+                    notifications.new_message_notification(feedback_request, get_current_site(request), feedback_request.feedbackee, feedback_request.feedbacker)
 
             return redirect('home-page')
 
@@ -671,6 +671,7 @@ def finish_purchase(request):
                         'creating one manually via the admin panel.')
     purchase.is_completed = True
     purchase.save()
+    notifications.money_released_notification(feedback_request, get_current_site(request))
     sweetify.success(request, "Reward released", icon='success', toast=True, position='bottom-end', padding='1.5rem')
     return redirect('dashboard')
 
@@ -689,7 +690,7 @@ def get_new_messages(request):
             feedback_request.new_feedbacker_message = False
             feedback_request.save()
 
-            messages = Message.objects.filter(feedback_id=request_id,author=feedback_request.feedbacker,date__gt=latest_user_message_date)
+            messages = Message.objects.filter(feedback_id=request_id, author=feedback_request.feedbacker, date__gt=latest_user_message_date)
             messages.order_by('-date')
 
             message_texts = []

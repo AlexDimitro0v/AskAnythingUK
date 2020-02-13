@@ -203,6 +203,7 @@ def try_premium(request):
         sweetify.success(request, "Premium account activated!", icon='success',
                          toast=True,
                          position='bottom-end',
+                         padding='1.5rem'
                          )
         curr_user.save()
     return redirect('dashboard')

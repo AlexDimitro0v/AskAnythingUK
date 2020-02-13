@@ -1,5 +1,9 @@
 {% load static %}
-
+<style>
+    li.dropdown.open {
+        background-color: transparent;
+    }
+</style>
  <!-- Any HTML here will be styled with Bootstrap CSS -->
             <span class="bootstrap">
               <ul class="nav navbar-default" style="background-color:transparent; ">
@@ -8,7 +12,8 @@
                       <img class="photo-circle"  style="margin-top: -4px" src="{{ user.userprofile.image.url }}"/>
                       <span class="noselect" style="margin-left: 10px; line-height: 45px; height: 45px; font-size: 1.2em; font-family: 'Lexend'"><strong>{{user}}</strong></span>
                   </a>
-                  <div class="dropdown-menu dropdown-menu-right" id="user-dropdown" style="font-size: 1.2em" >
+                  <div class="dropdown-menu dropdown-menu-right" id="user-dropdown" style="font-size: 1.2em;
+                    width:0px;" >
                     <a href="{% url 'dashboard'%}" style="text-decoration: none">
                     <div class="custom-dropdown-item user-item">
                         <span class="user-item-in">
