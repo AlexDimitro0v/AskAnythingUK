@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required       # Django built-in login_required decorator
-from .forms import UserRegistrationForm, PrivateInformationForm, PublicInformationForm, NotificationsForm, ProfileImageForm
+from .forms import UserRegistrationForm, PrivateInformationForm, PublicInformationForm, ProfileImageForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -228,7 +228,6 @@ def settings(request):
                                  )
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
                                           prefix='profile-image')
 
@@ -245,7 +244,6 @@ def settings(request):
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
                                           prefix='profile-image')
 
@@ -288,16 +286,18 @@ def settings(request):
 
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
                                           prefix='profile-image')
 
         elif 'notifications' in request.POST:
-            print(request.POST)
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
-            if notifications_form.is_valid():
-                pass
-            change_password_form = PasswordChangeForm(request.user, prefix='notifications')
+            is_checked = request.POST.get('NotificationBox', '') == 'on'
+            if is_checked:
+                request.user.userprofile.notifications = True
+            else:
+                request.user.userprofile.notifications = False
+            request.user.userprofile.save()
+
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
@@ -310,13 +310,10 @@ def settings(request):
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-            notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile,
-                                                   prefix='notifications')
     else:
         change_password_form = PasswordChangeForm(request.user, prefix='password-change')
         private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
         public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
-        notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='notifications')
         image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
                                       prefix='profile-image')
 
@@ -326,12 +323,12 @@ def settings(request):
     context = {'change_password_form': change_password_form,
                'private_info_form': private_info_form,
                'public_info_form': public_info_form,
-               'notifications_form': notifications_form,
                'image_form': image_form,
                'active': active,
                'notifications': request.user.userprofile.notifications,
                'email': request.user.email,
                'user_skills': user_skills,
+               'notifications': request.user.userprofile.notifications,
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)

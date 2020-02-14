@@ -85,12 +85,6 @@ class PublicInformationForm(forms.ModelForm):
         fields = ['city', 'description', 'linkedin', 'url_link_1', 'url_link_2']
 
 
-class NotificationsForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ['notifications']
-
-
 class ProfileImageForm(forms.ModelForm):
     x = forms.FloatField(widget=forms.HiddenInput(), required=False)
     y = forms.FloatField(widget=forms.HiddenInput(), required=False)
