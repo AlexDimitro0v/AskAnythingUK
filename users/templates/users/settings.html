@@ -102,9 +102,6 @@
                     <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications">
                       Notifications
                     </a>
-                    <a class="list-group-item  {% if active == 'delete' %}active{% endif %}" href="/settings/?tab=delete">
-                      Delete account
-                    </a>
                 </div>
             </div>
         </div>
@@ -228,8 +225,8 @@
                                 <label style="margin-top: 15px;" class="col-form-label">Expiry</label><br>
                                 <input maxlength="200" id="card_expiry" class="textinput textInput form-control" name="expiry" placeholder="MM / YY">
                                 <label style="margin-top: 15px;" class="col-form-label">CCV</label><br>
-                                <input maxlength="200" id="ccv" class="textinput textInput form-control"  name="cvc" placeholder="CCV">
-                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="password-change" >Save changes</button>
+                                <input style="margin-bottom: 15px;" maxlength="200" id="ccv" class="textinput textInput form-control"  name="cvc" placeholder="CCV">
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="billing" >Save changes</button>
                             </form>
                             <script>
                                 $('#card').card({
@@ -251,7 +248,7 @@
                                 {% csrf_token %}
                                 <label class="col-form-label">Email Notifications</label><br>
                                 <input type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
-                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="password-change" >Save changes</button>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="notifications" >Save changes</button>
                             </form>
 
                         </div>
@@ -353,7 +350,6 @@
                         $("#id_profile-image-height").val(cropData["height"]);
                         $("#id_profile-image-width").val(cropData["width"]);
                         $("#profile_image_form").submit();
-
                       });
                     });
 

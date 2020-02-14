@@ -293,6 +293,7 @@ def settings(request):
                                           prefix='profile-image')
 
         elif 'notifications' in request.POST:
+            print(request.POST)
             notifications_form = NotificationsForm(request.POST, instance=request.user.userprofile, prefix='public-info')
             if notifications_form.is_valid():
                 pass
