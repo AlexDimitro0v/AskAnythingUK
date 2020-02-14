@@ -1,7 +1,7 @@
 Django==2.1.11
 django-crispy-forms==1.7.2
 django-multiforloop==0.2.1
-Pillow==6.1.0
+Pillow==6.2.2
 certifi==2019.6.16
 chardet==3.0.4
 idna==2.8
@@ -16,3 +16,7 @@ django-elasticsearch-dsl==7.1.1
 django-phonenumber-field==4.0.0
 phonenumbers==8.11.3
 sweetify==2.0.0
+sweetify==2.0.0
+django-mailer==2.0
+psycopg2==2.8.4
+nltk==3.4.5

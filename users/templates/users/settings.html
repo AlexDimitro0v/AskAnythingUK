@@ -221,14 +221,16 @@
                             <div class='card-wrapper'></div>
                             <form id="card" method="POST" action="/settings/?tab=billing" novalidate>
                                 {% csrf_token %}
-                                <label class="col-form-label">Number</label><br>
+                                <div style="margin-bottom: 1rem">
+                                <label class="col-form-label">Card Number</label><br>
                                 <input maxlength="200" id="card_number" class="textinput textInput form-control" name="number" placeholder="Card Number">
-                                <label style="margin-top: 15px;" class="col-form-label">Name</label><br>
+                                <label style="margin-top: 15px;" class="col-form-label">Cardholder Name</label><br>
                                 <input maxlength="30" id="name" class="textinput textInput form-control" name="name" value="{{user.first_name}} {{user.last_name}} ">
-                                <label style="margin-top: 15px;" class="col-form-label">Expiry</label><br>
+                                <label style="margin-top: 15px;" class="col-form-label">Expiry Date</label><br>
                                 <input maxlength="200" id="card_expiry" class="textinput textInput form-control" name="expiry" placeholder="MM / YY">
                                 <label style="margin-top: 15px;" class="col-form-label">CCV</label><br>
                                 <input maxlength="200" id="ccv" class="textinput textInput form-control"  name="cvc" placeholder="CCV">
+                                </div>
                                 <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="password-change" >Save changes</button>
                             </form>
                             <script>

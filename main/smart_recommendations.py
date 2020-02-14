@@ -45,7 +45,7 @@ def get_recommended_feedbackers(words1,frequencies1):
         for i in range(0,len(words1)):
             for j in range(0,len(words2)):
                 if words1[i][0] == words2[j][0]:
-                    total += frequencies1[1]*frequencies2[1]
+                    total += frequencies1[i]*frequencies2[i]
             w1_square += frequencies1[i]**(2)
             w2_square += frequencies2[i]**(2)
         total = total/(w1_square**(1/2) * w2_square**(1/2))
