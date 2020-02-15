@@ -1288,6 +1288,9 @@ word-wrap: break-word;
   position: absolute;
 }
 
+.header2 a:hover {
+  color: var(--primary-color);
+}
 /*
 Logo Colours
 #43C2F0  - light upper

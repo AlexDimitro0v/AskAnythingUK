@@ -25,7 +25,7 @@ from django.contrib.sites.shortcuts import get_current_site
 import sweetify
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-
+from .user_agents import get_user_info
 from .smart_recommendations import get_most_common, get_recommended_feedbackers
 from django.views.generic import (
     DeleteView
@@ -50,6 +50,7 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 # Redirect unauthenticated users to landing page
 @login_required(login_url='landing-page')
 def home(request):
+    get_user_info(request)
     return render(request, 'main/home.html')
 
 

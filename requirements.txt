@@ -19,3 +19,5 @@ sweetify==2.0.0
 django-mailer==2.0
 psycopg2==2.8.4
 nltk==3.4.5
+user-agents==2.1
+django-user-agents==0.4.0

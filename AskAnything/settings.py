@@ -59,8 +59,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'multiforloop',
     'django_elasticsearch_dsl',
-    'mailer'
+    'mailer',
+    'django_user_agents',
 ]
+
 
 ELASTICSEARCH_DSL = {
     'default': {
@@ -76,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'AskAnything.urls'
