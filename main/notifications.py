@@ -1,13 +1,10 @@
 from .models import Notification
-from datetime import datetime
-from django.utils import timezone
-from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
 def new_candidate_notification(feedback_request, current_site, candidate):
-    if feedback_request.feedbackee.userprofile.notifications:
+    if feedback_request.feedbackee.userprofile.feedback_updates_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -30,7 +27,7 @@ def new_candidate_notification(feedback_request, current_site, candidate):
 
 
 def chosen_as_feedbacker_notification(feedback_request, current_site):
-    if feedback_request.feedbacker.userprofile.notifications:
+    if feedback_request.feedbacker.userprofile.feedback_updates_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -53,7 +50,7 @@ def chosen_as_feedbacker_notification(feedback_request, current_site):
 
 
 def feedback_submitted_notification(feedback_request, current_site):
-    if feedback_request.feedbackee.userprofile.notifications:
+    if feedback_request.feedbackee.userprofile.feedback_updates_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -76,7 +73,7 @@ def feedback_submitted_notification(feedback_request, current_site):
 
 
 def feedbacker_rated_notification(feedback_request, current_site):
-    if feedback_request.feedbacker.userprofile.notifications:
+    if feedback_request.feedbacker.userprofile.feedback_updates_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -99,7 +96,7 @@ def feedbacker_rated_notification(feedback_request, current_site):
 
 
 def new_message_notification(feedback_request, current_site, sender, receiver):
-    if receiver.userprofile.notifications:
+    if receiver.userprofile.messages_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -125,7 +122,7 @@ def new_message_notification(feedback_request, current_site, sender, receiver):
 
 
 def recommended_request_notification(feedback_request, current_site, receiver):
-    if receiver.userprofile.notifications:
+    if receiver.userprofile.smart_recommendations_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -148,22 +145,21 @@ def recommended_request_notification(feedback_request, current_site, receiver):
 
 
 def money_released_notification(feedback_request, current_site):
-    if feedback_request.feedbacker.userprofile.notifications:
-        html_message = render_to_string(
-            'main/email-template.html',
-            {
-                'title': feedback_request,
-                'user': feedback_request.feedbacker,
-                'message': f"Your reaward for <strong>{feedback_request}</strong> has been released by the feedbackee. Click the link below to learn more.",
-                'link': f"http://{current_site}/feedback-request/?request_id={feedback_request.id}",
-            }
-        )
-        email_subject = f'Money for {feedback_request} released'
-        to_list = feedback_request.feedbacker.email
-        email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
-        email.attach_alternative(html_message, "text/html")
-        email.send()
+    html_message = render_to_string(
+        'main/email-template.html',
+        {
+            'title': feedback_request,
+            'user': feedback_request.feedbacker,
+            'message': f"Your reaward for <strong>{feedback_request}</strong> has been released by the feedbackee. Click the link below to learn more.",
+            'link': f"http://{current_site}/feedback-request/?request_id={feedback_request.id}",
+        }
+    )
+    email_subject = f'Money for {feedback_request} released'
+    to_list = feedback_request.feedbacker.email
+    email = EmailMultiAlternatives(
+        email_subject, '-', 'from_email', [to_list])
+    email.attach_alternative(html_message, "text/html")
+    email.send()
 
     notification = Notification(user=feedback_request.feedbacker, other_user=feedback_request.feedbackee,
                                 feedback_request=feedback_request, type="MoneyRelease")

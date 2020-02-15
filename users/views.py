@@ -290,11 +290,25 @@ def settings(request):
                                           prefix='profile-image')
 
         elif 'notifications' in request.POST:
-            is_checked = request.POST.get('NotificationBox', '') == 'on'
-            if is_checked:
-                request.user.userprofile.notifications = True
+            print(request.POST)
+            feedback_updates = request.POST.get('FeedbackUpdates', '') == 'on'
+            if feedback_updates:
+                request.user.userprofile.feedback_updates_notifications = True
             else:
-                request.user.userprofile.notifications = False
+                request.user.userprofile.feedback_updates_notifications = False
+
+            messages = request.POST.get('Messages', '') == 'on'
+            if messages:
+                request.user.userprofile.messages_notifications = True
+            else:
+                request.user.userprofile.messages_notifications = False
+
+            smart_recommendations = request.POST.get('SmartRecommendations', '') == 'on'
+            if smart_recommendations:
+                request.user.userprofile.smart_recommendations_notifications = True
+            else:
+                request.user.userprofile.smart_recommendations_notifications = False
+
             request.user.userprofile.save()
 
             sweetify.success(request, "You successfully updated your profile", icon='success',
@@ -329,10 +343,11 @@ def settings(request):
                'public_info_form': public_info_form,
                'image_form': image_form,
                'active': active,
-               'notifications': request.user.userprofile.notifications,
                'email': request.user.email,
                'user_skills': user_skills,
-               'notifications': request.user.userprofile.notifications,
+               'messages': request.user.userprofile.messages_notifications,
+               'feedback_updates': request.user.userprofile.feedback_updates_notifications,
+               'smart_recommendations': request.user.userprofile.smart_recommendations_notifications,
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)
