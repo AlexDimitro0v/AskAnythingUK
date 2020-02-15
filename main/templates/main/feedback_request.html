@@ -35,6 +35,29 @@
 
  }
 </style>
+
+{% if purchase.is_completed %}
+<div class="large-area">
+  <div class="decorative-text-wrapper noselect">Final Reward</div>
+  <div class="cardbody"  style="margin-top: 50px; margin-bottom: 0px">
+    <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+      The feedbackee has decided to split the total reward of £{{ feedback_request.reward }} as follows:
+    </p>
+    <div style="display: flex; margin-top: 20px; margin-bottom: 20px; text-align: center">
+      <div class="reward-percentage" style="padding: 10px">
+        <p class="bold-p">For Feedbacker</p>
+        <p class="bold-p" id="feedbacker-reward" style="font-size: 1.7em; margin-top: 0">£{{feedbacker_reward}}</p>
+      </div>
+      <div class="reward-percentage" style="padding: 10px; border-color: #1F4D8A">
+        <p class="bold-p">For Charity</p>
+        <p class="bold-p" id="charity-reward" style="font-size: 1.7em; margin-top: 0">£{{charity_reward}}</p>
+      </div>
+    </div>
+ </div>
+</div>
+{% endif %}
+
+
   {% if feedback_request.feedbacker_comments != "" and feedback_request.feedbacker_comments != "-" %}
   {% if user == feedback_request.feedbacker or user == feedback_request.feedbackee %}
   <div class="large-area">
@@ -277,6 +300,9 @@
                 </div>
               {% endif%}
               <script>
+                let charityReward = 0;
+                let feedbackerReward = {{feedback_request.reward}};
+
                 $(document).ready(function () {
                   $('#release-money').click(function(e) {
                     $('#overlay_reward').css("display","block");
@@ -288,7 +314,7 @@
                     $('body').css("overflow","visible");
                   });
                   $('#yes-release').click(function(e) {
-                    window.location = "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}";
+                    window.location = "{%url 'finish-purchase'%}?feedback_request={{feedback_request.id}}&feedbacker_reward=" + feedbackerReward + "&charity_reward=" + charityReward;
                   });
                 });
 
@@ -299,8 +325,10 @@
                       max: {{feedback_request.reward}},
                       value:  {{feedback_request.reward}} ,
                       slide: function( event, ui ) {
-                        $( '#feedbacker-reward').text("£" + ui.value);
-                        $('#charity-reward').text("£" + ({{feedback_request.reward}}- ui.value));
+                        feedbackerReward = ui.value;
+                        charityReward = {{feedback_request.reward}} - ui.value;
+                        $( '#feedbacker-reward').text("£" + feedbackerReward);
+                        $('#charity-reward').text("£" + charityReward);
                         if($('#charity-reward').text() == "£0") {
                             $('.charity-container').removeClass("charity-container-active");
                         }

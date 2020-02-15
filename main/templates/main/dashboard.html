@@ -18,6 +18,7 @@
       <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em">Ask For Feedback</button>
   </a>
 </div>
+
 <div class="feedback-request">
     <div class="decorative-text-wrapper noselect">My Profile</div>
     <div class="cardbody"  style="margin-top:50px">
@@ -139,10 +140,17 @@
         </a>
         {% endfor %}
     {% else%}
-        <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Submitted Requests</p>
+        <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Submitted Applications</p>
     {% endif %}
     </div>
 </div>
+
+  <div class="noselect" style="margin-bottom: 30px">
+        <a href="{% url 'archive' %}"  style="text-decoration:none;">
+            <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em; margin: 0 auto; display: block">Go to Archive</button>
+        </a>
+  </div>
+
 <script>
   let maxLength = 300;
   let maxLengthHeader = 23;

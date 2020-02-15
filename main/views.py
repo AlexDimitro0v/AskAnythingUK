@@ -243,14 +243,28 @@ def dashboard(request):
         feedbacker=request.user)
     my_feedbacker_applications = FeedbackRequest.objects.filter(pk__in=set(my_feedbacker_applications_ids)).exclude(feedbacker=request.user)
     my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user)
-    my_jobs = FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F("feedbacker"))
 
-    fs = FileSystemStorage()
+    my_feedback_requests = []
+    for feedback_request in FeedbackRequest.objects.filter(feedbackee=request.user):
+        try:
+            if not (feedback_request.feedbacker_rated and Purchase.objects.get(feedback=feedback_request).is_completed):
+                my_feedback_requests.append(feedback_request)
+        except:
+            my_feedback_requests.append(feedback_request)
+
+    my_jobs = []
+    for job in FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F("feedbacker")):
+        try:
+            if not (job.feedbacker_rated and Purchase.objects.get(feedback=job).is_completed):
+                my_jobs.append(job)
+        except:
+            my_jobs.append(job)
+
     times_left = []
     urgent = []
     curr_time = datetime.now(timezone.utc)
     for job in my_jobs:
-        if fs.exists('zip_files/' + str(job.id) +"_feedbacker.zip"):
+        if job.feedbacker_comments != "":
             times_left.append(-1)
             urgent.append(False)
         else:
@@ -288,6 +302,32 @@ def dashboard(request):
     }
     return render(request, 'main/dashboard.html', context)
 
+
+@login_required
+def archive(request):
+    archived_requests = []
+    for feedback_request in FeedbackRequest.objects.filter(feedbackee=request.user,feedbacker_rated=True):
+        try:
+            if Purchase.objects.get(feedback=feedback_request).is_completed:
+                archived_requests.append(feedback_request)
+        except:
+            pass
+
+    archived_jobs = []
+    for job in FeedbackRequest.objects.filter(feedbacker=request.user,feedbacker_rated=True):
+        try:
+            if Purchase.objects.get(feedback=job).is_completed:
+                archived_jobs.append(job)
+        except:
+            pass
+
+    context = {
+        'archived_requests': archived_requests,            # Feedback Request instances
+        'archived_jobs': archived_jobs,
+        'title': '| Archive'
+    }
+
+    return render(request, 'main/archive.html', context)
 
 @login_required
 def new_feedback_request(request):
@@ -483,7 +523,9 @@ def feedback_request(request):
             'candidate_premiums': candidate_premiums,
             'title': '| ' + feedback_request.title,
             'user_messages': messages,
-            'latest_user_message_date': latest_user_message_date
+            'latest_user_message_date': latest_user_message_date,
+            'feedbacker_reward': feedback_request.feedbacker_reward,
+            'charity_reward': feedback_request.charity_reward,
         }
         return render(request, 'main/feedback_request.html', context)
     else:
@@ -671,13 +713,21 @@ def withdraw_application(request):
 def finish_purchase(request):
     feedback_request_id = request.GET.get('feedback_request', '')
     feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
+    feedbacker_reward = int(request.GET.get('feedbacker_reward', feedback_request.reward))
+    charity_reward = int(request.GET.get('charity_reward', 0))
+
     try:
         purchase = Purchase.objects.get(feedback=feedback_request_id)
     except:
         raise Exception('This request simply does not have a Purchase instance, i.e. it is an old request. Try'
                         'creating one manually via the admin panel.')
     purchase.is_completed = True
+    feedback_request.feedbacker_reward = feedbacker_reward
+    feedback_request.charity_reward = charity_reward
+
+    feedback_request.save()
     purchase.save()
+
     notifications.money_released_notification(feedback_request, get_current_site(request))
     sweetify.success(request, "Reward released", icon='success', toast=True, position='bottom-end', padding='1.5rem')
     return redirect('dashboard')

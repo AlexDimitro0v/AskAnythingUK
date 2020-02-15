@@ -29,6 +29,8 @@
                   <div class="notification-text">New message(s) by <strong>{{notification.other_user}}</strong> on <strong>{{notification.title}}</strong></div>
                {% elif notification.type == "Recommendation" %}
                   <div class="notification-text">We think you may be interested in this feedback request: <strong>{{notification.title}}</strong></div>
+              {% elif notification.type == "MoneyRelease" %}
+                  <div class="notification-text">Reward released for feedback on <strong>{{notification.title}}</strong></div>
                {% endif %}
                <div class="notification-text notification-time">
                  {{notification.time}} ago

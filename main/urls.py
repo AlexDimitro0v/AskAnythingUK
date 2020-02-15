@@ -16,6 +16,6 @@ urlpatterns = [
     path('feedback-request/<int:pk>/delete', views.RequestDeleteView.as_view(template_name='main/feedback_request_delete.html'),
          name='request-delete'),
     path('finish-purchase/', views.finish_purchase, name='finish-purchase'),
-    path('get-new-messages/', views.get_new_messages, name='get-new-messages')
-
+    path('get-new-messages/', views.get_new_messages, name='get-new-messages'),
+    path('archive/', views.archive, name='archive')
 ]
