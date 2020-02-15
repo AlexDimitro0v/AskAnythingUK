@@ -297,6 +297,10 @@ def settings(request):
                 request.user.userprofile.notifications = False
             request.user.userprofile.save()
 
+            sweetify.success(request, "You successfully updated your profile", icon='success',
+                             toast=True,
+                             position='bottom-end',
+                             )
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
