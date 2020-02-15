@@ -49,6 +49,8 @@ def get_recommended_feedbackers(words1,frequencies1):
             w1_square += frequencies1[i]**(2)
             w2_square += frequencies2[i]**(2)
         total = total/(w1_square**(1/2) * w2_square**(1/2))
+
+        print(user,total)
         if total > 0.3:
             print(user)
             recommended_users.append(user)

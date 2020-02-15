@@ -755,9 +755,9 @@ class RequestDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             fs = FileSystemStorage()
             fs.delete('zip_files/' + str(feedback_request.id) + '.zip')
             feedback_request.delete()
-            sweetify.success(request, "You have successfully deleted your feedback request", icon='success', toast=True,
+            sweetify.success(request, "Feedback request deleted", icon='success', toast=True,
                              position='bottom-end',
-                             padding='1.5rem'
+                             padding='1.2rem'
                              )
             return redirect('dashboard')
         else:
