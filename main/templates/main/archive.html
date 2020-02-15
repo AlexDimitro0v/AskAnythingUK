@@ -1,0 +1,67 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content%}
+
+<div class="noselect button-corner sticky-button">
+  <a href="{% url 'new-feedback-request-page' %}"  style="text-decoration:none;">
+      <button class="btn btn-outline-info" style="border-width: 2px; font-size: 1.3em">Ask For Feedback</button>
+  </a>
+</div>
+
+<div class="feedback-request">
+  <div class="decorative-text-wrapper noselect">My Archived Jobs</div>
+  <div class="cardbody" style="margin-bottom: 0">
+    {% if archived_jobs %}
+        {% for job in archived_jobs %}
+        <div>
+          <a  href="{% url 'feedback-request-page' %}?request_id={{job.id}}">
+            <div class="small-card small-card-hover" style="padding: 20px">
+                <p style="text-align: center; font-size: 1.2em; font-weight: 600">{{job.title}}</p>
+                <div class="mb-3 mt-3" style="border-top: 1px solid #cbcbcb"></div>
+                  <div class="status-info noselect custom-column" style="font-size: 1em; text-align: center; display: block; margin: 0 auto">
+                    <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                      Feedback Submitted
+                  </div>
+              </div>
+            </a>
+        </div>
+        {% endfor %}
+      {% else%}
+            <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Archived Jobs</p>
+      {% endif %}
+  </div>
+</div>
+
+<div class="feedback-request">
+  <div class="decorative-text-wrapper noselect">My Archived Requests</div>
+  <div class="cardbody" style="margin-bottom: 0">
+  {% if archived_requests %}
+        {% for feedback_request in archived_requests %}
+        <div>
+          <a  href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}">
+            <div class="small-card small-card-hover" style="padding: 20px">
+                <p style="text-align: center; font-size: 1.2em; font-weight: 600">{{feedback_request.title}}</p>
+                <div class="mb-3 mt-3" style="border-top: 1px solid #cbcbcb"></div>
+
+                  <div class="two-columns">
+                    <span class="custom-column">
+                    <img class="profile-name-image" src="{{ feedback_request.feedbacker.userprofile.image.url }}" style="max-width: 100px; margin-bottom: 0; border-color: #ddd;"/>
+                    <span class="custom-column name-next-to-image-2">{{feedback_request.feedbacker}}</span>
+                    </span>
+                    <div class="status-info noselect custom-column" style="font-size: 1em;">
+                      <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                      Your Feedbacker
+                    </div>
+                  </div>
+              </div>
+            </a>
+        </div>
+        {% endfor %}
+  {% else%}
+        <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">No Archived Requests</p>
+  {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

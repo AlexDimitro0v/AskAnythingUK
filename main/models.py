@@ -35,6 +35,8 @@ class FeedbackRequest(models.Model):
     feedbacker_rated = models.IntegerField(default=False)
     new_feedbackee_message = models.IntegerField(default=False)
     new_feedbacker_message = models.IntegerField(default=False)
+    feedbacker_reward = models.IntegerField(default=0)
+    charity_reward = models.IntegerField(default=0)
     most_common_words = ArrayField(
             models.CharField(max_length=30, blank=True),
             size=30,
