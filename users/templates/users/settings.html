@@ -268,7 +268,7 @@
                             <form method="POST" action="/settings/?tab=notifications" novalidate>
                                 {% csrf_token %}
                                 <label class="col-form-label">Messages</label><br>
-                                <input data-size="small" type="checkbox" {% if messages %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="Messages">
+                                <input data-size="small" type="checkbox" {% if new_messages %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="Messages">
                                 <br>
                                 <label class="col-form-label">Feedback Updates</label>
                                 <span id="tooltip" class="fa fa-question-circle"></span>

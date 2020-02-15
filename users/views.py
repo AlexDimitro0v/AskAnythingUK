@@ -345,7 +345,7 @@ def settings(request):
                'active': active,
                'email': request.user.email,
                'user_skills': user_skills,
-               'messages': request.user.userprofile.messages_notifications,
+               'new_messages': request.user.userprofile.messages_notifications,
                'feedback_updates': request.user.userprofile.feedback_updates_notifications,
                'smart_recommendations': request.user.userprofile.smart_recommendations_notifications,
                'title': '| Settings'
