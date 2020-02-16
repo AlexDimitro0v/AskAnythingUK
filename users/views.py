@@ -289,25 +289,39 @@ def settings(request):
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
                                           prefix='profile-image')
 
-        elif 'notifications' in request.POST:
-            print(request.POST)
-            feedback_updates = request.POST.get('FeedbackUpdates', '') == 'on'
-            if feedback_updates:
-                request.user.userprofile.feedback_updates_notifications = True
-            else:
-                request.user.userprofile.feedback_updates_notifications = False
+        elif 'notifications' or 'notifications2' in request.POST:
 
-            messages = request.POST.get('Messages', '') == 'on'
-            if messages:
-                request.user.userprofile.messages_notifications = True
-            else:
-                request.user.userprofile.messages_notifications = False
+            if 'notifications' in request.POST:
+                feedback_updates = request.POST.get('FeedbackUpdates', '') == 'on'
+                messages = request.POST.get('Messages', '') == 'on'
+                smart_recommendations = request.POST.get('SmartRecommendations', '') == 'on'
+                if feedback_updates:
+                    request.user.userprofile.feedback_updates_notifications = True
+                else:
+                    request.user.userprofile.feedback_updates_notifications = False
 
-            smart_recommendations = request.POST.get('SmartRecommendations', '') == 'on'
-            if smart_recommendations:
-                request.user.userprofile.smart_recommendations_notifications = True
-            else:
-                request.user.userprofile.smart_recommendations_notifications = False
+                if messages:
+                    request.user.userprofile.messages_mail_notifications = True
+                else:
+                    request.user.userprofile.messages_mail_notifications = False
+
+                if smart_recommendations:
+                    request.user.userprofile.smart_recommendations_mail_notifications = True
+                else:
+                    request.user.userprofile.smart_recommendations_mail_notifications = False
+
+            if 'notifications2' in request.POST:
+                messages2 = request.POST.get('Messages2', '') == 'on'
+                smart_recommendations2 = request.POST.get('SmartRecommendations2', '') == 'on'
+                if messages2:
+                    request.user.userprofile.messages_notifications = True
+                else:
+                    request.user.userprofile.messages_notifications = False
+
+                if smart_recommendations2:
+                    request.user.userprofile.smart_recommendations_notifications = True
+                else:
+                    request.user.userprofile.smart_recommendations_notifications = False
 
             request.user.userprofile.save()
 
@@ -345,9 +359,11 @@ def settings(request):
                'active': active,
                'email': request.user.email,
                'user_skills': user_skills,
-               'new_messages': request.user.userprofile.messages_notifications,
+               'new_messages': request.user.userprofile.messages_mail_notifications,
                'feedback_updates': request.user.userprofile.feedback_updates_notifications,
-               'smart_recommendations': request.user.userprofile.smart_recommendations_notifications,
+               'smart_recommendations': request.user.userprofile.smart_recommendations_mail_notifications,
+               'new_messages2': request.user.userprofile.messages_notifications,
+               'smart_recommendations2': request.user.userprofile.smart_recommendations_notifications,
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)
