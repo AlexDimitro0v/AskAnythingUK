@@ -987,6 +987,13 @@ word-wrap: break-word;
   display: none;
 }
 
+@media screen and (max-width: 370px)
+{
+#ask_anything_header {
+  opacity: 0;
+}
+}
+
 @media screen and (max-width: 1000px)
 {
   .two-columns {

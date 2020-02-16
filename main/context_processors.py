@@ -17,7 +17,7 @@ def notifications_processor(request):
         notification = {
             "type": n.type,
             "title": n.feedback_request,
-            "link": "http://localhost:8000/feedback-request/?request_id=" + str(n.feedback_request.id),
+            "link": "/feedback-request/?request_id=" + str(n.feedback_request.id),
             "time": get_time_delta(n.date, curr_time),
             "other_user": n.other_user,
             "seen": n.seen,
