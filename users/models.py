@@ -18,10 +18,11 @@ class UserProfile(models.Model):
         ('F', 'Female'),
     )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
-    mail_notifications = models.BooleanField(default=True)
     messages_notifications = models.BooleanField(default=True)
     feedback_updates_notifications = models.BooleanField(default=True)
     smart_recommendations_notifications = models.BooleanField(default=True)
+    messages_mail_notifications = models.BooleanField(default=True)
+    smart_recommendations_mail_notifications = models.BooleanField(default=True)
     linkedin = models.URLField("LinkedIn", blank=True)
     url_link_1 = models.URLField("Personal Website Link 1", blank=True)
     url_link_2 = models.URLField("Personal Website Link 2", blank=True)

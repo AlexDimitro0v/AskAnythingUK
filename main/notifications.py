@@ -27,22 +27,22 @@ def new_candidate_notification(feedback_request, current_site, candidate):
 
 
 def chosen_as_feedbacker_notification(feedback_request, current_site):
-    if feedback_request.feedbacker.userprofile.feedback_updates_notifications:
-        html_message = render_to_string(
-            'main/email-template.html',
-            {
-                'title': feedback_request,
-                'user': feedback_request.feedbacker,
-                'message': f"Your application for <strong>{feedback_request}</strong> has been successful. Click the link below to learn more.",
-                'link': f"http://{current_site}/feedback-request/?request_id={feedback_request.id}",
-            }
-        )
-        email_subject = f'Application for {feedback_request} successful'
-        to_list = feedback_request.feedbacker.email
-        email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
-        email.attach_alternative(html_message, "text/html")
-        email.send()
+    # User cannot disable this notification
+    html_message = render_to_string(
+        'main/email-template.html',
+        {
+            'title': feedback_request,
+            'user': feedback_request.feedbacker,
+            'message': f"Your application for <strong>{feedback_request}</strong> has been successful. Click the link below to learn more.",
+            'link': f"http://{current_site}/feedback-request/?request_id={feedback_request.id}",
+        }
+    )
+    email_subject = f'Application for {feedback_request} successful'
+    to_list = feedback_request.feedbacker.email
+    email = EmailMultiAlternatives(
+        email_subject, '-', 'from_email', [to_list])
+    email.attach_alternative(html_message, "text/html")
+    email.send()
 
     notification = Notification(user=feedback_request.feedbacker, other_user=feedback_request.feedbackee,
                                 feedback_request=feedback_request, type="FeedbackerChosen")
@@ -96,7 +96,7 @@ def feedbacker_rated_notification(feedback_request, current_site):
 
 
 def new_message_notification(feedback_request, current_site, sender, receiver):
-    if receiver.userprofile.messages_notifications:
+    if receiver.userprofile.messages_mail_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -113,16 +113,17 @@ def new_message_notification(feedback_request, current_site, sender, receiver):
         email.attach_alternative(html_message, "text/html")
         email.send()
 
-    # Delete all previous notification message instances
-    past_messages = Notification.objects.filter(feedback_request=feedback_request, type="NewMessage")
-    past_messages.delete()
+    if receiver.userprofile.messages_notifications:
+        # Delete all previous notification message instances
+        past_messages = Notification.objects.filter(feedback_request=feedback_request, type="NewMessage")
+        past_messages.delete()
 
-    notification = Notification(user=receiver, other_user=sender, feedback_request=feedback_request, type="NewMessage")
-    notification.save()
+        notification = Notification(user=receiver, other_user=sender, feedback_request=feedback_request, type="NewMessage")
+        notification.save()
 
 
 def recommended_request_notification(feedback_request, current_site, receiver):
-    if receiver.userprofile.smart_recommendations_notifications:
+    if receiver.userprofile.smart_recommendations_mail_notifications:
         html_message = render_to_string(
             'main/email-template.html',
             {
@@ -139,12 +140,14 @@ def recommended_request_notification(feedback_request, current_site, receiver):
         email.attach_alternative(html_message, "text/html")
         email.send()
 
-    notification = Notification(user=receiver, other_user=feedback_request.feedbackee,
-                                feedback_request=feedback_request, type="Recommendation")
-    notification.save()
+    if receiver.userprofile.smart_recommendations_notifications:
+        notification = Notification(user=receiver, other_user=feedback_request.feedbackee,
+                                    feedback_request=feedback_request, type="Recommendation")
+        notification.save()
 
 
 def money_released_notification(feedback_request, current_site):
+    # User cannot disable this notification
     html_message = render_to_string(
         'main/email-template.html',
         {

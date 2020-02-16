@@ -282,6 +282,25 @@
 
                         </div>
                     </div>
+
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Real-Time Notifications</div>
+
+                        <div class="card-body" style="margin-top:15px;">
+                            <p style="font-size: 13px; font-family: 'Lexend','Raleway';">For important updates regarding your AskAnything activity, certain notifications cannot be disabled.</p>
+                            <form method="POST" action="/settings/?tab=notifications" novalidate>
+                                {% csrf_token %}
+                                <label class="col-form-label">Messages</label><br>
+                                <input data-size="small" type="checkbox" {% if new_messages2 %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="Messages2">
+                                <br>
+                                <label class="col-form-label">Smart Recommendations</label><br>
+                                <input data-size="small" type="checkbox" {% if smart_recommendations2 %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="SmartRecommendations2">
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="notifications2" >Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
