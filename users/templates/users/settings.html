@@ -92,6 +92,8 @@
     border-radius: 5px;
     bottom: 26px;
     color: #fff;
+    font-family: 'Lexend';
+    font-size: 13px;
     content: "This includes any feedback updates - new feedbacker candidate, submitted feedback, etc.";
     left: 20%;
     padding: 5px 15px;
@@ -287,7 +289,7 @@
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Real-Time Notifications</div>
 
                         <div class="card-body" style="margin-top:15px;">
-                            <p style="font-size: 13px; font-family: 'Lexend','Raleway';">For important updates regarding your AskAnything activity, certain notifications cannot be disabled.</p>
+                            <p style="font-size: 13px; font-family: 'Lexend';">For important updates regarding your AskAnything activity, certain notifications cannot be disabled.</p>
                             <form method="POST" action="/settings/?tab=notifications" novalidate>
                                 {% csrf_token %}
                                 <label class="col-form-label">Messages</label><br>
