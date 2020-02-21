@@ -21,6 +21,19 @@ import sweetify
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 from main.smart_recommendations import get_most_common
+from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
+import braintree
+
+
+# Set up the payment gateway
+gateway = braintree.BraintreeGateway(
+    braintree.Configuration(
+        braintree.Environment.Sandbox,
+        merchant_id=BRAINTREE_MERCHANT_KEY,
+        public_key=BRAINTREE_PUBLIC_KEY,
+        private_key=BRAINTREE_PRIVATE_KEY
+    )
+)
 
 
 def register(request):
@@ -98,7 +111,6 @@ def activate(request, uidb64, token):
 
 @login_required
 def view_profile(request):
-
     # Main purpose of separate apps is reuseability
     # This creates some sort of loose dependence between the main app and the users app (to be fixed 2 lines below)
     user_id = request.GET.get('user', '')
@@ -198,6 +210,14 @@ def get_premium(request):
 def try_premium(request):
     curr_user = UserProfile.objects.get(user=request.user)
     if datetime.now(timezone.utc) > curr_user.premium_ends:
+        result = gateway.subscription.create({      # Creates the subscription
+            "payment_method_token": 'kur',
+            "plan_id": 1234
+        })
+        if result.is_success:
+            print("YES")
+        else:
+            print("No")
         plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
         curr_user.premium_ends = plus_one_month
         sweetify.success(request, "Premium account activated!", icon='success',
@@ -215,6 +235,7 @@ def settings(request):
     # https://stackoverflow.com/questions/1395807/proper-way-to-handle-multiple-forms-on-one-page-in-django
     # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
+    print(request.POST)
     if request.method == 'POST':
         if 'password-change' in request.POST:
             change_password_form = PasswordChangeForm(request.user, request.POST, prefix='password-change')
@@ -289,39 +310,24 @@ def settings(request):
             image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
                                           prefix='profile-image')
 
-        elif 'notifications' or 'notifications2' in request.POST:
+        elif 'notifications' in request.POST:
+            feedback_updates = request.POST.get('FeedbackUpdates', '') == 'on'
+            messages = request.POST.get('Messages', '') == 'on'
+            smart_recommendations = request.POST.get('SmartRecommendations', '') == 'on'
+            if feedback_updates:
+                request.user.userprofile.feedback_updates_notifications = True
+            else:
+                request.user.userprofile.feedback_updates_notifications = False
 
-            if 'notifications' in request.POST:
-                feedback_updates = request.POST.get('FeedbackUpdates', '') == 'on'
-                messages = request.POST.get('Messages', '') == 'on'
-                smart_recommendations = request.POST.get('SmartRecommendations', '') == 'on'
-                if feedback_updates:
-                    request.user.userprofile.feedback_updates_notifications = True
-                else:
-                    request.user.userprofile.feedback_updates_notifications = False
+            if messages:
+                request.user.userprofile.messages_mail_notifications = True
+            else:
+                request.user.userprofile.messages_mail_notifications = False
 
-                if messages:
-                    request.user.userprofile.messages_mail_notifications = True
-                else:
-                    request.user.userprofile.messages_mail_notifications = False
-
-                if smart_recommendations:
-                    request.user.userprofile.smart_recommendations_mail_notifications = True
-                else:
-                    request.user.userprofile.smart_recommendations_mail_notifications = False
-
-            if 'notifications2' in request.POST:
-                messages2 = request.POST.get('Messages2', '') == 'on'
-                smart_recommendations2 = request.POST.get('SmartRecommendations2', '') == 'on'
-                if messages2:
-                    request.user.userprofile.messages_notifications = True
-                else:
-                    request.user.userprofile.messages_notifications = False
-
-                if smart_recommendations2:
-                    request.user.userprofile.smart_recommendations_notifications = True
-                else:
-                    request.user.userprofile.smart_recommendations_notifications = False
+            if smart_recommendations:
+                request.user.userprofile.smart_recommendations_mail_notifications = True
+            else:
+                request.user.userprofile.smart_recommendations_mail_notifications = False
 
             request.user.userprofile.save()
 
@@ -329,6 +335,62 @@ def settings(request):
                              toast=True,
                              position='bottom-end',
                              )
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
+
+        elif 'notifications2' in request.POST:
+            messages2 = request.POST.get('Messages2', '') == 'on'
+            smart_recommendations2 = request.POST.get('SmartRecommendations2', '') == 'on'
+            if messages2:
+                request.user.userprofile.messages_notifications = True
+            else:
+                request.user.userprofile.messages_notifications = False
+
+            if smart_recommendations2:
+                request.user.userprofile.smart_recommendations_notifications = True
+            else:
+                request.user.userprofile.smart_recommendations_notifications = False
+
+            request.user.userprofile.save()
+
+            sweetify.success(request, "You successfully updated your profile", icon='success',
+                             toast=True,
+                             position='bottom-end',
+                             )
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
+
+        elif "billing" in request.POST:
+            cardholder_name = request.POST.get('name', '')
+            card_number = request.POST.get('number', '')
+            card_expiry_date = request.POST.get('expiry', '')
+            cvv = request.POST.get('cvc', '')
+
+            result = gateway.customer.create({  # Creates the Client and stores in Braintree Vault
+                "first_name": f"{request.user.first_name}",
+                "last_name": f"{request.user.last_name}",
+                "email": f"{request.user.email}",
+                "credit_card": {
+                    'cardholder_name': cardholder_name,
+                    'cvv': cvv,
+                    'expiration_date': card_expiry_date,
+                    'number': card_number,
+                    "options": {
+                        "verify_card": True,
+                    }
+                }
+            })
+            if result.is_success:
+                print("Yes")
+            else:
+                print("No")
+
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')

@@ -599,12 +599,6 @@ def choose_feedbacker(request):
 
             notifications.chosen_as_feedbacker_notification(feedback_request, get_current_site(request))
 
-            # Swal in the html code - sweetify redundant:
-            # sweetify.success(request, 'Feedbacker has been chosen successfully!', icon='success', toast=True,
-            #                  position='bottom-end',
-            #                  timer=2000,
-            #                  padding='1.5rem'
-            #                  )
         else:
             sweetify.error(request, 'Problem with payment method', icon="error", toast=True, position="bottom-end",
                            padding='1.5rem')
