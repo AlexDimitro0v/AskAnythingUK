@@ -790,7 +790,7 @@ color: #1F4D8A;
 }
 
 .search-bar {
-  width: 95%;
+  width: 100%;
   max-width: 700px;
   border-radius: 25px;
   height: 50px;
@@ -844,6 +844,14 @@ color: #1F4D8A;
   font-size: 3.5em;
   margin-bottom: 10px;
   color: #1F4D8A;
+  font-weight: 600
+}
+
+.sub-header {
+  text-align: center;
+  font-size: 1.6em;
+  margin-bottom: 20px;
+  margin-top: 20px;
   font-weight: 600
 }
 
@@ -987,7 +995,7 @@ word-wrap: break-word;
   display: none;
 }
 
-@media screen and (max-width: 370px)
+@media screen and (max-width: 480px)
 {
 #ask_anything_header {
   opacity: 0;
@@ -996,12 +1004,25 @@ word-wrap: break-word;
 
 @media screen and (max-width: 1000px)
 {
+  .large-header {
+    font-size: 2.5em;
+  }
+
+  .sub-header {
+    font-size: 1.2em;
+  }
+
   .two-columns {
     display: block;
   }
 
   .custom-column {
-    display: block;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .custom-column-2 {
     text-align: center;
   }
 
@@ -1234,7 +1255,7 @@ word-wrap: break-word;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
   overflow: hidden;
   overflow-y: auto;
-  max-height: 90vh;
+  max-height: calc(100vh - 120px);
   }
 
 .custom-dropdown-item {

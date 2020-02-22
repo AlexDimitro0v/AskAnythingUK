@@ -133,7 +133,7 @@
 
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
-                        <div class="cardbody" style="margin-top: 35px;">
+                        <div class="cardbody">
                             <form method="POST" action="/settings/?tab=account" enctype="multipart/form-data" id="profile_image_form" novalidate>
                                 {% csrf_token %}
                                 <div class="text-center" style="position: relative">
@@ -235,7 +235,7 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Billing</div>
 
-                        <div class="cardbody" style="margin-top:35px;">
+                        <div class="cardbody">
                             <div class='card-wrapper'></div>
                             <form id="card" method="POST" action="/settings/?tab=billing" novalidate>
                                 {% csrf_token %}
@@ -265,7 +265,7 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Email Notifications</div>
 
-                        <div class="card-body" style="margin-top:15px;">
+                        <div class="cardbody" style="margin-top: 35px">
 
                             <form method="POST" action="/settings/?tab=notifications" novalidate>
                                 {% csrf_token %}
@@ -288,7 +288,7 @@
                     <div class="card">
                         <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Real-Time Notifications</div>
 
-                        <div class="card-body" style="margin-top:15px;">
+                        <div class="cardbody" style="margin-top: 35px">
                             <p style="font-size: 13px; font-family: 'Lexend';">For important updates regarding your AskAnything activity, certain notifications cannot be disabled.</p>
                             <form method="POST" action="/settings/?tab=notifications" novalidate>
                                 {% csrf_token %}

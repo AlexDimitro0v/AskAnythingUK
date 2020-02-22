@@ -122,3 +122,13 @@ class Notification(models.Model):
     date = models.DateTimeField(default=timezone.now)
     type = models.CharField(max_length=20)
     seen = models.IntegerField(default=0)
+
+
+class Device(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='device_owner')
+    ip = models.CharField(max_length=45)
+    browser_family = models.CharField(max_length=50)
+    browser_version = models.CharField(max_length=10)
+    os_family = models.CharField(max_length=50)
+    os_version = models.CharField(max_length=10)
+    device_family = models.CharField(max_length=50)
