@@ -112,10 +112,12 @@
 
       {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas; curr_premium in premium_requests; curr_new in new_requests %}
       <div class="feedback-request main-menu-request {% if curr_premium %} premium-request {% endif %}">
-          <div style="margin-bottom: 18px">
-            <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if curr_premium %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
-            <span class="bold-p">{{ feedback_request.feedbackee }}</span>
-            <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
+          <div class="two-columns margin-columns">
+              <span class="custom-column">
+                <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if curr_premium %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+                <span class="bold-p name-next-to-image" style="font-size: 1.2em">{{ feedback_request.feedbackee }}</span>
+              </span>
+              <span class="bold-p custom-column" style="font-size: 1em; vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
           </div>
           <div class="border-top pt-3 mt-2"></div>
           {% if curr_new or curr_premium %}

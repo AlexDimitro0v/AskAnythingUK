@@ -124,7 +124,6 @@
          {% for user_rating in user_ratings; curr_delta in time_deltas %}
          {% if user_rating.review != "" %}
        <div class="small-card" style="line-height: normal; padding: 25px">
-
          <div class="two-columns margin-columns">
            <span class="custom-column">
              <img class="photo-circle" src="{{ user_rating.feedbackee.userprofile.image.url }}">
@@ -132,7 +131,6 @@
            </span>
            <span class="bold-p custom-column" style="font-size: 0.8em; vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
          </div>
-
 
          <div class="border-top pt-1"></div>
 
