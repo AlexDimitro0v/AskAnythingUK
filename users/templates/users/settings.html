@@ -53,13 +53,6 @@
         border-bottom: 1px solid #e5e9f2;
     }
 
-    .list-group{
-        margin-top: 50px;
-        margin-left: -30px;
-        margin-right: -30px;
-        margin-bottom: -25px;
-    }
-
     .list-group-item.active{
         background-color: #43C2F0;
         border-color: #43C2F0;
@@ -110,7 +103,7 @@
             <div class="card">
                 <div class="decorative-text-wrapper noselect">Profile Settings</div>
 
-                <div class="list-group list-group-flush">
+                <div class="list-group list-group-flush" style=" margin-top: 50px; margin-left: -30px; margin-right: -30px; margin-bottom: -25px;">
                     <a class="list-group-item {% if active == 'account' %}active{% endif %}" href="/settings/?tab=account">
                       Account
                     </a>
