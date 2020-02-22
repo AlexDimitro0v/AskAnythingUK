@@ -210,14 +210,6 @@ def get_premium(request):
 def try_premium(request):
     curr_user = UserProfile.objects.get(user=request.user)
     if datetime.now(timezone.utc) > curr_user.premium_ends:
-        result = gateway.subscription.create({      # Creates the subscription
-            "payment_method_token": 'kur',
-            "plan_id": 1234
-        })
-        if result.is_success:
-            print("YES")
-        else:
-            print("No")
         plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
         curr_user.premium_ends = plus_one_month
         sweetify.success(request, "Premium account activated!", icon='success',
@@ -372,22 +364,28 @@ def settings(request):
             card_expiry_date = request.POST.get('expiry', '')
             cvv = request.POST.get('cvc', '')
 
-            result = gateway.customer.create({  # Creates the Client and stores in Braintree Vault
+            customer = gateway.customer.create({  # Creates the Client and stores in Braintree Vault
                 "first_name": f"{request.user.first_name}",
                 "last_name": f"{request.user.last_name}",
                 "email": f"{request.user.email}",
-                "credit_card": {
-                    'cardholder_name': cardholder_name,
-                    'cvv': cvv,
-                    'expiration_date': card_expiry_date,
-                    'number': card_number,
-                    "options": {
-                        "verify_card": True,
-                    }
-                }
             })
+            if customer.is_success:
+                print(customer.customer.id)
+            else:
+                print("No")
+
+            payment_token = gateway.payment_method.create({
+                "customer_id": customer.customer.id,
+                "payment_method_nonce": 'fake-valid-nonce'
+            })
+            token = payment_token.payment_method.token
+            result = gateway.subscription.create({
+                "payment_method_token": token,
+                "plan_id": 1234
+            })
+
             if result.is_success:
-                print("Yes")
+                print("YES")
             else:
                 print("No")
 
