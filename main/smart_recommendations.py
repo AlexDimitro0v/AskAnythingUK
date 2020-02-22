@@ -7,6 +7,11 @@ from django.contrib.auth.models import User
 
 
 def get_most_common(text):
+    # Make sure all required nltk packages are installed
+    nltk.download("punkt")
+    nltk.download('stopwords')
+    nltk.download('wordnet')
+    
     # First conert everything to lowercase
     text = text.lower()
     # Extract individual words from text

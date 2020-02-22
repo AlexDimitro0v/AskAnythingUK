@@ -685,12 +685,8 @@
                           color = '#e9ca6e';
                         }
 
-                        try {
-                          newMessageSound.setAttribute('src', "{% static 'newmessage.mp3 '%}");
-                          newMessageSound.play();
-                        }
-                        catch(e) {
-                        }
+                        newMessageSound.setAttribute('src', "{% static 'newmessage.mp3 '%}");
+                        newMessageSound.play();
 
                         newestMessage = response.newestMessage
                         response.messages.forEach(function(message) {
@@ -708,7 +704,7 @@
                     }
                   },
                   complete: function (data) {
-                          // Schedule the next
+                          // Schedule the next request
                           setTimeout(doAjax, interval);
                   }
             });

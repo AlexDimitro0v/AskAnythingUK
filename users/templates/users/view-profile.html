@@ -124,13 +124,13 @@
          {% for user_rating in user_ratings; curr_delta in time_deltas %}
          {% if user_rating.review != "" %}
        <div class="small-card" style="line-height: normal; padding: 25px">
-
-         <div style="margin-bottom: 10px">
-           <img class="photo-circle" src="{{ user_rating.feedbackee.userprofile.image.url }}"/>
-           <span style="margin-left: 10px; font-weight: 600">{{user_rating.feedbackee}}</span>
-           <span class="bold-p" style="float: right; font-size: 0.8em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
+         <div class="two-columns margin-columns">
+           <span class="custom-column">
+             <img class="photo-circle" src="{{ user_rating.feedbackee.userprofile.image.url }}">
+             <span class="bold-p name-next-to-image" style="margin-left: 10px; font-size: 0.9em;">{{user_rating.feedbackee}}</span>
+           </span>
+           <span class="bold-p custom-column" style="font-size: 0.8em; vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
          </div>
-
 
          <div class="border-top pt-1"></div>
 

@@ -25,7 +25,7 @@ from django.contrib.sites.shortcuts import get_current_site
 import sweetify
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from .user_agents import get_user_info
+from .user_agents import save_device_info, check_for_fraud
 from .smart_recommendations import get_most_common, get_recommended_feedbackers
 from django.views.generic import (
     DeleteView
@@ -50,7 +50,6 @@ braintree.Configuration.configure(braintree.Environment.Sandbox,
 # Redirect unauthenticated users to landing page
 @login_required(login_url='landing-page')
 def home(request):
-    get_user_info(request)
     return render(request, 'main/home.html')
 
 
@@ -674,6 +673,12 @@ def rate_feedbacker(request):
             rating = Rating(review=review, overall=overall, quality=quality, speed=speed, communication=communication, feedbackee=request.user,
                                                feedbacker=feedback_request.feedbacker)
             rating.save()
+
+            # Save device info of the reviewer
+            user_device = save_device_info(request)
+            if user_device:
+                if check_for_fraud(feedback_request.feedbacker,user_device):
+                    print("Probably a fake review")
 
             notifications.feedbacker_rated_notification(feedback_request, get_current_site(request))
 
