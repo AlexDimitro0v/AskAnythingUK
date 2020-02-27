@@ -230,7 +230,7 @@
 
                         <div class="cardbody">
                             <div class='card-wrapper'></div>
-                            <form id="card" method="POST" action="/settings/?tab=billing" novalidate>
+                            <form id="card" method="POST" action="/settings/?tab=billing">
                                 {% csrf_token %}
                                 <div style="margin-bottom: 1rem">
                                     <label class="col-form-label">Card Number</label><br>
@@ -404,4 +404,5 @@
 
 
 <script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
+
 {% endblock %}

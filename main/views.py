@@ -442,7 +442,7 @@ def feedback_request(request):
         applications = FeedbackerCandidate.objects.filter(feedbacker=request.user)
         for application in applications:
             if application.feedback.feedbackee == application.feedback.feedbacker:
-                num_of_applications +=1
+                num_of_applications += 1
 
     fs = FileSystemStorage()
 
@@ -498,7 +498,11 @@ def feedback_request(request):
     latest_user_message_date = None
     if messages:
         latest_user_message_date = messages.latest('date').date.strftime("%Y-%m-%d %H:%M:%S.%f")
-    client_tokens = [braintree.ClientToken.generate() for candidate in feedback_candidates]
+    try:
+        braintree_client_token = braintree.ClientToken.generate({"customer_id": request.user.username})
+    except:
+        braintree_client_token = braintree.ClientToken.generate({})
+    print(braintree_client_token)
     if request_id != "":
         context = {
             'feedback_request': feedback_request,
@@ -516,7 +520,7 @@ def feedback_request(request):
             'new_request': new_request,
             'premium_request': premium_request,
             'three_or_more_applications': num_of_applications >= 3,
-            'client_tokens': client_tokens,
+            'client_token': braintree_client_token,
             'purchase': Purchase.objects.filter(feedback=feedback_request).first(),
             'feedbackee_has_premium': has_premium(feedback_request.feedbackee),
             'feedbacker_has_premium': has_premium(feedback_request.feedbacker),

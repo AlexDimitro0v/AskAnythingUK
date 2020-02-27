@@ -103,6 +103,21 @@ def activate(request, uidb64, token):
                          toast=True,
                          position='bottom-end',
                          )
+
+        customer = gateway.customer.create({            # Creates the Client and stores in Braintree Vault
+            "first_name": f"{request.user.first_name}",
+            "last_name": f"{request.user.last_name}",
+            "email": f"{request.user.email}",
+            "id": f"{request.user.username}"
+        })
+
+        # Create a fake payment method for that client
+        # Yes, we simulate the payments:
+        gateway.payment_method.create({
+            "customer_id": customer.customer.id,
+            "payment_method_nonce": 'fake-valid-nonce',  # Fake valid card details
+            "token": f"{request.user.username}"
+        })
         return redirect('login-page')      # redirects the user to the login page
     else:
         sweetify.error(request, 'The email confirmation link is invalid.', icon="error", toast=True, position="bottom-end")
@@ -209,9 +224,54 @@ def get_premium(request):
 @login_required
 def try_premium(request):
     curr_user = UserProfile.objects.get(user=request.user)
+
+    try:
+        # Try to find the client in the Braintree Vault
+        customer = gateway.customer.find(request.user.username)
+        print("Found")
+    except:
+        # If client not found - create the client and stores in Braintree Vault
+        customer = gateway.customer.create({
+            "first_name": f"{request.user.first_name}",
+            "last_name": f"{request.user.last_name}",
+            "email": f"{request.user.email}",
+            "id": f"{request.user.username}"
+        })
+        print("New")
+
+    try:
+        # Try to find the payment method of that client
+        payment_token = gateway.payment_method.find(f"{request.user.username}")
+        token = payment_token.token
+        print("Found")
+    except:
+        # If not found
+        # Create a fake payment method for that client
+        # Yes, we simulate the payments:
+        payment_token = gateway.payment_method.create({
+            "customer_id": customer.customer.id,
+            "payment_method_nonce": 'fake-valid-nonce',     # Fake valid card details
+            "token": f"{request.user.username}"
+        })
+        token = payment_token.payment_method.token
+
+        print("New")
+
     if datetime.now(timezone.utc) > curr_user.premium_ends:
         plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
         curr_user.premium_ends = plus_one_month
+
+        # Create the subscription in Braintree
+        result = gateway.subscription.create({
+            "payment_method_token": token,
+            "plan_id": 1234,
+            "id": f"{request.user.username}"
+        })
+        if result.is_success:
+            print("YES, Subscription activated.")
+        else:
+            print("No :(")
+
         sweetify.success(request, "Premium account activated!", icon='success',
                          toast=True,
                          position='bottom-end',
@@ -227,6 +287,7 @@ def settings(request):
     # https://stackoverflow.com/questions/1395807/proper-way-to-handle-multiple-forms-on-one-page-in-django
     # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
+
     print(request.POST)
     if request.method == 'POST':
         if 'password-change' in request.POST:
@@ -363,32 +424,10 @@ def settings(request):
             card_number = request.POST.get('number', '')
             card_expiry_date = request.POST.get('expiry', '')
             cvv = request.POST.get('cvc', '')
-
-            customer = gateway.customer.create({  # Creates the Client and stores in Braintree Vault
-                "first_name": f"{request.user.first_name}",
-                "last_name": f"{request.user.last_name}",
-                "email": f"{request.user.email}",
-            })
-            if customer.is_success:
-                print(customer.customer.id)
-            else:
-                print("No")
-
-            payment_token = gateway.payment_method.create({
-                "customer_id": customer.customer.id,
-                "payment_method_nonce": 'fake-valid-nonce'
-            })
-            token = payment_token.payment_method.token
-            result = gateway.subscription.create({
-                "payment_method_token": token,
-                "plan_id": 1234
-            })
-
-            if result.is_success:
-                print("YES")
-            else:
-                print("No")
-
+            sweetify.success(request, "You successfully updated your profile", icon='success',
+                             toast=True,
+                             position='bottom-end',
+                             )
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
