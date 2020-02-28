@@ -105,17 +105,17 @@ def activate(request, uidb64, token):
                          )
 
         customer = gateway.customer.create({            # Creates the Client and stores in Braintree Vault
-            "first_name": f"{request.user.first_name}",
-            "last_name": f"{request.user.last_name}",
-            "email": f"{request.user.email}",
-            "id": f"{request.user.username}"
+            "first_name": f"{user.first_name}",
+            "last_name": f"{user.last_name}",
+            "email": f"{user.email}",
+            "id": f"{user.username}"
         })
 
         # Create a fake payment method for that client
         gateway.payment_method.create({
             "customer_id": customer.customer.id,
             "payment_method_nonce": 'fake-valid-nonce',  # Fake valid card details
-            "token": f"{request.user.username}"
+            "token": f"{user.username}"
         })
         return redirect('login-page')      # redirects the user to the login page
     else:
@@ -248,7 +248,7 @@ def try_premium(request):
         # Create a fake payment method for that client
         # Yes, we simulate the payments:
         payment_token = gateway.payment_method.create({
-            "customer_id": customer.customer.id,
+            "customer_id": customer.id,
             "payment_method_nonce": 'fake-valid-nonce',     # Fake valid card details
             "token": f"{request.user.username}"
         })
