@@ -502,7 +502,7 @@ def feedback_request(request):
         braintree_client_token = braintree.ClientToken.generate({"customer_id": request.user.username})
     except:
         braintree_client_token = braintree.ClientToken.generate({})
-    print(braintree_client_token)
+
     if request_id != "":
         context = {
             'feedback_request': feedback_request,

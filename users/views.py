@@ -112,7 +112,6 @@ def activate(request, uidb64, token):
         })
 
         # Create a fake payment method for that client
-        # Yes, we simulate the payments:
         gateway.payment_method.create({
             "customer_id": customer.customer.id,
             "payment_method_nonce": 'fake-valid-nonce',  # Fake valid card details
@@ -254,12 +253,17 @@ def try_premium(request):
             "token": f"{request.user.username}"
         })
         token = payment_token.payment_method.token
-
         print("New")
 
     if datetime.now(timezone.utc) > curr_user.premium_ends:
+        if request.user.userprofile.payment_method is False:
+            sweetify.warning(request, 'Please provide a payment method.',
+                             buttons=False,
+                             icon='warning'
+                             )
+            return redirect('/settings/?tab=billing')
+
         plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
-        curr_user.premium_ends = plus_one_month
 
         # Create the subscription in Braintree
         result = gateway.subscription.create({
@@ -272,12 +276,13 @@ def try_premium(request):
         else:
             print("No :(")
 
+        curr_user.premium_ends = plus_one_month
+        curr_user.save()
         sweetify.success(request, "Premium account activated!", icon='success',
                          toast=True,
                          position='bottom-end',
                          padding='1.5rem'
                          )
-        curr_user.save()
     return redirect('dashboard')
 
 
@@ -423,11 +428,35 @@ def settings(request):
             cardholder_name = request.POST.get('name', '')
             card_number = request.POST.get('number', '')
             card_expiry_date = request.POST.get('expiry', '')
+            card_expiry_month, card_expiry_year = card_expiry_date.split(" / ")[0], card_expiry_date.split(" / ")[1]
             cvv = request.POST.get('cvc', '')
-            sweetify.success(request, "You successfully updated your profile", icon='success',
-                             toast=True,
-                             position='bottom-end',
-                             )
+
+            # Find the payment method of that client
+            payment_token = gateway.payment_method.find(f"{request.user.username}")
+            token = payment_token.token
+
+            # Update the payment method
+            check = gateway.payment_method.update(token, {
+                    "cardholder_name": cardholder_name,
+                    "cvv": cvv,
+                    "expiration_month": card_expiry_month,
+                    "expiration_year": card_expiry_year,
+                    "number": card_number
+                    })
+            print(check)
+
+            # Check if the payment details are correct
+            if not str(check).startswith("<Error"):
+                request.user.userprofile.payment_method = True
+                request.user.userprofile.save()
+
+                sweetify.success(request, "You successfully updated your profile", icon='success',
+                                 toast=True,
+                                 position='bottom-end',
+                                 )
+            else:
+                sweetify.error(request, 'Wrong Card Details', icon="error", toast=True, position="bottom-end")
+
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
