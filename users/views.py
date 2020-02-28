@@ -246,9 +246,8 @@ def try_premium(request):
     except:
         # If not found
         # Create a fake payment method for that client
-        # Yes, we simulate the payments:
         payment_token = gateway.payment_method.create({
-            "customer_id": customer.id,
+            "customer_id": customer.customer.id,
             "payment_method_nonce": 'fake-valid-nonce',     # Fake valid card details
             "token": f"{request.user.username}"
         })
@@ -261,7 +260,7 @@ def try_premium(request):
                              buttons=False,
                              icon='warning'
                              )
-            return redirect('/settings/?tab=billing')
+            return redirect('/settings/?tab=billing&next=/get-premium/')
 
         plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
 
@@ -269,7 +268,6 @@ def try_premium(request):
         result = gateway.subscription.create({
             "payment_method_token": token,
             "plan_id": 1234,
-            "id": f"{request.user.username}"
         })
         if result.is_success:
             print("YES, Subscription activated.")
@@ -292,6 +290,7 @@ def settings(request):
     # https://stackoverflow.com/questions/1395807/proper-way-to-handle-multiple-forms-on-one-page-in-django
     # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
+    next_link = request.GET.get('next', '')
 
     print(request.POST)
     if request.method == 'POST':
@@ -430,6 +429,7 @@ def settings(request):
             card_expiry_date = request.POST.get('expiry', '')
             card_expiry_month, card_expiry_year = card_expiry_date.split(" / ")[0], card_expiry_date.split(" / ")[1]
             cvv = request.POST.get('cvc', '')
+            premium = request.POST.get('premium', '')
 
             # Find the payment method of that client
             payment_token = gateway.payment_method.find(f"{request.user.username}")
@@ -454,6 +454,8 @@ def settings(request):
                                  toast=True,
                                  position='bottom-end',
                                  )
+                if premium:
+                    return redirect("try-premium-page")
             else:
                 sweetify.error(request, 'Wrong Card Details', icon="error", toast=True, position="bottom-end")
 
@@ -492,6 +494,7 @@ def settings(request):
                'smart_recommendations': request.user.userprofile.smart_recommendations_mail_notifications,
                'new_messages2': request.user.userprofile.messages_notifications,
                'smart_recommendations2': request.user.userprofile.smart_recommendations_notifications,
+               'next_link': next_link,
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)

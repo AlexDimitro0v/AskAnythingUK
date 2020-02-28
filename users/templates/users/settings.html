@@ -245,6 +245,7 @@
                                     <input maxlength="200" id="card_expiry" class="textinput textInput form-control" name="expiry" placeholder="MM / YY" required>
                                     <label style="margin-top: 15px;" class="col-form-label">CCV</label><br>
                                     <input maxlength="200" id="ccv" class="textinput textInput form-control" name="cvc" placeholder="CCV" required>
+                                    <input name="{% if next_link%}premium{%endif %}" value="True" hidden>
                                 </div>
                                 <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="billing">Save changes</button>
                             </form>
