@@ -222,6 +222,13 @@ def get_premium(request):
 
 @login_required
 def try_premium(request):
+    if request.user.userprofile.payment_method is False:
+        sweetify.warning(request, 'Please provide a payment method.',
+                         buttons=False,
+                         icon='warning'
+                         )
+        return redirect('/settings/?tab=billing&next=/get-premium/')
+
     curr_user = UserProfile.objects.get(user=request.user)
 
     try:
@@ -254,15 +261,9 @@ def try_premium(request):
         token = payment_token.payment_method.token
         print("New")
 
-    if datetime.now(timezone.utc) > curr_user.premium_ends:
-        if request.user.userprofile.payment_method is False:
-            sweetify.warning(request, 'Please provide a payment method.',
-                             buttons=False,
-                             icon='warning'
-                             )
-            return redirect('/settings/?tab=billing&next=/get-premium/')
-
-        plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
+    if not curr_user.premium:
+        # plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
+        # curr_user.premium_ends = plus_one_month
 
         # Create the subscription in Braintree
         result = gateway.subscription.create({
@@ -272,16 +273,18 @@ def try_premium(request):
         if result.is_success:
             print("YES, Subscription activated.")
         else:
+            print(result)
             print("No :(")
 
-        curr_user.premium_ends = plus_one_month
+        curr_user.premium = True
+        curr_user.subscription_id = result.subscription.id
         curr_user.save()
         sweetify.success(request, "Premium account activated!", icon='success',
                          toast=True,
                          position='bottom-end',
                          padding='1.5rem'
                          )
-    return redirect('dashboard')
+    return redirect('/settings/?tab=subscription')
 
 
 @login_required
@@ -291,7 +294,6 @@ def settings(request):
     # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
     next_link = request.GET.get('next', '')
-
     print(request.POST)
     if request.method == 'POST':
         if 'password-change' in request.POST:
@@ -443,7 +445,6 @@ def settings(request):
                     "expiration_year": card_expiry_year,
                     "number": card_number
                     })
-            print(check)
 
             # Check if the payment details are correct
             if not str(check).startswith("<Error"):
@@ -457,8 +458,27 @@ def settings(request):
                 if premium:
                     return redirect("try-premium-page")
             else:
+                print(check)
                 sweetify.error(request, 'Wrong Card Details', icon="error", toast=True, position="bottom-end")
 
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
+
+        elif "cancel-subscription" in request.POST:
+            curr_user = UserProfile.objects.get(user=request.user)
+            if not curr_user.premium:
+                redirect('/settings/?tab=subscription')
+            result = gateway.subscription.cancel(curr_user.subscription_id)  # Cancel the subscription in Braintree
+            curr_user.premium = False
+            curr_user.save()
+            sweetify.success(request, "You successfully canceled your subscription", icon='success',
+                             toast=True,
+                             position='bottom-end',
+                             )
+            print(result)
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
@@ -495,6 +515,8 @@ def settings(request):
                'new_messages2': request.user.userprofile.messages_notifications,
                'smart_recommendations2': request.user.userprofile.smart_recommendations_notifications,
                'next_link': next_link,
+               "is_premium": request.user.userprofile.premium,
+               "next_billing_date": gateway.subscription.find(request.user.userprofile.subscription_id).next_billing_date,
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)

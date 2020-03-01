@@ -36,4 +36,4 @@ def get_request_candidates(feedback_request):
 
 def has_premium(user):
     curr_user = UserProfile.objects.get(user=user)
-    return datetime.now(timezone.utc) <= curr_user.premium_ends
+    return curr_user.premium

@@ -117,6 +117,9 @@
                     <a class="list-group-item {% if active == 'billing' %}active{% endif %}"  href="/settings/?tab=billing">
                       Billing Information
                     </a>
+                    <a class="list-group-item {% if active == 'subscription' %}active{% endif %}" href="/settings/?tab=subscription">
+                      Subscription
+                    </a>
                     <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications">
                       Notifications
                     </a>
@@ -234,7 +237,7 @@
 
                         <div class="cardbody">
                             <div class='card-wrapper'></div>
-                            <form id="card" method="POST" action="/settings/?tab=billing">
+                            <form id="card" method="POST" action="/settings/?tab=billing{% if next_link%}&next=/get-premium/{%endif %}">
                                 {% csrf_token %}
                                 <div style="margin-bottom: 1rem">
                                     <label class="col-form-label">Card Number</label><br>
@@ -254,6 +257,24 @@
                                     container: '.card-wrapper', // *required*
                                 });
                             </script>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade {% if active == 'subscription' %}show active{% endif %}" id="subscription">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Subscription</div>
+
+                        <div class="cardbody">
+                            {% if is_premium %}
+                                <p style="font-family: 'Lexend';">You are currently on a premium plan. We will automatically renew your monthly subscription on {{ next_billing_date|date:"F d, Y"}} and charge you £9.99.</p>
+                                <form method="POST" action="/settings/?tab=subscription">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="cancel-subscription">Cancel Subscription</button>
+                                </form>
+                            {% else %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -300,7 +321,6 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
