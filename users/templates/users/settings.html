@@ -274,6 +274,11 @@
                                     <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="cancel-subscription">Cancel Subscription</button>
                                 </form>
                             {% else %}
+                                <p style="font-family: 'Lexend';">You don't currently have a premium plan. Get an automatically-billed premium account for £9.99. The first month is on us.</p>
+                                <form method="POST" action="/get-premium/">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="subscription">More Information</button>
+                                </form>
                             {% endif %}
                         </div>
                     </div>

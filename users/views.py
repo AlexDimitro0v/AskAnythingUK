@@ -469,16 +469,20 @@ def settings(request):
 
         elif "cancel-subscription" in request.POST:
             curr_user = UserProfile.objects.get(user=request.user)
-            if not curr_user.premium:
-                redirect('/settings/?tab=subscription')
-            result = gateway.subscription.cancel(curr_user.subscription_id)  # Cancel the subscription in Braintree
+            gateway.subscription.cancel(curr_user.subscription_id)  # Cancel the subscription in Braintree
             curr_user.premium = False
             curr_user.save()
             sweetify.success(request, "You successfully canceled your subscription", icon='success',
                              toast=True,
                              position='bottom-end',
                              )
-            print(result)
+            change_password_form = PasswordChangeForm(request.user, prefix='password-change')
+            public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
+            private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
+            image_form = ProfileImageForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          prefix='profile-image')
+
+        elif "subscription" in request.POST:
             change_password_form = PasswordChangeForm(request.user, prefix='password-change')
             public_info_form = PublicInformationForm(instance=request.user.userprofile, prefix='public-info')
             private_info_form = PrivateInformationForm(instance=request.user.userprofile, prefix='private-info')
