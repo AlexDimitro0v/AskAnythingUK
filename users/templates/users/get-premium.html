@@ -47,8 +47,13 @@
     </div>
 </div>
 <div style="background: #222233; padding: 40px; border-top: 1px #ccc solid;">
-  <h1 class="large-header" style="color: #AB5468">Get One Month Free</h1>
-  <p class="center-p" style="color: white">The first month is on us! Then just £9.99 a month.</p>
+  {% if not trial_used%}
+      <h1 class="large-header" style="color: #AB5468">Get One Month Free</h1>
+      <p class="center-p" style="color: white">The first month is on us! Then just £9.99 a month.</p>
+  {% else %}
+      <h1 class="large-header" style="color: #AB5468">Get the Perks Now</h1>
+      <p class="center-p" style="color: white">Just £9.99 a month.</p>
+  {% endif %}
   <a  href="{% url 'try-premium-page' %}"  style="text-decoration:none">
       <button class="btn btn-outline-danger" style="margin: 0 auto; display: block; border-width: 2px; font-size: 1.5em; margin-top: 20px; padding-left: 20px; padding-right: 20px">Try Premium</button>
   </a>

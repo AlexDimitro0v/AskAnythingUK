@@ -31,6 +31,7 @@ class UserProfile(models.Model):
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')  # the dir where the images get uploaded to
     user = models.OneToOneField(User, on_delete=models.CASCADE)   # if the user is deleted then also delete the profile
     premium = models.BooleanField(default=False)
+    trial_used = models.BooleanField(default=False)
     subscription_id = models.CharField(max_length=50, default='0')
     is_online = models.BooleanField(default=False)
     most_common_words = ArrayField(
