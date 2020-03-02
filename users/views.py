@@ -310,10 +310,6 @@ def settings(request):
     # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
     next_link = request.GET.get('next', '')
-    if request.user.userprofile.premium:
-        next_billing_day = gateway.subscription.find(request.user.userprofile.subscription_id).next_billing_date
-    else:
-        next_billing_day = None
     print(request.POST)
     if request.method == 'POST':
         if 'password-change' in request.POST:
@@ -519,6 +515,10 @@ def settings(request):
 
     user_skills_ids = Specialism.objects.filter(feedbacker=request.user)
     user_skills = [str(skill.category) for skill in user_skills_ids]
+    if request.user.userprofile.premium:
+        next_billing_day = gateway.subscription.find(request.user.userprofile.subscription_id).next_billing_date
+    else:
+        next_billing_day = None
 
     context = {'change_password_form': change_password_form,
                'private_info_form': private_info_form,
