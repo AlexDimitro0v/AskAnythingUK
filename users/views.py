@@ -312,6 +312,8 @@ def settings(request):
     next_link = request.GET.get('next', '')
     if request.user.userprofile.premium:
         next_billing_day = gateway.subscription.find(request.user.userprofile.subscription_id).next_billing_date
+    else:
+        next_billing_day = None
     print(request.POST)
     if request.method == 'POST':
         if 'password-change' in request.POST:
