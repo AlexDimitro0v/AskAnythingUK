@@ -222,12 +222,6 @@ def get_premium(request):
 
 @login_required
 def try_premium(request):
-    if request.user.userprofile.payment_method is False:
-        sweetify.warning(request, 'Please provide a payment method.',
-                         buttons=False,
-                         icon='warning'
-                         )
-        return redirect('/settings/?tab=billing&next=/get-premium/')
 
     curr_user = UserProfile.objects.get(user=request.user)
 
@@ -261,6 +255,13 @@ def try_premium(request):
         token = payment_token.payment_method.token
         print("New")
 
+    if request.user.userprofile.payment_method is False:
+        sweetify.warning(request, 'Please provide a payment method.',
+                         buttons=False,
+                         icon='warning'
+                         )
+        return redirect('/settings/?tab=billing&next=/get-premium/')
+    
     if not curr_user.premium:
         # plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
         # curr_user.premium_ends = plus_one_month
