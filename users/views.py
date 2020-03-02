@@ -310,6 +310,8 @@ def settings(request):
     # TODO: Use a look-up dictionary to optimize the code
     active = request.GET.get('tab', '')
     next_link = request.GET.get('next', '')
+    if request.user.userprofile.premium:
+        next_billing_day = gateway.subscription.find(request.user.userprofile.subscription_id).next_billing_date
     print(request.POST)
     if request.method == 'POST':
         if 'password-change' in request.POST:
@@ -531,7 +533,7 @@ def settings(request):
                'next_link': next_link,
                "is_premium": request.user.userprofile.premium,
                "trial_used": request.user.userprofile.trial_used,
-               "next_billing_date": gateway.subscription.find(request.user.userprofile.subscription_id).next_billing_date,
+               "next_billing_date": next_billing_day,
                'title': '| Settings'
                }
     return render(request, 'users/settings.html', context)
