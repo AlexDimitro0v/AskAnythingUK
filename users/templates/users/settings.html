@@ -269,10 +269,36 @@
                         <div class="cardbody">
                             {% if is_premium %}
                                 <p style="font-family: 'Lexend';">You are currently on a premium plan. We will automatically renew your monthly subscription on {{ next_billing_date|date:"F d, Y"}} and charge you £9.99.</p>
-                                <form method="POST" action="/settings/?tab=subscription">
+                                <form id="cancel" method="POST" action="/settings/?tab=subscription">
                                     {% csrf_token %}
-                                    <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="cancel-subscription">Cancel Subscription</button>
+                                    <input name="cancel-subscription" hidden>
                                 </form>
+                                <button id="cancel-subscription" type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button">Cancel Subscription</button>
+                                <div id="overlay_apply" class="full-screen overlay">
+                                  <div class="full-screen">
+                                      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+                                        <div class="decorative-text-wrapper noselect">Are you sure?</div>
+                                        <div class="cardbody"  style="margin-top:50px">
+                                          <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                                            Are you sure you want to cancel your subscription?
+                                          </p>
+                                          {% if not trial_used%}
+                                              <p style="font-weight: 500; font-size: 1em; text-align: center">
+                                                  You will lose all of your perks.
+                                                  <br>
+                                                  You will not be able to use the 1 month free trial period again.
+                                              </p>
+                                          {% endif %}
+                                          <div class="border-top pt-2 mt-3"></div>
+
+                                          <div class="noselect button-corner">
+                                            <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">No</button>
+                                            <button class="btn btn-outline-info" id="yes">Yes</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                </div>
                             {% else %}
                                 <p style="font-family: 'Lexend';">You don't currently have a premium plan. Get a monthly automatically-billed premium account for £9.99.{% if not trial_used %} The first month is on us.{%endif%}</p>
                                 <form method="POST" action="/get-premium/">
@@ -433,5 +459,25 @@
 </div>
 
 <script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
+<script>
+    $(document).ready(function () {
+      $('#yes').click(function(e) {
+        $('#cancel').submit();
+      });
+    });
+</script>
 
+<script>
+  $(document).ready(function () {
+    $('#cancel-subscription').click(function(e) {
+      $('#overlay_apply').css("display","block");
+      $('body').css("overflow","hidden");
+
+    });
+    $('#no_apply').click(function(e) {
+      $('#overlay_apply').css("display","none");
+      $('body').css("overflow","visible");
+    });
+  });
+</script>
 {% endblock %}
