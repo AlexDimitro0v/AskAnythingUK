@@ -120,12 +120,12 @@
           </p>
           <div class="border-top pt-1 mt-1"></div>
 
-            <form method="POST" action="/choose-feedbacker/" id="payment-form">
+            <form method="POST" action="/choose-feedbacker/" id="payment-form-outer-{{ forloop.counter }}">
               {% csrf_token %}
               <div id="payment-form{{forloop.counter}}" style="text-align:center;">
                 <span style="font-weight: 600; font-size: 1.2em; text-align: center">Payment</span>
                 <!--input elements for user card data-->
-                <input type="hidden" name="payment_method_nonce">
+                <input type="hidden" name="payment_method_nonce" id="payment_method_nonce{{ forloop.counter }}">
                 <input name="feedback_request_id" value="{{ feedback_request.id }}" hidden>
                 <input name="feedbacker_username" value="{{ candidate.feedbacker }}" hidden>
               </div>
@@ -146,7 +146,7 @@
 
     <script>
        $(document).ready(function () {
-       var form = document.getElementById('payment-form');
+       var form = document.getElementById('payment-form-outer-{{ forloop.counter }}');
           braintree.setup("{{ client_token }}", "dropin", {
             container: "payment-form{{forloop.counter}}",
             paypal: {
@@ -162,7 +162,7 @@
                     buttons: false,
                     timer: 2000,
                    });
-                   document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
+                   $("#payment_method_nonce{{ forloop.counter }}").val(payload.nonce);
                    form.submit()
             }
           });
