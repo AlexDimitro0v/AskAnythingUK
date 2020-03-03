@@ -8,7 +8,12 @@
 <div class="large-area" style="max-width: 600px">
     <div class="decorative-text-wrapper noselect">Log In</div>
         <div class="cardbody" style="margin-bottom:0px;">
-            <form action="/login/" method="POST" id="loginForm" novalidate>
+            {% if request.GET.next %}
+              <form action="/login/?next={{request.GET.next}}" method="POST" id="loginForm" novalidate>
+            {% else %}
+              <form action="/login/" method="POST" id="loginForm" novalidate>
+            {% endif %}
+            {{request.GET.param1}}
                 {% csrf_token %}
                 {{ form|crispy }}  <!-- Crispy Forms do the design for us -->
                 <div class="form-group" style="margin-top:20px;">

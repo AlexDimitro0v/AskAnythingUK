@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .documents import FeedbackRequestDocument
 from django.db.models import F                      # used to compare 2 instances or fields of the same model
 from main.models import Area
@@ -11,6 +11,9 @@ from main.functions import get_time_delta
 # The feedback requests are indexed by title and text
 def search(request):
     query = request.GET.get('q')
+
+    if not query:
+        return redirect("home-page")
 
     requests = None
     time_deltas = []

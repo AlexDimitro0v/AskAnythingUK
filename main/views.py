@@ -69,8 +69,11 @@ def feedback_requests(request):
 
     if not area_filter:
         return redirect('home-page')
-
-    area = Area.objects.get(id=area_filter)
+    try:
+        area = Area.objects.get(id=area_filter)
+    except:
+        # Area does not exist
+        return redirect('home-page')
 
     # Get all requests that do not have an assigned feedbacker by checking if feedbackee = feedbacker
     # (excluding the requests from the currently logged in user)
