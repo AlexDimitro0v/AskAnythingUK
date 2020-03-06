@@ -10,8 +10,8 @@ class NewFeedbackRequestForm(forms.Form):
     area = forms.IntegerField()
     title = forms.CharField()
     maintext = forms.CharField()
-    reward = forms.IntegerField()
-    timelimit = forms.IntegerField()
+    reward = forms.IntegerField(min_value=5)
+    timelimit = forms.IntegerField(min_value=1)
 
     class Meta:
         model = FeedbackRequest
@@ -27,11 +27,11 @@ class FeedbackerCommentsForm(forms.Form):
 
 
 class FeedbackerRatingForm(forms.Form):
-    overall = forms.IntegerField()
-    quality = forms.IntegerField()
-    speed = forms.IntegerField()
-    communication = forms.IntegerField()
-    review = forms.CharField()
+    overall = forms.IntegerField(min_value=0,max_value=5)
+    quality = forms.IntegerField(min_value=0,max_value=5)
+    speed = forms.IntegerField(min_value=0,max_value=5)
+    communication = forms.IntegerField(min_value=0,max_value=5)
+    review = forms.CharField(required=False)
 
     class Meta:
         model = Rating
