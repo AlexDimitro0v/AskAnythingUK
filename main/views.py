@@ -197,7 +197,6 @@ def feedback_requests(request):
         request_tags = [tag.category for tag in request_tag_ids]          # get all tag categories instances
         tags.append([tag.name for tag in request_tags])                   # finally store the name of those categories
 
-
     time_deltas = []
     curr_time = datetime.now(timezone.utc)
     for feedback_request in sorted_feedback_requests:
@@ -208,7 +207,8 @@ def feedback_requests(request):
     for feedback_request in sorted_feedback_requests:
         if has_premium(feedback_request.feedbackee):
             premium_requests.append(True)
-        else: premium_requests.append(False)
+        else:
+            premium_requests.append(False)
 
     new_requests = []
     for feedback_request in sorted_feedback_requests:
@@ -245,10 +245,9 @@ def dashboard(request):
     my_feedbacker_applications_ids = FeedbackerCandidate.objects.values_list('feedback', flat=True).filter(
         feedbacker=request.user)
     my_feedbacker_applications = FeedbackRequest.objects.filter(pk__in=set(my_feedbacker_applications_ids)).exclude(feedbacker=request.user)
-    my_feedback_requests = FeedbackRequest.objects.filter(feedbackee=request.user)
 
     my_feedback_requests = []
-    for feedback_request in FeedbackRequest.objects.filter(feedbackee=request.user):
+    for feedback_request in FeedbackRequest.objects.filter(feedbackee=request.user).order_by('-date_posted'):
         try:
             if not (feedback_request.feedbacker_rated and Purchase.objects.get(feedback=feedback_request).is_completed):
                 my_feedback_requests.append(feedback_request)
@@ -256,7 +255,7 @@ def dashboard(request):
             my_feedback_requests.append(feedback_request)
 
     my_jobs = []
-    for job in FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F("feedbacker")):
+    for job in FeedbackRequest.objects.filter(feedbacker=request.user).exclude(feedbackee=F("feedbacker")).order_by('-date_started'):
         try:
             if not (job.feedbacker_rated and Purchase.objects.get(feedback=job).is_completed):
                 my_jobs.append(job)
@@ -503,7 +502,7 @@ def feedback_request(request):
     if messages:
         latest_user_message_date = messages.latest('date').date.strftime("%Y-%m-%d %H:%M:%S.%f")
     try:
-        if request.user.username.payment_method:
+        if request.user.userprofile.payment_method:
             braintree_client_token = braintree.ClientToken.generate({"customer_id": request.user.username})
         else:
             braintree_client_token = braintree.ClientToken.generate({})
