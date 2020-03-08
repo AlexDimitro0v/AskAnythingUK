@@ -503,7 +503,10 @@ def feedback_request(request):
     if messages:
         latest_user_message_date = messages.latest('date').date.strftime("%Y-%m-%d %H:%M:%S.%f")
     try:
-        braintree_client_token = braintree.ClientToken.generate({"customer_id": request.user.username})
+        if request.user.username.payment_method:
+            braintree_client_token = braintree.ClientToken.generate({"customer_id": request.user.username})
+        else:
+            braintree_client_token = braintree.ClientToken.generate({})
     except:
         braintree_client_token = braintree.ClientToken.generate({})
 
