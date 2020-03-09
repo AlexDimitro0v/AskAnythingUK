@@ -79,11 +79,11 @@ class Forms(TestCase):
 
         form_data = {"area" : 1, "title" : "Test", "maintext" : "Test", "reward" : -10, "timelimit" : 20}
         form = NewFeedbackRequestForm(data=form_data)
-        self.assertTrue(not form.is_valid())
+        self.assertFalse(form.is_valid())
 
         form_data = {"area" : 1, "title" : "Test", "maintext" : "Test", "reward" : -10, "timelimit" : 0}
         form = NewFeedbackRequestForm(data=form_data)
-        self.assertTrue(not form.is_valid())
+        self.assertFalse(form.is_valid())
 
     def test_feedback_form(self):
         form_data = {"comments" : "Test"}

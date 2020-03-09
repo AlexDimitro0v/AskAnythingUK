@@ -51,41 +51,103 @@
 
             </div>
     </div>
-    <div class="full-screen" style="background-color: #fff">
+    <div class="full-screen full-screen-image" style="background-image: url({% static 'img/explodingbg.jpg' %}); background-color: rgba(255,255,255,0.8);   background-size: 100vw;">
         <div class="container">
-            <div class="row">
-                <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-                    <img src="{% static 'img/test-icon.png' %}" style="height: 200px; text-align: center; margin: 0 auto"/>
-                    <h3 style="margin-top: 10px;">SECURITY</h3>
-                    <div class="border-top pt-1"></div>
-                    <p style="text-align: justify">
-                        We understand that users care about their data and do not want third parties to steal their private
-                        information or look through their feedback data. Therefore, we are doing everything we can to keep
-                        their data secure, from using secure protocols for data transmission to using end-to-end encryption
-                        for all files uploaded to our servers.
-                    </p>
+          <div style="background: none; width: 95%; min-width: 40px; top: 0">
+            <h2 class="large-header" style="font-weight: 400; font-family: Lexend">What is AskAnything?</h2>
+            <div class="border-top pt-3 mt-3" style="border-color: #777 !important"></div>
+            <h2 class="sub-header2">AskAnything is a <span class="sub-header2" style="color: #ab5468; font-size: 1em">universal feedbacking website</span>, which allows you to unleash your full potential. Whether you're the next big writer, composer or software engineer, on AskAnything you can get <span class="sub-header2" style="color: #ab5468; font-size: 1em">comprehensive feedback from the best professionals</span> on anything you do.</h2>
+            <br><br><br><br><br>
+            <h2 class="large-header" style="font-weight: 400; font-family: Lexend">How does it work?</h2>
+            <div class="border-top pt-3 mt-3" style="border-color: #777 !important"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm" style="text-align: center; margin: 15px">
+                      <span class="custom-column" style="display: flex">
+                        <span class="number-circle">1</span>
+                        <span class="text-next-to-circle">POST YOUR FEEDBACK REQUEST</span>
+                      </span>
+                    </div>
+                    <div class="col-sm" style="text-align: center; margin: 15px">
+                      <span class="custom-column" style="display: flex">
+                        <span class="number-circle">2</span>
+                        <span class="text-next-to-circle">CHOOSE THE BEST FEEDBACKER CANDIDATE</span>
+                      </span>
+                    </div>
+                    <div class="col-sm" style="text-align: center; margin: 15px">
+                      <span class="custom-column" style="display: flex">
+                        <span class="number-circle">3</span>
+                        <span class="text-next-to-circle">YOUR FEEDBACKER STARTS WORKING</span>
+                      </span>
+                    </div>
+                  </div>
+                  <br>
+                    <div class="row">
+                    <div class="col-sm" style="text-align: center; margin: 15px">
+                      <span class="custom-column" style="display: flex">
+                        <span class="number-circle">4</span>
+                        <span class="text-next-to-circle">FEEDBACK DELIVERED BEFORE DEADLINE</span>
+                      </span>
+                    </div>
+                    <div class="col-sm" style="text-align: center; margin: 15px">
+                      <span class="custom-column" style="display: flex">
+                        <span class="number-circle">5</span>
+                        <span class="text-next-to-circle">RATE FEEDBACKER AND RELEASE REWARD</span>
+                      </span>
+                    </div>
+                    <div class="col-sm" style="text-align: center; margin: 15px">
+                      <span class="custom-column" style="display: flex">
+                        <span class="number-circle">6</span>
+                        <span class="text-next-to-circle">ENJOY FEEDBACK 🎉</span>
+                      </span>
+                    </div>
                 </div>
-                <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-                    <img src="{% static 'img/test-icon.png' %}" style="height: 200px"/>
-                    <h3 style="margin-top: 10px;">SMART RECOMMENDATIONS</h3>
-                    <div class="border-top pt-1"></div>
-                    <p style="text-align: justify">
+            </div>
+            <br><br><br><br><br>
+            <h2 class="large-header" style="font-weight: 400; font-family: Lexend">Why AskAnything?</h2>
+            <div class="border-top pt-3 mt-3" style="border-color: #777 !important"></div>
+<br>
+            <div class="container">
+                  <div style="text-align: center; margin: 15px">
+                    <span class="custom-column" style="display: flex">
+                      <img src="{% static 'img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
+                      <span style="margin-left: 20px">
+                      <h3 class="text-next-to-circle" style="margin-left: 0; font-family: Lexend; margin-bottom: 0; height: 40px">SECURITY 🔒</h3>
+                      <p style="text-align: justify; margin-top: 0; font-family: Lexend; font-size: 1.1em">
+                          We understand that users care about their data and do not want third parties to steal their private
+                          information or look through their feedback data. Therefore, we are doing everything we can to keep
+                          their data secure, from using secure protocols for data transmission to using end-to-end encryption
+                          for all files uploaded to our servers.
+                      </p>
+                      </span>
+                    </span>
+                    <br><br>
+                    <span class="custom-column" style="display: flex">
+                      <img src="{% static 'img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
+                      <span style="margin-left: 20px">
+                      <h3 class="text-next-to-circle" style="font-family: Lexend; margin-bottom: 0; height: 40px; margin-left: 0">SMART RECOMMENDATIONS 🤓</h3>
+                      <p style="text-align: justify; margin-top: 0; font-family: Lexend; font-size: 1.1em">
                         Sometimes it is time consuming for feedbackers to look through feedback requests and find the ones
                         they find interesting. That is why we have implemented smart natural language processing algorithms
                         to deliver tailored recommendations straight into their email inboxes.
-                    </p>
-                </div>
-                <div class="col-sm landing-card" style="text-align: center; margin: 15px">
-                    <img src="{% static 'img/test-icon.png' %}" style="height: 200px"/>
-                    <h3 style="margin-top: 10px;">SAFEGUARDING QUALITY</h3>
-                    <div class="border-top pt-1"></div>
-                    <p style="text-align: justify">
-                        Feedbackees need assurance that they are not throwing their Money out of the window when paying for
+                        </p>
+                      </span>
+                    </span>
+                    <br><br>
+                    <span class="custom-column" style="display: flex">
+                      <img src="{% static 'img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
+                      <span style="margin-left: 20px">
+                      <h3 class="text-next-to-circle" style="margin-left: 0; font-family: Lexend; margin-bottom: 0; height: 40px">SAFEGUARDING QUALITY 👌</h3>
+                      <p style="text-align: justify; margin-top: 0; font-family: Lexend; font-size: 1.1em">
+                        Feedbackees need assurance that they are not throwing their money out of the window when paying for
                         feedback. We have them covered. Our algorithms are working hard to detect feedbackers who are trying
                         to cheat the system by writing their own reviews and not delivering good quality feedback.
-                    </p>
+                        </p>
+                      </span>
+                    </span>
                 </div>
-            </div>
+              </div>
+          </div>
         </div>
     </div>
     <div class="full-screen full-screen-image" style="background-image: url({% static 'img/landing-page.jpg' %});   background-color: rgba(255,255,255,0.9);">

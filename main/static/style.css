@@ -841,7 +841,7 @@ color: #1F4D8A;
 
 .large-header {
   text-align: center;
-  font-size: 3.5em;
+  font-size: 3em;
   margin-bottom: 10px;
   color: #1F4D8A;
   font-weight: 600
@@ -852,9 +852,41 @@ color: #1F4D8A;
   font-size: 1.6em;
   margin-bottom: 20px;
   margin-top: 20px;
-  font-weight: 600
+  font-weight: 600;
+  font-family: Lexend;
 }
 
+.sub-header2 {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 400;
+  line-height: 1.8;
+  color: #777;
+  font-family: Lexend;
+}
+
+.number-circle {
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 30px;
+    background: #ab5468;
+    border-radius: 50%;
+    display: inline-block
+}
+
+.text-next-to-circle {
+  margin-top: 10px;
+  font-weight: 600;
+  height: 50px;
+  flex: 1;
+  margin-top: 0;
+  margin-left: 10px;
+  text-align: left;
+  font-family: Lexend;
+}
 .center-p {
   text-align: center;
   max-width: 700px;
