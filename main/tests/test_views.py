@@ -4,7 +4,10 @@ from django.test import Client
 from django.urls import reverse
 from main.models import Area
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 import unittest
+import time
 
 def create_user():
     user = User.objects.create(username='testuser',is_active=True,email="test@test.com")
@@ -122,6 +125,44 @@ class SubmittingForms(unittest.TestCase):
         self.driver.find_element_by_id('id_password').send_keys("lukasadomaitis")
         self.driver.find_element_by_id('login_button').click()
         self.assertIn("http://localhost:8000/", self.driver.current_url)
+
+    def test_new_feedback_request(self):
+        self.driver.get("http://localhost:8000/login/")
+        if "http://localhost:8000/login/" == self.driver.current_url:
+            self.driver.find_element_by_id('id_username').send_keys("lukas")
+            self.driver.find_element_by_id('id_password').send_keys("lukasadomaitis")
+            self.driver.find_element_by_id('login_button').click()
+
+        self.driver.get("http://localhost:8000/new-feedback-request/")
+
+        # Unsuccessful new feedback request
+        self.driver.find_element_by_id('submit_button').click()
+        self.assertIn("http://localhost:8000/new-feedback-request/", self.driver.current_url)
+
+        self.driver.get("http://localhost:8000/new-feedback-request/")
+
+        # Unsuccessful new feedback request
+        self.driver.find_element_by_id('title').send_keys("First")
+        self.driver.find_element_by_id('description').send_keys("Last")
+        self.driver.find_element_by_id('reward').send_keys("-10")
+        self.driver.find_element_by_id('limit').send_keys("-10")
+        self.driver.find_element_by_id('file-upload').send_keys("C:\\___\\logo.png")
+        self.driver.find_element_by_id('submit_button').click()
+        self.assertIn("http://localhost:8000/new-feedback-request/", self.driver.current_url)
+
+        self.driver.get("http://localhost:8000/new-feedback-request/")
+
+        # Successful new feedback request
+        self.driver.find_element_by_id('title').send_keys("First")
+        self.driver.find_element_by_id('description').send_keys("Last")
+        self.driver.find_element_by_id('reward').send_keys("10")
+        self.driver.find_element_by_id('limit').send_keys("10")
+        self.driver.find_element_by_id('file-upload').send_keys("C:\\___\\logo.png")
+
+        self.driver.find_element_by_id('submit_button').click()
+        time.sleep(5)
+        self.assertIn("http://localhost:8000/dashboard/", self.driver.current_url)
+
 
     def tearDown(self):
         self.driver.quit
