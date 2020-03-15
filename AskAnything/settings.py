@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'mailer',
     'django_user_agents',
+    'coverage',
 ]
 
 

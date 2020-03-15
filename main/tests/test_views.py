@@ -2,16 +2,14 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
 from django.urls import reverse
-from .models import Area
-from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm, ApplicationForm, MessageForm
+from main.models import Area
+from selenium import webdriver
+import unittest
 
-def create_and_login(test):
+def create_user():
     user = User.objects.create(username='testuser',is_active=True,email="test@test.com")
     user.set_password('12345')
     user.save()
-
-    test.client = Client()
-    test.client.login(username='testuser', password='12345')
 
     # Add the following pre-defined categories:
     area_names = ["Video & Animation", "Graphics & Design", "Writing", "Translation", "Technology", "Music & Audio"]
@@ -20,10 +18,16 @@ def create_and_login(test):
             area = Area(name=name)
             area.save()
 
+def login_user(test):
+    test.client = Client()
+    test.client.login(username='testuser', password='12345')
+
+
 # Test all pages functional for logged-in users
 class LoggedIn(TestCase):
     def setUp(self):
-        create_and_login(self)
+        create_user()
+        login_user(self)
 
     def test_logged_in_pages(self):
         # All of these should be accessible
@@ -68,57 +72,56 @@ class LoggedIn(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class Forms(TestCase):
+class SubmittingForms(unittest.TestCase):
     def setUp(self):
-        create_and_login(self)
+        login_user(self)
+        self.driver = webdriver.Chrome()
 
-    def test_new_feedback_request(self):
-        form_data = {"area" : 1, "title" : "Test", "maintext" : "Test", "reward" : 500, "timelimit" : 20}
-        form = NewFeedbackRequestForm(data=form_data)
-        self.assertTrue(form.is_valid())
+    def test_registration(self):
+        self.driver.get("http://localhost:8000/register/")
 
-        form_data = {"area" : 1, "title" : "Test", "maintext" : "Test", "reward" : -10, "timelimit" : 20}
-        form = NewFeedbackRequestForm(data=form_data)
-        self.assertFalse(form.is_valid())
+        # Failed register
+        self.driver.find_element_by_id('register_button').click()
+        self.assertIn("http://localhost:8000/register/", self.driver.current_url)
+        self.driver.get("http://localhost:8000/register/")
 
-        form_data = {"area" : 1, "title" : "Test", "maintext" : "Test", "reward" : -10, "timelimit" : 0}
-        form = NewFeedbackRequestForm(data=form_data)
-        self.assertFalse(form.is_valid())
+        # Failed register
+        self.driver.find_element_by_id('id_first_name').send_keys("First")
+        self.driver.find_element_by_id('id_last_name').send_keys("Last")
+        self.driver.find_element_by_id('id_username').send_keys("TestName")
+        self.driver.find_element_by_id('id_email').send_keys("test@testtest.com")
+        self.driver.find_element_by_id('id_password1').send_keys("passwordtestpassword")
+        self.driver.find_element_by_id('id_password2').send_keys("differenttestpassword")
 
-    def test_feedback_form(self):
-        form_data = {"comments" : "Test"}
-        form = FeedbackerCommentsForm(data=form_data)
-        self.assertTrue(form.is_valid())
+        self.driver.find_element_by_id('register_button').click()
+        self.assertIn("http://localhost:8000/register/", self.driver.current_url)
+        self.driver.get("http://localhost:8000/register/")
 
-        # No comments required
-        form_data = {}
-        form = FeedbackerCommentsForm(data=form_data)
-        self.assertTrue(form.is_valid())
+        # Successful register
+        self.driver.find_element_by_id('id_first_name').send_keys("First")
+        self.driver.find_element_by_id('id_last_name').send_keys("Last")
+        self.driver.find_element_by_id('id_username').send_keys("TestName")
+        self.driver.find_element_by_id('id_email').send_keys("test@testtest.com")
+        self.driver.find_element_by_id('id_password1').send_keys("passwordtestpassword")
+        self.driver.find_element_by_id('id_password2').send_keys("passwordtestpassword")
 
+        self.driver.find_element_by_id('register_button').click()
+        self.assertIn("http://localhost:8000/landing-page/", self.driver.current_url)
 
-    def test_rating_form(self):
-        form_data = {"overall" : 5, "quality" : 4, "speed" : 1, "communication" : 2, "review" : "Test"}
-        form = FeedbackerRatingForm(data=form_data)
-        self.assertTrue(form.is_valid())
+    def test_login(self):
+        self.driver.get("http://localhost:8000/login/")
 
-        form_data = {"overall" : 5, "quality" : 4, "speed" : 1, "communication" : 2}
-        form = FeedbackerRatingForm(data=form_data)
-        self.assertTrue(form.is_valid())
+        # Failed login
+        self.driver.find_element_by_id('id_username').send_keys("lukas")
+        self.driver.find_element_by_id('id_password').send_keys("afsrgthrgsefseguisnos")
+        self.driver.find_element_by_id('login_button').click()
+        self.assertIn("http://localhost:8000/login/", self.driver.current_url)
 
-        form_data = {"overall" : -1, "quality" : 4, "speed" : 1, "communication" : 2}
-        form = FeedbackerRatingForm(data=form_data)
-        self.assertFalse(form.is_valid())
+        # Successful login
+        self.driver.find_element_by_id('id_username').send_keys("lukas")
+        self.driver.find_element_by_id('id_password').send_keys("lukasadomaitis")
+        self.driver.find_element_by_id('login_button').click()
+        self.assertIn("http://localhost:8000/", self.driver.current_url)
 
-        form_data = {"overall" : 6, "quality" : 4, "speed" : 1, "communication" : 2}
-        form = FeedbackerRatingForm(data=form_data)
-        self.assertFalse(form.is_valid())
-
-    def test_application_form(self):
-        form_data = {"application" : "Test"}
-        form = ApplicationForm(data=form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_message_form(self):
-        form_data = {"message" : "Test"}
-        form = MessageForm(data=form_data)
-        self.assertTrue(form.is_valid())
+    def tearDown(self):
+        self.driver.quit
