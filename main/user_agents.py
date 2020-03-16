@@ -2,6 +2,7 @@ from django_user_agents.utils import get_user_agent
 from ipware import get_client_ip
 from .models import Device, Rating
 
+
 def save_device_info(request):
     ip, is_routable = get_client_ip(request)
     browser_family = request.user_agent.browser.family
