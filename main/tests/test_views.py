@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import unittest
 import time
 
+
 def create_user():
     user = User.objects.create(username='testuser',is_active=True,email="test@test.com")
     user.set_password('12345')
@@ -20,6 +21,7 @@ def create_user():
         if not Area.objects.filter(name=name).exists():
             area = Area(name=name)
             area.save()
+
 
 def login_user(test):
     test.client = Client()
@@ -58,7 +60,6 @@ class LoggedIn(TestCase):
 
         response = self.client.get(reverse('search-page')+"?q=Test")
         self.assertEqual(response.status_code, 200)
-
 
     def test_logout(self):
         response = self.client.get(reverse('logout-page'))
@@ -162,7 +163,6 @@ class SubmittingForms(unittest.TestCase):
         self.driver.find_element_by_id('submit_button').click()
         time.sleep(5)
         self.assertIn("http://localhost:8000/dashboard/", self.driver.current_url)
-
 
     def tearDown(self):
         self.driver.quit

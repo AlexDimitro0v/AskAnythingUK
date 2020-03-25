@@ -28,6 +28,7 @@ def save_device_info(request):
     d.save()
     return d
 
+
 def check_for_fraud(feedbacker, device):
     rating_feedbackees = Rating.objects.values_list('feedbackee', flat=True).filter(feedbacker=feedbacker)
     devices = Device.objects.filter(user__in=set(rating_feedbackees))

@@ -29,7 +29,7 @@ def search(request):
         curr_time = datetime.now(timezone.utc)
         for feedback_request in requests:
             time_posted = feedback_request.date_posted
-            time_deltas.append(get_time_delta(time_posted,curr_time))
+            time_deltas.append(get_time_delta(time_posted, curr_time))
     else:
         page_obj = None
     context = {

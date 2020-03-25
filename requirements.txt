@@ -23,3 +23,4 @@ user-agents==2.1
 django-user-agents==0.4.0
 django-ipware==2.1.0
 coverage==5.0.3
+selenium==3.141.0

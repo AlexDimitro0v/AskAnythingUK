@@ -26,7 +26,6 @@ class Forms(TestCase):
         form = FeedbackerCommentsForm(data=form_data)
         self.assertTrue(form.is_valid())
 
-
     def test_rating_form(self):
         form_data = {"overall" : 5, "quality" : 4, "speed" : 1, "communication" : 2, "review" : "Test"}
         form = FeedbackerRatingForm(data=form_data)
