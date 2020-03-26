@@ -10,13 +10,13 @@ class UserProfile(models.Model):
     """One-to-one relationship with the existing user model"""
     city = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    phone_number = PhoneNumberField(null=True)
-    dob = models.DateField(null=True)
+    phone_number = PhoneNumberField(blank=True)
+    dob = models.DateField(blank=True)
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
     messages_notifications = models.BooleanField(default=True)
     feedback_updates_notifications = models.BooleanField(default=True)
     smart_recommendations_notifications = models.BooleanField(default=True)

@@ -45,10 +45,10 @@ ALLOWED_HOSTS = ['*']
 # That's why anytime we create a new app we should add it to the list, so that Django can correctly search for templates
 # and modules (which deal with the databases)
 INSTALLED_APPS = [
-    'crispy_forms',
-    'phonenumber_field',
-    'sweetify',
-    'django_cleanup',           # to auto-delete old media files (like old profile images)
+    'crispy_forms',              # used to make forms more beautiful
+    'phonenumber_field',         # used to ensure real numbers are provided
+    'sweetify',                  # used for the alerts
+    'django_cleanup',            # to auto-delete old media files (like old profile images)
     'users.apps.UsersConfig',
     'main.apps.MainConfig',
     'django.contrib.admin',
@@ -57,11 +57,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'multiforloop',
-    'django_elasticsearch_dsl',
-    'mailer',
-    'django_user_agents',
-    'coverage',
+    'mailer',                    # used for the sending of emails
+    'multiforloop',              # allows having nested loops
+    'django_elasticsearch_dsl',  # wrapper used for searching
+    'django_user_agents',        # used for fraud prevention
+    'coverage',                  # used for testing
+    'django_nose'                # allows to run a specific test
 ]
 
 
