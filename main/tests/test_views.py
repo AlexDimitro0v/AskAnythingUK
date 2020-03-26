@@ -172,4 +172,4 @@ class SubmittingForms(unittest.TestCase):
         self.assertIn("http://localhost:8000/dashboard/", self.driver.current_url)
 
     def tearDown(self):
-        self.driver.quit
+        self.driver.quit()
