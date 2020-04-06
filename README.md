@@ -11,10 +11,10 @@ AskAnything is a project created by students of the University of Aberdeen for t
 ##  Table of Contents
 * [Overview](#AskAnything)
 * [Demo](#Demo)
-* [Setup](#Installation)
+* [Setup](#Installation-Instructions)
 * [Dependencies](#Dependencies)
 * [Third Party Libraries](#Third)
-* [Environment](#environment)
+* [Environment](#Third-party-libraries,-found-in-./main/static:)
 
 ## Demo
 [![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](#)
