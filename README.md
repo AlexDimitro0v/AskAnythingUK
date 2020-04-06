@@ -1,4 +1,3 @@
-
 <img align="left" height="50" width="50" src="./main/static/img/logo.png"> 
 
 # AskAnything
@@ -11,7 +10,6 @@ AskAnything is a project created by students of the University of Aberdeen for t
 * Štěpán Brychta
 
 ##  Table of Contents
-* [Overview](#AskAnything)
 * [Setup](#Installation)
 * [Dependencies](#Dependencies)
 * [Environment](#environment)
