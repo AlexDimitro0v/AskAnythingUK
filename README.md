@@ -8,16 +8,15 @@ AskAnything is a project created by students of the University of Aberdeen for t
 * Robert Rankine
 * Štěpán Brychta
 
-## Demo
-[![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](#)
-
-
 ##  Table of Contents
 * [Overview](#AskAnything)
 * [Demo](#Demo)
 * [Setup](#Installation)
 * [Dependencies](#Dependencies)
 * [Environment](#environment)
+
+## Demo
+[![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](#)
 
 ## Installation Instructions
 Requires [Python 3.x](https://www.python.org/downloads/) to run
