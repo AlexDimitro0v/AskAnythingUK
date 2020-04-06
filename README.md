@@ -1,7 +1,8 @@
 
-<img align="left" height="45" width="45" src="./main/static/img/logo.png"> 
+<img align="left" height="50" width="50" src="./main/static/img/logo.png"> 
 
 # AskAnything
+
 AskAnything is a project created by students of the University of Aberdeen for the year-long course **Software engineering and professional practise**.
 * Alexandar Dimitrov
 * Lukas Adomaitis 
@@ -11,7 +12,7 @@ AskAnything is a project created by students of the University of Aberdeen for t
 
 ##  Table of Contents
 * [Overview](#AskAnything)
-* [Setup](#Installation Instructions)
+* [Setup](#Installation)
 * [Dependencies](#Dependencies)
 * [Environment](#environment)
 
