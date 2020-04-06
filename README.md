@@ -35,7 +35,7 @@ DATABASES = {
      - Import the database into your PostgreSQL by typing ```psql -U postgres ask_anything < dbexport.pgsql```
      
 2. Enable ElasticSearch
-   ### Steps
+   - Steps
        - Download [ElasticSearch](https://www.elastic.co/downloads/elasticsearch?fbclid=IwAR2XbaY92npI5bsGvUCl4zK5UMS17sTKwAJrHt-69dYzC9jO26Ldyj5Lv-M)
        - Extract files from the downloaded archive, navigate your command line to the bin folder and run elasticsearch.bat by typing "elasticsearch" into the command line. 
        - Test that elasticsearch is working by typing "localhost:9200" into your browser. If it works, you will see something like this:
