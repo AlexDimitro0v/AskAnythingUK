@@ -11,18 +11,19 @@ AskAnything is a project created by students of the University of Aberdeen for t
 Requires [Python 3.x](https://www.python.org/downloads/) to run
 
 1. Setup local PostgreSQL in settings.py first. Example:
-```
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ask_anything',
-        'USER': 'postgres',
-        'PASSWORD': 'example_password',     # Note that you should use the password you set for your DB !!!
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+   - 
+   ```
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'ask_anything',
+            'USER': 'postgres',
+            'PASSWORD': 'example_password',     # Note that you should use the password you set for your DB !!!
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
     }
-}
-```
+    ```
    - Steps
      - Download the newest version of PostgreSQL on https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
      - Set your password and remember it - you should use the same password in the settings.py file
