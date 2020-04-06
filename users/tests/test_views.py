@@ -11,7 +11,7 @@ DB_USER = User.objects.get(username="AlexD").userprofile
 
 
 # Test and simulate the users' web browser interaction with our website
-# To run the tests: python manage.py test users.tests.test_views
+# To run the tests --> python manage.py test users.tests.test_views
 class TestViews(StaticLiveServerTestCase):
 
         def setUp(self):
