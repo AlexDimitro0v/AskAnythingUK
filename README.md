@@ -9,7 +9,7 @@ AskAnything is a project created by students of the University of Aberdeen for t
 * Štěpán Brychta
 
 ## Demo
-[![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](https://giphy.com/gifs/d2ZhZTK55EA2yvTy/html5)
+[![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](#)
 
 
 ##  Table of Contents
@@ -108,7 +108,8 @@ Requires [Python 3.x](https://www.python.org/downloads/) to run
 * [django-ipware](https://pypi.org/project/django-ipware/)
 * [coverage](https://pypi.org/project/coverage/)
 * [selenium](https://pypi.org/project/selenium/)
-* [django-nose](https://pypi.org/project/django-nose/)
+* [django-nose](https://pypi.org/project/django-nose/) 
+
 **TIP**: You should use `pip install -r requirements.txt` to ensure you have all dependencies before running the application.
 
 ## Environment
