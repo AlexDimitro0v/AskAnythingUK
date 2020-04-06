@@ -1,4 +1,4 @@
-<img align="left" height="50" width="50" src="./main/static/img/logo.png">
+<img align="left" height="50" width="50" src="./main/static/img/logo.png"> 
 
 # AskAnything
 
