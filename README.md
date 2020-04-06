@@ -14,7 +14,7 @@ AskAnything is a project created by students of the University of Aberdeen for t
 * [Setup](#Installation-Instructions)
 * [Dependencies](#Dependencies)
 * [Third Party Libraries](#Third)
-* [Environment](#Third-party-libraries)
+* [Environment](#third-party-libraries)
 
 ## Demo
 [![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](#)
