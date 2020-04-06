@@ -11,53 +11,54 @@ AskAnything is a project created by students of the University of Aberdeen for t
 Requires [Python 3.x](https://www.python.org/downloads/) to run
 
 1. Setup local PostgreSQL in settings.py first. Example:
-   ```
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'ask_anything',
-            'USER': 'postgres',
-            'PASSWORD': 'example_password',     # Note that you should use the password you set for your DB !!!
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-        }
-    }
-    ```
+     ```
+     DATABASES = {
+         'default': {
+             'ENGINE': 'django.db.backends.postgresql',
+             'NAME': 'ask_anything',
+             'USER': 'postgres',
+             'PASSWORD': 'example_password',     # Note that you should use the password you set for your DB !!!
+             'HOST': '127.0.0.1',
+             'PORT': '5432',
+         }
+     }
+     ```
    - Steps
-     - Download the newest version of PostgreSQL on https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+     - Download the newest version of [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
      - Set your password and remember it - you should use the same password in the settings.py file
-     - Open PgAdmin (GUI) and create a new database called "ask_anything" next to the existing "postgres" database
-     - Add "C:\Program Files\PostgreSQL\12\bin" to your PATH Environment System and User Variables
-       - This can be done on PgAdmin4 in Preferences->Paths->Binary paths: - set PostgreSQL Binary Path variable to "C:\Program Files\PostgreSQL\12\bin" or wherever you have installed Postgres
+     - Open PgAdmin (GUI) and create a new database called ```ask_anything``` next to the existing ```postgres``` database
+     - Add ```C:\Program Files\PostgreSQL\12\bin``` to your PATH Environment System and User Variables
+       - This can be done on PgAdmin4 in Preferences->Paths->Binary paths: - set PostgreSQL Binary Path variable to ```C:\Program Files\PostgreSQL\12\bin``` or wherever you have installed Postgres
        - Or alternatively by editing the system environment variables on your computer and adding the path
      - Download the database [dbexport.pgsql](./dbexport.pgsql) file 
-     - Open and navigate your command line (terminal, bash, cmd..) to the directory where you downloaded the dbexport.pgsql file in
+     - Open and navigate your command line (terminal, bash, cmd..) to the directory where you downloaded the ```dbexport.pgsql``` file in
      - Import the database into your PostgreSQL by typing ```psql -U postgres ask_anything < dbexport.pgsql```
      
 2. Enable ElasticSearch. If you enable it correctly, you should see something like this:
-   ```
-   {
-      "name" : "DESKTOP-VH4ED6A",
-      "cluster_name" : "elasticsearch",
-      "cluster_uuid" : "VtUlVwNrT_edgms-_FjY2Q",
-      "version" : {
-        "number" : "7.5.2",
-        "build_flavor" : "default",
-        "build_type" : "zip",
-        "build_hash" : "8bec50e1e0ad29dad5653712cf3bb580cd1afcdf",
-        "build_date" : "2020-01-15T12:11:52.313576Z",
-        "build_snapshot" : false,
-        "lucene_version" : "8.3.0",
-        "minimum_wire_compatibility_version" : "6.8.0",
-        "minimum_index_compatibility_version" : "6.0.0-beta1"
-      },
-      "tagline" : "You Know, for Search"
-    }
-   ```
+    ```
+    {
+       "name" : "DESKTOP-VH4ED6A",
+       "cluster_name" : "elasticsearch",
+       "cluster_uuid" : "VtUlVwNrT_edgms-_FjY2Q",
+       "version" : {
+         "number" : "7.5.2",
+         "build_flavor" : "default",
+         "build_type" : "zip",
+         "build_hash" : "8bec50e1e0ad29dad5653712cf3bb580cd1afcdf",
+         "build_date" : "2020-01-15T12:11:52.313576Z",
+         "build_snapshot" : false,
+         "lucene_version" : "8.3.0",
+         "minimum_wire_compatibility_version" : "6.8.0",
+         "minimum_index_compatibility_version" : "6.0.0-beta1"
+       },
+       "tagline" : "You Know, for Search"
+     }
+     ```
    - Steps
        - Download [ElasticSearch](https://www.elastic.co/downloads/elasticsearch?fbclid=IwAR2XbaY92npI5bsGvUCl4zK5UMS17sTKwAJrHt-69dYzC9jO26Ldyj5Lv-M)
-       - Extract files from the downloaded archive, navigate your command line to the bin folder and run elasticsearch.bat by typing "elasticsearch" into the command line. 
-       - Test that elasticsearch is working by typing "localhost:9200" into your browser.
+       - Extract files from the downloaded archive, navigate your command line to the bin folder and run elasticsearch.bat by typing ```elasticsearch``` into the command line. 
+       - Test that elasticsearch is working by typing ```localhost:9200``` into your browser.
+       - Note: You must have at least Java8 installed to run ElasticSearch
        
 2. Download and unzip or simply clone this repo
 3. Open your command line and navigate to the directory of the project
