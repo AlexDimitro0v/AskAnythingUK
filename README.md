@@ -1,4 +1,4 @@
-<img align="left" height="65" width="65" src="./main/static/img/logo.png">
+<img align="left" height="55" width="55" src="./main/static/img/logo.png">
 
 # AskAnything 
 
@@ -8,6 +8,10 @@ AskAnything is a project created by students of the University of Aberdeen for t
 * Niven Tanzer
 * Robert Rankine
 * Štěpán Brychta
+
+## Demo
+[![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif](#)
+
 
 ##  Table of Contents
 * [Overview](#AskAnything)
