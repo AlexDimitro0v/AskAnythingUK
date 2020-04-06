@@ -1,7 +1,7 @@
 # [<img src="./main/static/img/logo.png" height="50" width="50"/>](logo.png) AskAnything
 <div>
      <img src="./main/static/img/logo.png" width="50" height="50"/> 
-     <h1>AskAnything<\h1>
+     <h1>AskAnything</h1>
 </div>
 
 
