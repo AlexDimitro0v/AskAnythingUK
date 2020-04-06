@@ -111,6 +111,12 @@ Requires [Python 3.x](https://www.python.org/downloads/) to run
 
 **TIP**: You should use `pip install -r requirements.txt` to ensure you have all dependencies before running the application.
 
+## Third party libraries, found in ./main/static:
+* [Card.js](https://github.com/jessepollak/card) used for the checkout process
+* [Cropper.min.js](https://fengyuanchen.github.io/cropperjs/) used for the profile image upload
+* [JSZip.min.js](https://stuk.github.io/jszip/) used for generating and reading zip files
+* [Rater.min.js](https://auxiliary.github.io/rater/) used for giving ratings/reviews
+
 ## Environment
 * Linux, Python 3
 * Windows, Python 3
