@@ -1,5 +1,7 @@
-# [<img src="./main/static/img/logo.png" height="50" width="50"/>](logo.png) AskAnything
-<img src ="/main/static/img/logo.png" height="50" width="50" style="float:left; margin:0 5px 0 0;"><h1 style="display: inline;">AskAnything</h1>
+# [<img src="./main/static/img/logo.png" height="50" width="50">](logo.png) AskAnything
+
+<h1><img src="./main/static/img/logo.png" height="50" width="50">AskAnything</h1>
+.post-text h1 img {margin-bottom:0}
 
 
 AskAnything is a project created by students of the University of Aberdeen for the year-long course **Software engineering and professional practise**.
