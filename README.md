@@ -13,8 +13,8 @@ AskAnything is a project created by students of the University of Aberdeen for t
 * [Demo](#Demo)
 * [Setup](#Installation-Instructions)
 * [Dependencies](#Dependencies)
-* [Third Party Libraries](#Third)
-* [Environment](#Third-party-libraries)
+* [Third Party Libraries](#Third-party-libraries,-found-in-./main/static:)
+* [Environment](#Environment)
 
 ## Demo
 [![AskAnything Demo](https://media.giphy.com/media/d2ZhZTK55EA2yvTy/giphy.gif)](#)
@@ -112,8 +112,7 @@ Requires [Python 3.x](https://www.python.org/downloads/) to run
 
 **TIP**: You should use `pip install -r requirements.txt` to ensure you have all dependencies before running the application.
 
-## Third party libraries
-**Found in ./main/static:**
+## Third party libraries, found in ./main/static:
 * [Card.js](https://github.com/jessepollak/card) used for the checkout process
 * [Cropper.min.js](https://fengyuanchen.github.io/cropperjs/) used for the profile image upload
 * [JSZip.min.js](https://stuk.github.io/jszip/) used for generating and reading zip files
