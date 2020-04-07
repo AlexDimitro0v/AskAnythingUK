@@ -30,8 +30,7 @@ LOGOUT_REDIRECT_URL = 'landing-page'
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "^m5ounntw1@bdo&07@o85^ia68iqod++@=hah95#ypaljj8w&0"
-# SECRET_KEY = config['DJANGO_SECRET_KEY']
+SECRET_KEY = config['DJANGO_SECRET_KEY']
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -62,7 +61,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',  # wrapper used for searching
     'django_user_agents',        # used for fraud prevention
     'coverage',                  # used for testing
-    'django_nose'                # allows to run a specific test
+    'django_nose',               # allows to run a specific test
     'storages'                   # allows us to store static files (files and images) on AWS
 ]
 
@@ -117,7 +116,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ask_anything',
         'USER': 'postgres',
-        'PASSWORD': 1234,                           # Note that you should use the password you set for your DB !!!!!!!
+        'PASSWORD': config['DB_PASSWORD'],    # Note that you should use the password you set for your DB !!!!!!!
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -180,11 +179,11 @@ MAILER_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "teamalpha050@gmail.com"
-EMAIL_HOST_PASSWORD = "AlphaTeam123"
+EMAIL_HOST_USER = config['EMAIL_USER']
+EMAIL_HOST_PASSWORD = config['EMAIL_PASS']
 
 
 # Braintree Payment Gateway Keys
-BRAINTREE_PUBLIC_KEY = "68xjvvfyfczfpbx7"
-BRAINTREE_PRIVATE_KEY = "5c5b4faf38028ce06d9822a0b4610e2c"
-BRAINTREE_MERCHANT_KEY = "zb9j7cw38qwwky8c"
+BRAINTREE_PUBLIC_KEY = config['BRAINTREE_PUBLIC_KEY']
+BRAINTREE_PRIVATE_KEY = config['BRAINTREE_PRIVATE_KEY']
+BRAINTREE_MERCHANT_KEY = config['BRAINTREE_MERCHANT_KEY']
