@@ -160,6 +160,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 
@@ -187,3 +188,16 @@ EMAIL_HOST_PASSWORD = config['EMAIL_PASS']
 BRAINTREE_PUBLIC_KEY = config['BRAINTREE_PUBLIC_KEY']
 BRAINTREE_PRIVATE_KEY = config['BRAINTREE_PRIVATE_KEY']
 BRAINTREE_MERCHANT_KEY = config['BRAINTREE_MERCHANT_KEY']
+
+
+# AWS Keys
+# Used to store all of the media files (profile images and files) on AWS
+AWS_ACCESS_KEY_ID = config['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = config['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = config['AWS_STORAGE_BUCKET_NAME']
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+AWS_S3_FILE_OVERWRITE = False                                       # DO NOT OVERWRITE FILES WITH THE SAME NAMES
+AWS_DEFAULT_ACL = None
+
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'   # To upload the media files to S3 directly

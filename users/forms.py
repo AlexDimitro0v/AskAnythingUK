@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
 from .models import UserProfile
 from PIL import Image
 from django.forms.widgets import DateInput
+from django.core.files.storage import default_storage as storage
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -96,7 +97,7 @@ class ProfileImageForm(forms.ModelForm):
         model = UserProfile
         fields = ['image', 'x', 'y', 'width', 'height']
 
-    def save(self):
+    def save(self, *args, **kwargs):
         photo = super(ProfileImageForm, self).save()
         if (self.cleaned_data.get('x') and self.cleaned_data.get('y') and self.cleaned_data.get('width')
                 and self.cleaned_data.get('height')):
@@ -108,6 +109,12 @@ class ProfileImageForm(forms.ModelForm):
             image = Image.open(photo.image)
             cropped_image = image.crop((x, y, w + x, h + y))
             resized_image = cropped_image.resize((200, 200), Image.ANTIALIAS)
-            resized_image.save(photo.image.path)
 
+            fh = storage.open(photo.image.name, "w")
+            picture_format = 'png'
+            resized_image.save(fh, picture_format)
+            fh.close()
+            # Issues with the Heroku AWS s3boto absolute paths solved thanks to:
+            # https://stackoverflow.com/questions/18215989/resize-thumbnails-django-heroku-backend-doesnt-support-absolute-paths
+            # https://stackoverflow.com/questions/14680323/django-getting-pil-image-save-method-to-work-with-amazon-s3boto-storage
             return photo

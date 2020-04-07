@@ -23,6 +23,7 @@ import main.notifications as notifications
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 import sweetify
+from AskAnything.settings import AWS_STORAGE_BUCKET_NAME
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from .user_agents import save_device_info, check_for_fraud
