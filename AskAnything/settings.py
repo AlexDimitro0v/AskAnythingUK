@@ -14,10 +14,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-# import json
+import json
 # Load the file that contains the sensitive information
-# with open('config.json') as config_file:
-#    config = json.load(config_file)
+with open('config.json') as config_file:
+    config = json.load(config_file)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'django_user_agents',        # used for fraud prevention
     'coverage',                  # used for testing
     'django_nose'                # allows to run a specific test
+    'storages'                   # allows us to store static files (files and images) on AWS
 ]
 
 
