@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku
 import json
 # Load the file that contains the sensitive information
 # with open('config.json') as config_file:
@@ -211,3 +212,4 @@ AWS_DEFAULT_ACL = None
 
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'   # To upload the media files to S3 directly
+django_heroku.settings(locals())
