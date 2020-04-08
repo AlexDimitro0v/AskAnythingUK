@@ -446,7 +446,11 @@ def settings(request):
             cardholder_name = request.POST.get('name', '')
             card_number = request.POST.get('number', '')
             card_expiry_date = request.POST.get('expiry', '')
-            card_expiry_month, card_expiry_year = card_expiry_date.split(" / ")[0], card_expiry_date.split(" / ")[1]
+            try:
+                card_expiry_month, card_expiry_year = card_expiry_date.split(" / ")[0], card_expiry_date.split(" / ")[1]
+            except:
+                card_expiry_month, card_expiry_year = card_expiry_date.split("/")[0], card_expiry_date.split("/")[1]
+
             cvv = request.POST.get('cvc', '')
             premium = request.POST.get('premium', '')
 
