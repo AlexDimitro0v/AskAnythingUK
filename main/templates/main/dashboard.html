@@ -61,7 +61,7 @@
 
                 {% if time_left == -1 %}
                   <div class="status-info noselect custom-column" style="font-size: 1em; text-align: center; margin: 0 auto; width: 100%">
-                    <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                    <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
                       Feedback Submitted
                   </div>
                 {% elif time_left %}
@@ -96,7 +96,7 @@
                     <span class="custom-column name-next-to-image-2">{{feedback_request.feedbacker}}</span>
                     </span>
                     <div class="status-info noselect custom-column" style="font-size: 1em;">
-                      <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                      <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
                       Your Feedbacker
                     </div>
                   </div>
@@ -127,12 +127,12 @@
             <span class="cut-text-header custom-column" style="font-weight: 600">{{application.title}}</span>
             {% if application.feedbacker == application.feedbackee %}
             <div class="status-info noselect custom-column" style="font-size: 1em;">
-              <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+              <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
               Application Submitted
             </div>
             {% else %}
             <div class="status-info noselect custom-column" style="font-size: 1em;">
-              <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/cross4.png' %}">
+              <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/cross4.png' %}">
               Application Rejected
             </div>
             {% endif %}

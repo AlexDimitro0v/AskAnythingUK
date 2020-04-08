@@ -2,7 +2,7 @@
 {% load multifor %}
 {% load static %}
 {% block content%}
-    <div class="full-screen full-screen-image" style="margin-top: -100px; background-image: url({% static 'img/home-bg.jpg' %});   background-color: rgba(255,255,255,0.5);">
+    <div class="full-screen full-screen-image" style="margin-top: -100px; background-image: url({% static 'main/img/home-bg.jpg' %});   background-color: rgba(255,255,255,0.5);">
       <div class="container-fluid" style="max-width: 1400px">
           <div class="row " id="left-column">
               <div class="col-6" id="requests-container" >
@@ -35,15 +35,15 @@
               <div class="small-screen-only"><br></div>
               <div class="col-6" id="right-column" style="padding-left: 80px">
                 <div style="margin-bottom: 18px">
-                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
                   <span style="color: #444" class="bold-p">Choose the best feedbacker from all candidates</span>
                 </div>
                 <div style="margin-bottom: 18px">
-                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
                   <span style="color: #444" class="bold-p">Get high quality feedback on time</span>
                 </div>
                 <div style="margin-bottom: 18px">
-                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'img/tick4.png' %}">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
                   <span style="color: #444" class="bold-p">Complete confidentiality guaranteed</span>
                 </div>
               </div>
@@ -51,7 +51,7 @@
 
             </div>
     </div>
-    <div class="full-screen full-screen-image" style="background-image: url({% static 'img/explodingbg.jpg' %}); background-color: rgba(255,255,255,0.8);   background-size: 100vw;">
+    <div class="full-screen full-screen-image" style="background-image: url({% static 'main/img/explodingbg.jpg' %}); background-color: rgba(255,255,255,0.8);   background-size: 100vw;">
         <div class="container">
           <div style="background: none; width: 95%; min-width: 40px; top: 0">
             <h2 class="large-header" style="font-weight: 400; font-family: Lexend">What is AskAnything?</h2>
@@ -110,7 +110,7 @@
             <div class="container">
                   <div style="text-align: center; margin: 15px">
                     <span class="custom-column" style="display: flex">
-                      <img src="{% static 'img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
+                      <img src="{% static 'main/img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
                       <span style="margin-left: 20px">
                       <h3 class="text-next-to-circle" style="margin-left: 0; font-family: Lexend; margin-bottom: 0; height: 40px">SECURITY 🔒</h3>
                       <p style="text-align: justify; margin-top: 0; font-family: Lexend; font-size: 1.1em">
@@ -123,7 +123,7 @@
                     </span>
                     <br><br>
                     <span class="custom-column" style="display: flex">
-                      <img src="{% static 'img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
+                      <img src="{% static 'main/img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
                       <span style="margin-left: 20px">
                       <h3 class="text-next-to-circle" style="font-family: Lexend; margin-bottom: 0; height: 40px; margin-left: 0">SMART RECOMMENDATIONS 🤓</h3>
                       <p style="text-align: justify; margin-top: 0; font-family: Lexend; font-size: 1.1em">
@@ -135,7 +135,7 @@
                     </span>
                     <br><br>
                     <span class="custom-column" style="display: flex">
-                      <img src="{% static 'img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
+                      <img src="{% static 'main/img/test-icon.png' %}" class="number-circle" style="width: 180px; height: 180px"/>
                       <span style="margin-left: 20px">
                       <h3 class="text-next-to-circle" style="margin-left: 0; font-family: Lexend; margin-bottom: 0; height: 40px">SAFEGUARDING QUALITY 👌</h3>
                       <p style="text-align: justify; margin-top: 0; font-family: Lexend; font-size: 1.1em">
@@ -150,7 +150,7 @@
           </div>
         </div>
     </div>
-    <div class="full-screen full-screen-image" style="background-image: url({% static 'img/landing-page.jpg' %});   background-color: rgba(255,255,255,0.9);">
+    <div class="full-screen full-screen-image" style="background-image: url({% static 'main/img/landing-page.jpg' %});   background-color: rgba(255,255,255,0.9);">
       {% if user.is_authenticated %}
         <div style="background: none; width: 95%; min-width: 40px; top: 0">
           <h2 class="large-header">Feel like helping others?</h2>

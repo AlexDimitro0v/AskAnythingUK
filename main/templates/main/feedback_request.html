@@ -391,11 +391,11 @@
 
    <div style=" padding-top: 0; text-align: center">
      <span class="status-info noselect" style="font-size: 1.4em">
-       <img src = "{% static 'img/pound_icon3.png'%}" style="height: 28px;  vertical-align: middle;" />
+       <img src = "{% static 'main/img/pound_icon3.png'%}" style="height: 28px;  vertical-align: middle;" />
          £{{ feedback_request.reward }}
      </span>
      <span class="status-info noselect" style="font-size: 1.4em">
-       <img src = "{% static 'img/time_icon3.png'%}" style="vertical-align: middle; height: 28px" />
+       <img src = "{% static 'main/img/time_icon3.png'%}" style="vertical-align: middle; height: 28px" />
        {{ feedback_request.time_limit }} days
      </span>
    </div>
@@ -406,7 +406,7 @@
   <div class="decorative-text-wrapper noselect">Apply</div>
   <div class="cardbody"  style="margin-top: 50px; margin-bottom: 0">
     {% if user_was_rejected %}
-      <img src = "{% static 'img/cross4.png'%}" class="photo-circle large-photo-circle"/>
+      <img src = "{% static 'main/img/cross4.png'%}" class="photo-circle large-photo-circle"/>
       <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Rejected</p>
     {% elif not user_is_candidate %}
 
@@ -533,7 +533,7 @@
     </script>
 
     {% else %}
-    <img src = "{% static 'img/tick4.png'%}" class="photo-circle large-photo-circle"/>
+    <img src = "{% static 'main/img/tick4.png'%}" class="photo-circle large-photo-circle"/>
     <p style="text-align: center; font-size: 1.2em; font-weight: 600; ">Application Submitted</p>
 
     <div class="large-screen-only"><br><br></div>
@@ -685,7 +685,7 @@
                           color = '#e9ca6e';
                         }
 
-                        newMessageSound.setAttribute('src', "{% static 'newmessage.mp3 '%}");
+                        newMessageSound.setAttribute('src', "{% static 'main/newmessage.mp3 '%}");
                         newMessageSound.play();
 
                         newestMessage = response.newestMessage

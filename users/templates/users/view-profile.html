@@ -49,17 +49,17 @@
       <div class="border-top pt-1"></div>
       <div style="display: flex; margin: 15px; justify: space-between">
         <div style="text-align: center; font-weight: 600; width: 100%">
-        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%; margin-bottom: 5px" src="{% static 'img/location.png' %}"/>
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%; margin-bottom: 5px" src="{% static 'users/img/location.png' %}"/>
           Location <br>
           {{ user_to_view.userprofile.city }}
         </div>
         <div style="text-align: center; font-weight: 600; width: 100%">
-        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border: 3px solid #ccc; margin-bottom: 5px; " src="{% static 'img/default.jpg' %}"/>
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border: 3px solid #ccc; margin-bottom: 5px; " src="{% static 'users/img/default.jpg' %}"/>
           Member Since <br>
           {{ user_to_view.date_joined|date:"d M Y" }}
         </div>
         <div style="text-align: center; font-weight: 600; width: 100%">
-          <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px;border-radius: 0; margin-bottom: 5px" src="{% static 'img/stats.png' %}"/>
+          <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px;border-radius: 0; margin-bottom: 5px" src="{% static 'users/img/stats.png' %}"/>
           Jobs Finished <br>
           {{jobs_finished}}
         </div>
@@ -82,7 +82,7 @@
          <div style="display: flex; margin: 15px; justify: space-between">
          {% if user_to_view.userprofile.linkedin %}
          <div style="text-align: center; font-weight: 600; width: 100%">
-           <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%;  margin-bottom: 10px" src="{% static 'img/linkedin.png' %}"/>
+           <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%;  margin-bottom: 10px" src="{% static 'users/img/linkedin.png' %}"/>
            <a href="{{ user_to_view.userprofile.linkedin }}">LinkedIn Profile</a>
          </div>
          {% endif %}
