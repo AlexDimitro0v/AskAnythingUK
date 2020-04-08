@@ -49,7 +49,7 @@
       <div class="border-top pt-1"></div>
       <div style="display: flex; margin: 15px; justify: space-between">
         <div style="text-align: center; font-weight: 600; width: 100%">
-        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%; margin-bottom: 5px" src="{% static 'users/img/location.png' %}"/>
+        <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px; border-radius: 100%; margin-bottom: 5px" src="{% static 'main/img/location.png' %}"/>
           Location <br>
           {{ user_to_view.userprofile.city }}
         </div>
@@ -59,7 +59,7 @@
           {{ user_to_view.date_joined|date:"d M Y" }}
         </div>
         <div style="text-align: center; font-weight: 600; width: 100%">
-          <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px;border-radius: 0; margin-bottom: 5px" src="{% static 'users/img/stats.png' %}"/>
+          <img class="photo-circle" style="display: table; margin: 0 auto; width: 40px; height: 40px;border-radius: 0; margin-bottom: 5px" src="{% static 'main/img/stats.png' %}"/>
           Jobs Finished <br>
           {{jobs_finished}}
         </div>
