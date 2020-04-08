@@ -1,4 +1,4 @@
-<img align="left" height="65" width="65" src="./main/static/img/logo.png">
+<img align="left" height="65" width="65" src="./main/static/main/img/logo.png">
 
 # AskAnything 
 AskAnything is a project created by students of the University of Aberdeen for the year-long course **Software Engineering and Professional Practise**.
