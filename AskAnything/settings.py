@@ -116,7 +116,7 @@ WSGI_APPLICATION = 'AskAnything.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ask_anything',
+        'NAME': 'AskAnything',
         'USER': 'postgres',
         'PASSWORD': os.environ.get('DB_PASSWORD'),    # Note that you should use the password you set for your DB !!!!!!!
         'HOST': '127.0.0.1',
