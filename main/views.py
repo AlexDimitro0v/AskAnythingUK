@@ -4,7 +4,7 @@ from .models import FeedbackRequest, FeedbackerCandidate, Category, Tag, Rating,
 from .forms import NewFeedbackRequestForm, FeedbackerCommentsForm, FeedbackerRatingForm, ApplicationForm, MessageForm
 from django.db.models import F        # used to compare 2 instances or fields of the same model
 from django.core.paginator import Paginator
-from django.db import connections
+from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
@@ -23,9 +23,6 @@ import main.notifications as notifications
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 import sweetify
-from AskAnything.settings import AWS_STORAGE_BUCKET_NAME
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
 from .user_agents import save_device_info, check_for_fraud
 from .smart_recommendations import get_most_common, get_recommended_feedbackers
 from django.views.generic import (
@@ -377,8 +374,9 @@ def new_feedback_request(request):
 
             # Save each attached zip file
             feedbackZIPFile = request.FILES['fileZip']
-            fs = FileSystemStorage()
-            fs.save('zip_files/' + str(feedback_request.id) + '.zip', feedbackZIPFile)
+            fs = default_storage.open('zip_files/' + str(feedback_request.id) + '.zip', 'w')
+            fs.write(feedbackZIPFile)
+            fs.close()
 
             # Save each tag instance to database
             for tag in tags:
@@ -448,20 +446,29 @@ def feedback_request(request):
             if application.feedback.feedbackee == application.feedback.feedbacker:
                 num_of_applications += 1
 
-    fs = FileSystemStorage()
+    fs = default_storage
 
     # User is feedbackee for this request
     if feedback_request.feedbackee == request.user:
         user_is_feedbackee = True
-        feedbackee_files_link = fs.url('zip_files/' + request_id+".zip")
+        file = default_storage.url('zip_files/' + request_id+".zip")
+        feedbackee_files_link = file
         if fs.exists('zip_files/' + request_id+"_feedbacker.zip"):
-            feedbacker_files_link = fs.url('zip_files/' + request_id+"_feedbacker.zip")
+            file = default_storage.url(
+                'zip_files/' + request_id + "_feedbacker.zip")
+
+            feedbacker_files_link = file
     # User is feedbacker for this request
     elif feedback_request.feedbacker == request.user:
         user_is_feedbacker = True
-        feedbackee_files_link = fs.url('zip_files/' + request_id+".zip")
+
+        file = default_storage.url('zip_files/' + request_id+".zip")
+        feedbackee_files_link = file
         if fs.exists('zip_files/' + request_id+"_feedbacker.zip"):
-            feedbacker_files_link = fs.url('zip_files/' + request_id+"_feedbacker.zip")
+            file = default_storage.url(
+                'zip_files/' + request_id + "_feedbacker.zip")
+
+            feedbacker_files_link = file
     # User is candidate for this request
     elif FeedbackerCandidate.objects.filter(feedbacker=request.user, feedback_id=request_id).first():
         if feedback_request.feedbackee != feedback_request.feedbacker:
@@ -647,10 +654,14 @@ def submit_feedback(request):
             notifications.feedback_submitted_notification(feedback_request, get_current_site(request))
 
             feedbackZIPFile = request.FILES['fileZip']
-            fs = FileSystemStorage()
+            fs = default_storage
             # Delete any previously submitted feedback
             fs.delete('zip_files/' + str(feedback_request.id) + '_feedbacker.zip')
-            fs.save('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', feedbackZIPFile)
+
+            # Save the new one
+            fs = default_storage.open('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', 'w')
+            fs.write(feedbackZIPFile)
+            fs.close()
             return redirect('dashboard')
 
     context = {
@@ -813,7 +824,7 @@ class RequestDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         """
         feedback_request = self.get_object()     # get the exact feedback_request to be currently deleted
         if self.request.user == feedback_request.feedbackee and feedback_request.feedbackee == feedback_request.feedbacker:
-            fs = FileSystemStorage()
+            fs = default_storage
             fs.delete('zip_files/' + str(feedback_request.id) + '.zip')
             feedback_request.delete()
             sweetify.success(request, "Feedback request deleted", icon='success', toast=True,
