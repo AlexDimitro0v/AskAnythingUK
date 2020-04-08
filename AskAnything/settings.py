@@ -16,8 +16,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import json
 # Load the file that contains the sensitive information
-with open('config.json') as config_file:
-    config = json.load(config_file)
+# with open('config.json') as config_file:
+#     config = json.load(config_file)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -30,7 +30,7 @@ LOGOUT_REDIRECT_URL = 'landing-page'
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['DJANGO_SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -116,7 +116,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ask_anything',
         'USER': 'postgres',
-        'PASSWORD': config['DB_PASSWORD'],    # Note that you should use the password you set for your DB !!!!!!!
+        'PASSWORD': os.environ.get('DB_PASSWORD'),    # Note that you should use the password you set for your DB !!!!!!!
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -180,21 +180,21 @@ MAILER_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config['EMAIL_USER']
-EMAIL_HOST_PASSWORD = config['EMAIL_PASS']
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 
 
 # Braintree Payment Gateway Keys
-BRAINTREE_PUBLIC_KEY = config['BRAINTREE_PUBLIC_KEY']
-BRAINTREE_PRIVATE_KEY = config['BRAINTREE_PRIVATE_KEY']
-BRAINTREE_MERCHANT_KEY = config['BRAINTREE_MERCHANT_KEY']
+BRAINTREE_PUBLIC_KEY = os.environ.get('BRAINTREE_PUBLIC_KEY')
+BRAINTREE_PRIVATE_KEY = os.environ.get('BRAINTREE_PRIVATE_KEY')
+BRAINTREE_MERCHANT_KEY = os.environ.get('BRAINTREE_MERCHANT_KEY')
 
 
 # AWS Keys
 # Used to store all of the media files (profile images and files) on AWS
-AWS_ACCESS_KEY_ID = config['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = config['AWS_SECRET_ACCESS_KEY']
-AWS_STORAGE_BUCKET_NAME = config['AWS_STORAGE_BUCKET_NAME']
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
 AWS_S3_FILE_OVERWRITE = False                                       # DO NOT OVERWRITE FILES WITH THE SAME NAMES
 AWS_DEFAULT_ACL = None
