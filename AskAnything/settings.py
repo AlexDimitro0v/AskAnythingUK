@@ -184,16 +184,24 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'     # Crispy Forms will be using Bootstrap f
 SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 
-# EMAIL_BACKEND = "mailer.backend.DbBackend"
-
 # Email Server (Using Gmail SMTP)
+# EMAIL_BACKEND = "mailer.backend.DbBackend"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+
+# Email Server (Using SendGrid)
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+
+EMAIL_HOST = 'smtp.sendgrid.net'    
+EMAIL_HOST_USER = os.environ.get("SEND_GRID_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("SEND_GRID_PASS")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
-
 
 # Braintree Payment Gateway Keys
 BRAINTREE_PUBLIC_KEY = os.environ.get('BRAINTREE_PUBLIC_KEY')
