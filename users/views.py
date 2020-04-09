@@ -113,7 +113,7 @@ def activate(request, uidb64, token):
 
         # Create a fake payment method for that client
         gateway.payment_method.create({
-            "customer_id": customer.customer.id,
+            "customer_id": customer.id,
             "payment_method_nonce": 'fake-valid-nonce',  # Fake valid card details
             "token": f"{user.username}"
         })
