@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     'django_user_agents',        # used for fraud prevention
     'coverage',                  # used for testing
     'django_nose',               # allows to run a specific test
-    'storages'                   # allows us to store static files (files and images) on AWS
+    'storages',                  # allows us to store static files (files and images) on AWS
+    "sendgrid"
 ]
 
 
@@ -197,6 +198,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Email Server (Using SendGrid)
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
+
+EMAIL_FROM = "teamalpha050@gmail.com"
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = os.environ.get("SEND_GRID_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("SEND_GRID_PASS")

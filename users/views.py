@@ -22,7 +22,7 @@ from django.dispatch import receiver
 from main.smart_recommendations import get_most_common
 from AskAnything.settings import BRAINTREE_PUBLIC_KEY, BRAINTREE_PRIVATE_KEY, BRAINTREE_MERCHANT_KEY
 import braintree
-from AskAnything.settings import EMAIL_HOST_USER
+from AskAnything.settings import EMAIL_FROM
 
 
 # Set up the payment gateway
@@ -62,7 +62,7 @@ def register(request):
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
-                mail_subject, message, from_email=EMAIL_HOST_USER, to=[to_email]
+                mail_subject, message, from_email=EMAIL_FROM, to=[to_email]
             )
             email.send()
             sweetify.warning(request, 'Please verify your email address to complete the registration.',
