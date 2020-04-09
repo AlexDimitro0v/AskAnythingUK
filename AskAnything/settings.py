@@ -198,7 +198,7 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # Email Server (Using SendGrid)
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+# SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 EMAIL_FROM = "teamalpha050@gmail.com"
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
