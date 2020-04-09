@@ -1,6 +1,7 @@
 from .models import Notification
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from AskAnything.settings import EMAIL_HOST_USER
 
 
 def new_candidate_notification(feedback_request, current_site, candidate):
@@ -17,7 +18,7 @@ def new_candidate_notification(feedback_request, current_site, candidate):
         email_subject = f'New candidate for {feedback_request}'
         to_list = feedback_request.feedbackee.email
         email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
+            email_subject, '-', EMAIL_HOST_USER, [to_list])
         email.attach_alternative(html_message, "text/html")
         email.send()
 
@@ -40,7 +41,7 @@ def chosen_as_feedbacker_notification(feedback_request, current_site):
     email_subject = f'Application for {feedback_request} successful'
     to_list = feedback_request.feedbacker.email
     email = EmailMultiAlternatives(
-        email_subject, '-', 'from_email', [to_list])
+        email_subject, '-', EMAIL_HOST_USER, [to_list])
     email.attach_alternative(html_message, "text/html")
     email.send()
 
@@ -63,7 +64,7 @@ def feedback_submitted_notification(feedback_request, current_site):
         email_subject = f'Feedback for {feedback_request} received'
         to_list = feedback_request.feedbackee.email
         email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
+            email_subject, '-', EMAIL_HOST_USER, [to_list])
         email.attach_alternative(html_message, "text/html")
         email.send()
 
@@ -86,7 +87,7 @@ def feedbacker_rated_notification(feedback_request, current_site):
         email_subject = f'Rating for {feedback_request} received'
         to_list = feedback_request.feedbacker.email
         email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
+            email_subject, '-', EMAIL_HOST_USER, [to_list])
         email.attach_alternative(html_message, "text/html")
         email.send()
 
@@ -109,7 +110,7 @@ def new_message_notification(feedback_request, current_site, sender, receiver):
         email_subject = f'New Message'
         to_list = receiver.email
         email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
+            email_subject, '-', EMAIL_HOST_USER, [to_list])
         email.attach_alternative(html_message, "text/html")
         email.send()
 
@@ -136,7 +137,7 @@ def recommended_request_notification(feedback_request, current_site, receiver):
         email_subject = 'Recommended Feedback Request'
         to_list = receiver.email
         email = EmailMultiAlternatives(
-            email_subject, '-', 'from_email', [to_list])
+            email_subject, '-', EMAIL_HOST_USER, [to_list])
         email.attach_alternative(html_message, "text/html")
         email.send()
 
@@ -160,7 +161,7 @@ def money_released_notification(feedback_request, current_site):
     email_subject = f'Money for {feedback_request} released'
     to_list = feedback_request.feedbacker.email
     email = EmailMultiAlternatives(
-        email_subject, '-', 'from_email', [to_list])
+        email_subject, '-', EMAIL_HOST_USER, [to_list])
     email.attach_alternative(html_message, "text/html")
     email.send()
 
