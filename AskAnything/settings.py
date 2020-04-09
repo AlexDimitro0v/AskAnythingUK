@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'coverage',                  # used for testing
     'django_nose',               # allows to run a specific test
     'storages',                  # allows us to store static files (files and images) on AWS
+    'sendgrid'
 ]
 
 
@@ -186,7 +187,7 @@ SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 # Email Server (Using Gmail SMTP)
 # EMAIL_BACKEND = "mailer.backend.DbBackend"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
@@ -195,13 +196,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 # Email Server (Using SendGrid)
-# SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
-
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 EMAIL_FROM = "teamalpha050@gmail.com"
-EMAIL_HOST = "smtp.hushmail.com"
-HUSHMAIL_USER = os.environ.get("HUSHMAIL_USER")
-HUSHMAIL_PASS = os.environ.get("HUSHMAIL_PASS")
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
+EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
