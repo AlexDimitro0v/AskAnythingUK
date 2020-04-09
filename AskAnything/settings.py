@@ -68,9 +68,11 @@ INSTALLED_APPS = [
 ]
 
 
+ES_URL = os.environ.get('BONSAI_URL')
+
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': ES_URL
     }
 }
 
