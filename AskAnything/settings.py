@@ -195,13 +195,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 # Email Server (Using SendGrid)
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+# SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 
 
 EMAIL_FROM = "teamalpha050@gmail.com"
-EMAIL_HOST = 'smtp.sendgrid.net'
-SENDGRID_USERNAME = os.environ.get("SEND_GRID_USER")
-SENDGRID_PASSWORD = os.environ.get("SEND_GRID_PASS")
+EMAIL_HOST = "smtp.hushmail.com"
+HUSHMAIL_USER = os.environ.get("HUSHMAIL_USER")
+HUSHMAIL_PASS = os.environ.get("HUSHMAIL_PASS")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
