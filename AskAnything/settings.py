@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'coverage',                  # used for testing
     'django_nose',               # allows to run a specific test
     'storages',                  # allows us to store static files (files and images) on AWS
-    "sendgrid"
 ]
 
 
