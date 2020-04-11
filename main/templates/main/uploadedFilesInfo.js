@@ -19,7 +19,7 @@ $("input[name=feedbackfiles]").change(function() {
       totalSize += selectedFiles[i].size;
       let fileName = $(this).get(0).files[i].name;
       let extension = fileName.split("").reverse().join("").split(".")[0].split("").reverse().join("").substring(0,4).toUpperCase();
-      $('#allFiles').append("<div title='Click to remove file' id='container"+i+"' class='file-container noselect'><img  style='width: 40px' src="{% static 'main/img/fileicon.png' %}"/><span class='file-extension'>"+extension+"</span><p class='file-p'>"+ fileName.substring(0,20) +"</p></div>");
+      $('#allFiles').append("<div title='Click to remove file' id='container"+i+"' class='file-container noselect'><img  style='width: 40px' src='{% static 'main/img/fileicon.png' %}'/><span class='file-extension'>"+extension+"</span><p class='file-p'>"+ fileName.substring(0,20) +"</p></div>");
 
       // Remove file on click
       $('#container'+i).click(function(e) {
