@@ -64,7 +64,10 @@ def register(request):
             email = EmailMessage(
                 mail_subject, message, from_email=EMAIL_FROM, to=[to_email]
             )
-            email.send()
+            try:
+                email.send()
+            except:
+                print("Failed to send email")
             sweetify.warning(request, 'Please verify your email address to complete the registration.',
                              buttons=False,
                              icon='warning'
@@ -262,7 +265,7 @@ def try_premium(request):
                          icon='warning'
                          )
         return redirect('/settings/?tab=billing&next=/get-premium/')
-    
+
     if not curr_user.premium:
         # plus_one_month = datetime.now(timezone.utc) + relativedelta(months=1)
         # curr_user.premium_ends = plus_one_month

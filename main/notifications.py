@@ -20,8 +20,10 @@ def new_candidate_notification(feedback_request, current_site, candidate):
         email = EmailMultiAlternatives(
             email_subject, '-', EMAIL_FROM, [to_list])
         email.attach_alternative(html_message, "text/html")
-        email.send()
-
+        try:
+            email.send()
+        except:
+            print("Failed to send email")
     notification = Notification(user=feedback_request.feedbackee, other_user=candidate,
                                 feedback_request=feedback_request, type="Candidate")
     notification.save()
@@ -43,7 +45,10 @@ def chosen_as_feedbacker_notification(feedback_request, current_site):
     email = EmailMultiAlternatives(
         email_subject, '-', EMAIL_FROM, [to_list])
     email.attach_alternative(html_message, "text/html")
-    email.send()
+    try:
+        email.send()
+    except:
+        print("Failed to send email")
 
     notification = Notification(user=feedback_request.feedbacker, other_user=feedback_request.feedbackee,
                                 feedback_request=feedback_request, type="FeedbackerChosen")
@@ -66,7 +71,10 @@ def feedback_submitted_notification(feedback_request, current_site):
         email = EmailMultiAlternatives(
             email_subject, '-', EMAIL_FROM, [to_list])
         email.attach_alternative(html_message, "text/html")
-        email.send()
+        try:
+            email.send()
+        except:
+            print("Failed to send email")
 
     notification = Notification(user=feedback_request.feedbackee, other_user=feedback_request.feedbacker,
                                 feedback_request=feedback_request, type="FeedbackSubmitted")
@@ -89,7 +97,10 @@ def feedbacker_rated_notification(feedback_request, current_site):
         email = EmailMultiAlternatives(
             email_subject, '-', EMAIL_FROM, [to_list])
         email.attach_alternative(html_message, "text/html")
-        email.send()
+        try:
+            email.send()
+        except:
+            print("Failed to send email")
 
     notification = Notification(user=feedback_request.feedbacker, other_user=feedback_request.feedbackee,
                                 feedback_request=feedback_request, type="FeedbackerRated")
@@ -112,7 +123,10 @@ def new_message_notification(feedback_request, current_site, sender, receiver):
         email = EmailMultiAlternatives(
             email_subject, '-', EMAIL_FROM, [to_list])
         email.attach_alternative(html_message, "text/html")
-        email.send()
+        try:
+            email.send()
+        except:
+            print("Failed to send email")
 
     if receiver.userprofile.messages_notifications:
         # Delete all previous notification message instances
@@ -139,7 +153,10 @@ def recommended_request_notification(feedback_request, current_site, receiver):
         email = EmailMultiAlternatives(
             email_subject, '-', EMAIL_FROM, [to_list])
         email.attach_alternative(html_message, "text/html")
-        email.send()
+        try:
+            email.send()
+        except:
+            print("Failed to send email")
 
     if receiver.userprofile.smart_recommendations_notifications:
         notification = Notification(user=receiver, other_user=feedback_request.feedbackee,
@@ -163,7 +180,10 @@ def money_released_notification(feedback_request, current_site):
     email = EmailMultiAlternatives(
         email_subject, '-', EMAIL_FROM, [to_list])
     email.attach_alternative(html_message, "text/html")
-    email.send()
+    try:
+        email.send()
+    except:
+        print("Failed to send email")
 
     notification = Notification(user=feedback_request.feedbacker, other_user=feedback_request.feedbackee,
                                 feedback_request=feedback_request, type="MoneyRelease")

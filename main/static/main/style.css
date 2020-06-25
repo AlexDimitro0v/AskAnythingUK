@@ -1023,8 +1023,13 @@ word-wrap: break-word;
 .main-menu-request {
   margin-left: 20px;
 }
+
 #hint_id_username {
   display: none;
+}
+
+#proposed-reward-span {
+  width: auto;
 }
 
 @media screen and (max-width: 480px)
@@ -1038,6 +1043,10 @@ word-wrap: break-word;
 {
   .large-header {
     font-size: 2.5em;
+  }
+
+  #proposed-reward-span {
+    width: 100%;
   }
 
   .sub-header {

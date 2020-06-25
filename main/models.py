@@ -77,6 +77,7 @@ class FeedbackerCandidate(models.Model):
     feedbacker = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback = models.ForeignKey(FeedbackRequest, on_delete=models.CASCADE)
     application = models.CharField(max_length=300, default="")
+    proposed_reward = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.feedbacker} - {self.feedback}"

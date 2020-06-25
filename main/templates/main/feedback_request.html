@@ -104,6 +104,18 @@
       <p style="font-size: 100%; line-height: 1.8em">
         {{candidate.application}}
       </p>
+      {% if candidate.proposed_reward and candidate.proposed_reward != feedback_request.reward %}
+      <div class="border-top pt-2 mt-3"></div>
+      <div class="two-columns margin-columns" style="margin-bottom: 0; justify-content: center">
+        <span class="status-info noselect" id="proposed-reward-span" style="font-size: 1em; vertical-align: middle; color: #777777; padding-right: 0; margin-top: 10px; line-height: 40px; text-align: center">Proposed reward: </span>
+        <span class="custom-column" style="margin-top: 0">
+          <span class="status-info noselect" style="font-size: 1.4em; vertical-align: middle; padding-right: 0; padding-left: 0; margin-right: 0">
+            <img src="/static/main/img/pound_icon3.png" style="height: 28px;  vertical-align: middle;">
+            £{{candidate.proposed_reward}}
+          </span>
+        </span>
+      </div>
+    {% endif %}
     </div>
 
     <div id=main-container">
@@ -131,7 +143,11 @@
               </div>
               <div class="noselect button-corner" style="position: absolute; right: 30px; bottom: 30px;">
                 <button type ='button' class="btn btn-outline-info" id="no{{forloop.counter}}" style="margin-right: 10px">Cancel</button>
-                <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay ${{feedback_request.reward}}</button>
+                {% if candidate.proposed_reward %}
+                  <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay £{{candidate.proposed_reward}}</button>
+                {% else %}
+                  <button type="submit" class="btn btn-outline-info" id="yes{{forloop.counter}}">Pay £{{feedback_request.reward}}</button>
+                {% endif %}
               </div>
             </form>
 
@@ -151,7 +167,11 @@
             container: "payment-form{{forloop.counter}}",
             paypal: {
               singleUse: true,
-              amount: "{{ feedback_request.reward }}",
+              {% if candidate.proposed_reward %}
+                amount: "{{ candidate.proposed_reward }}",
+              {% else %}
+                amount: "{{ feedback_request.reward }}",
+              {% endif %}
               currency: 'USD'
             },
               onPaymentMethodReceived: function (payload) {
@@ -175,7 +195,6 @@
         $('#choose-feedbacker{{forloop.counter}}').click(function(e) {
           $('#overlay{{forloop.counter}}').css("display","block");
           $('body').css("overflow","hidden");
-
         });
 
         $('#no{{forloop.counter}}').click(function(e) {
@@ -413,6 +432,10 @@
     <form action="{%url 'apply-as-feedbacker-page'%}?request_id={{ request_id }}" method="POST" id="applyForm" enctype="multipart/form-data">
         {% csrf_token %}
         Why are you a good candidate? (Max 300 characters)<br><textarea  maxlength="300" rows="5" id="application" name="application" class="form-control"></textarea>
+
+        <br>Propose a different reward (optional)<br>
+        <input id="proposed_reward" name="proposed_reward" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="5" max="99999">
+
     </form>
     <div class="large-screen-only"><br><br><br></div>
       <div class="button-corner" style="margin-top: 20px;">
@@ -430,6 +453,19 @@
           }
         });
       });
+
+      $( "#proposed_reward" ).change(function() {
+        $(this).val(parseInt($(this).val()));
+        if($(this).val()) {
+          if($(this).val() > 9999) {
+            $(this).val(9999);
+          }
+          if($(this).val() < 5) {
+            $(this).val(5);
+          }
+        }
+      });
+
     </script>
 
     {% if new_request and not has_premium %}
@@ -512,6 +548,9 @@
   <script>
     $(document).ready(function () {
       $('#yes').click(function(e) {
+        if(!$('#proposed_reward').val()) {
+          $('#proposed_reward').val("{{ feedback_request.reward }}")
+        }
         $('#applyForm').submit();
       });
     });

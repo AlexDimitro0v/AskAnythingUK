@@ -40,10 +40,11 @@ class FeedbackerRatingForm(forms.Form):
 
 class ApplicationForm(forms.Form):
     application = forms.CharField()
+    proposed_reward = forms.IntegerField(min_value=5)
 
     class Meta:
         model = FeedbackerCandidate
-        fields = ["application"]
+        fields = ["application","proposed_reward"]
 
 
 class MessageForm(forms.Form):

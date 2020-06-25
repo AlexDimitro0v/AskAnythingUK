@@ -569,10 +569,12 @@ def apply_as_feedbacker(request):
                 return redirect('dashboard')
 
             application_text = form.cleaned_data['application']
+            proposed_reward = form.cleaned_data['proposed_reward']
 
             application = FeedbackerCandidate(feedbacker=request.user,
                                               feedback=feedback_request,
                                               application=application_text,
+                                              proposed_reward=proposed_reward
                                               )
             application.save()
 
@@ -589,16 +591,24 @@ def apply_as_feedbacker(request):
 def choose_feedbacker(request):
     if request.method == 'POST':
         try:
-            feedback_request = FeedbackRequest.objects.get(id=request.POST['feedback_request_id'])
+            feedback_request_id = request.POST['feedback_request_id']
+            feedback_request = FeedbackRequest.objects.get(id=feedback_request_id)
             if feedback_request.feedbackee != request.user or feedback_request.feedbackee != feedback_request.feedbacker:
                 return redirect('dashboard')
             feedbacker = User.objects.get(username=request.POST['feedbacker_username'])
         except FeedbackRequest.DoesNotExist:
             return redirect('/')
 
+        application = FeedbackerCandidate.objects.get(feedbacker=feedbacker, feedback_id=feedback_request_id)
+        if(application.proposed_reward):
+            reward = application.proposed_reward
+            feedback_request.reward = reward
+        else:
+            reward = feedback_request.reward
+
         nonce = request.POST["payment_method_nonce"]
         result = braintree.Transaction.sale({
-            "amount": feedback_request.reward,
+            "amount": reward,
             "payment_method_nonce": nonce
         })
 
