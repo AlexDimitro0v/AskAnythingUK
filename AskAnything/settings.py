@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'coverage',                  # used for testing
     'django_nose',               # allows to run a specific test
     'storages',                  # allows us to store static files (files and images) on AWS
-    'sendgrid'
 ]
 
 
@@ -200,8 +199,6 @@ EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
 
 
 # Email Server (Using MailGun)
-MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = os.environ.get('MAILGUN_DOMAIN')
 EMAIL_FROM = "teamalpha050@gmail.com"
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
