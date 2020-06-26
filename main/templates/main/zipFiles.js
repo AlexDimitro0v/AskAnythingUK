@@ -9,12 +9,27 @@ function addFileToZip(n) {
            formData.delete('feedbackfiles');
 
            let xhr = new XMLHttpRequest();
+           const Toast = Swal.mixin({
+              toast: true,
+              position: 'bottom-end',
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              onOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+           })
 
+           Toast.fire({
+              icon: 'success',
+              title: 'Your request has been processed'
+           })
            xhr.onreadystatechange = function() {
                if(xhr.readyState == 4 && xhr.status == 200) {
                window.setTimeout(function(){
                    window.location.href = "/dashboard/";
-               }, 1500);
+               }, 10);
                }
            }
            xhr.open('POST', postAction, true);
