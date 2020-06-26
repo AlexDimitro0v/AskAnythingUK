@@ -190,7 +190,8 @@ SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 # Email Server (Using Gmail SMTP)
 # EMAIL_BACKEND = "mailer.backend.DbBackend"
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
@@ -198,15 +199,16 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 
 
-# Email Server (Using SendGrid)
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+# Email Server (Using MailGun)
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY')
+MAILGUN_SERVER_NAME = os.environ.get('MAILGUN_DOMAIN')
 EMAIL_FROM = "teamalpha050@gmail.com"
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
-EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
+EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
 
 # Braintree Payment Gateway Keys
 BRAINTREE_PUBLIC_KEY = os.environ.get('BRAINTREE_PUBLIC_KEY')
