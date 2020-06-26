@@ -374,8 +374,9 @@ def new_feedback_request(request):
 
             # Save each attached zip file
             feedbackZIPFile = request.FILES['fileZip']
-            fs = default_storage.open('zip_files/' + str(feedback_request.id) + '.zip', 'w')
+            fs = default_storage.open('zip_files/' + str(feedback_request.id) + '.zip', 'wb')
             fs.write(feedbackZIPFile)
+            fs.save()
             fs.close()
 
             # Save each tag instance to database
@@ -669,7 +670,7 @@ def submit_feedback(request):
             fs.delete('zip_files/' + str(feedback_request.id) + '_feedbacker.zip')
 
             # Save the new one
-            fs = default_storage.open('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', 'w')
+            fs = default_storage.open('zip_files/' + str(feedback_request.id) + '_feedbacker.zip', 'wb')
             fs.write(feedbackZIPFile)
             fs.close()
             return redirect('dashboard')
