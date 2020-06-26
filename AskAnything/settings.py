@@ -199,9 +199,11 @@ EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
 
 
 # Email Server (Using MailGun)
-EMAIL_FROM = "teamalpha050@gmail.com"
+MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_API_KEY')
+MAILGUN_SERVER_NAME = os.environ.get('MAILGUN_DOMAIN')
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
+EMAIL_FROM = "teamalpha050@gmail.com"
 EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
