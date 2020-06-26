@@ -188,8 +188,8 @@ SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 # Email Server (Using Gmail SMTP)
 # EMAIL_BACKEND = "mailer.backend.DbBackend"
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
 # EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
