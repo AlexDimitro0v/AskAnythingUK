@@ -188,8 +188,8 @@ SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 # Email Server (Using Gmail SMTP)
 # EMAIL_BACKEND = "mailer.backend.DbBackend"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
 # EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
@@ -200,13 +200,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Email Server (Using MailGun)
 MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = os.environ.get('MAILGUN_DOMAIN')
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
-EMAIL_FROM = "teamalpha050@gmail.com"
-EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+MAILGUN_SERVER_NAME = 'smtp.mailgun.org'
+# EMAIL_HOST = 'smt p.mailgun.org'
+# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
+# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
+EMAIL_FROM = "noreply@askanything.co"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 
 # Braintree Payment Gateway Keys
