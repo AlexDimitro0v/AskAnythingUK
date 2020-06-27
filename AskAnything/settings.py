@@ -186,27 +186,20 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'     # Crispy Forms will be using Bootstrap f
 SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 
-# Email Server (Using Gmail SMTP)
+# Email Server (Using SendGrid SMTP)
 # EMAIL_BACKEND = "mailer.backend.DbBackend"
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
-
-# Email Server (Using MailGun)
-MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = 'smtp.mailgun.org'
-# EMAIL_HOST = 'smt p.mailgun.org'
-# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
-# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
+# Email Server (Using SendGrid)
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
+EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
 EMAIL_FROM = "noreply@askanything.co"
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 # Braintree Payment Gateway Keys
