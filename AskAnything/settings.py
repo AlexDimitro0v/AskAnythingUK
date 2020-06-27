@@ -37,7 +37,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['ask-anything-uk.herokuapp.com' 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ask-anything-uk.herokuapp.com', 'http://www.realaskanything.com/', 'localhost', '127.0.0.1']
 
 
 # Application definition
