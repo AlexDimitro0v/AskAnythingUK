@@ -195,9 +195,9 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 # Email Server (Using SendGrid)
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
-EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
+# EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
 EMAIL_FROM = "noreply@askanything.co"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
