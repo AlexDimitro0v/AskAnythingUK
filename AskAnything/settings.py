@@ -37,7 +37,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-ask-anything.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ask-anything-uk.herokuapp.com' 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -198,7 +198,7 @@ SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 # EMAIL_HOST = 'smtp.sendgrid.net'
 # EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME")
 # EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
-EMAIL_FROM = "noreply@askanything.co"
+EMAIL_FROM = "teamalpha050@gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
