@@ -1,0 +1,198 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content%}
+<div class="large-area" style="max-width: 750px">
+    <div class="decorative-text-wrapper noselect">New Feedback Request</div>
+    <div class="cardbody">
+
+        <form action="/new-feedback-request/" method="POST" id="newFeedbackForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            Category<br>
+            <select name="area" class="custom-select">
+                {% for area in areas %}
+                  <option value="{{ area.id }}">{{ area.name }}</option>
+                {% endfor %}
+            </select>
+
+            <br><br>Title<br>
+            <input id="title" name="title" maxlength="40" class="form-control"/>
+            <div style="color: red; display: none" id="title-prompt">You must specify a title.</div>
+
+            <br>Description<br><textarea rows="15" id="description" name="maintext" class="form-control"  maxlength="1500"></textarea>
+            <div style="color: red; display: none" id="description-prompt">You must specify a description.</div>
+
+
+            <br>Reward (£)<br>
+            <input id="reward" name="reward" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="1" max="99999">
+            <div style="color: red; display: none" id="reward-prompt">You must specify a reward.</div>
+
+
+            <br>Time limit (days)<br>
+            <input id="limit" name="timelimit" class="form-control" style="max-width: 100px; margin-top: 0" type="number" min="5" max="100">
+            <div style="color: red; display: none" id="limit-prompt">You must specify a time limit.</div>
+
+
+            <br>Feedback Files<br>
+            <label for="file-upload" class="btn btn-outline-info" style="cursor: pointer; margin-bottom:0px;">
+                Upload Files
+            </label>
+            <input id="file-upload"  type="file" name="feedbackfiles" style="display: none" multiple>
+            <span style="margin-left: 10px; font-weight: 600" id="fileCount"></span>
+            <span style="margin-left: 10px; font-weight: 600" id="fileSize"></span>
+            <div style="margin-top: 0px" id="allFiles">
+            </div>
+
+        </form>
+
+        <div style="color: red; display: none" id="file-upload-prompt">You must upload at least one file to submit
+            feedback request.
+        </div>
+
+        <form onsubmit="return false" style="margin-top: 15px;">
+            Tags<br>
+            <input id="tag-input" class="form-control" maxlength="20" style="max-width: 200px; margin-top: 0" >
+        </form>
+
+        <div  style="margin-top: 10px;">
+          <span id="tags"></span>
+        </div>
+        </div>
+        <button class="button-corner btn btn-outline-info custom-column small-screen-button-2" style="margin-top: 20px" id="submit_button">Submit</button>
+
+
+        <!-- Files too large overlay -->
+        <div id="overlay_toolarge" class="full-screen overlay">
+          <div class="full-screen">
+          <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+            <div class="decorative-text-wrapper noselect">Files Too Large</div>
+            <div class="cardbody"  style="margin-top:50px">
+              <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                Your files are over 10 megabytes in size<br>
+                Only premium users can upload large files.
+              </p>
+              <div class="border-top pt-2 mt-3"></div>
+
+              <div class="noselect button-corner">
+                <button class="btn btn-outline-info" id="no_premium" style="margin-right: 10px">Go Back</button>
+                <a href="{%url 'get-premium-page'%}" style="text-decoration:none;">
+                  <button class="btn btn-outline-info">Get Premium</button>
+                </a>
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+      <!-- Too many tags overlay -->
+        <div id="overlay_error_tags" class="full-screen overlay">
+          <div class="full-screen">
+          <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+            <div class="decorative-text-wrapper noselect">Error</div>
+            <div class="cardbody"  style="margin-top:50px">
+              <p id="max_tags_message" style="font-weight: 600; font-size: 1.2em; text-align: center">
+                You can provide a maximum of 5 tags.
+              </p>
+
+              <div class="border-top pt-2 mt-3"></div>
+
+              <div class="noselect button-corner">
+                <button class="btn btn-outline-info" id="okay_tags">Okay</button>
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+  <script>
+    $(document).ready(function () {
+
+      $( "#reward" ).change(function() {
+        $(this).val(parseInt($(this).val()));
+        if($(this).val() > 9999) {
+          $(this).val(9999);
+        }
+        if($(this).val() < 5) {
+          $(this).val(5);
+        }
+      });
+
+      $( "#limit" ).change(function() {
+        $(this).val(parseInt($(this).val()));
+        if($(this).val() > 100) {
+          $(this).val(100);
+        }
+        if($(this).val() < 1) {
+          $(this).val(1);
+        }
+      });
+
+      let tags = [];
+      let numOfTags = 0;
+      let maxTags = 5;
+      {% include "main/tags.js" %}
+
+      $('#no_premium').click(function(e) {
+        $('#overlay_toolarge').css("display","none");
+        $('body').css("overflow","visible");
+      });
+
+      {% include "main/fileSizeDisplay.js" %}
+      {% include "main/uploadedFilesInfo.js" %}
+
+      $('#submit_button').click(function() {
+        {% if not has_premium %}
+        if(totalSize>10485760) {
+          $('#overlay_toolarge').css("display","block");
+          $('body').css("overflow","hidden");
+          return;
+        }
+        {% endif %}
+
+        $("#title-prompt").css("display","none");
+        $("#description-prompt").css("display","none");
+        $("#reward-prompt").css("display","none");
+        $("#limit-prompt").css("display","none");
+
+        let formValid = true;
+        let nonNullSelectedFiles = selectedFiles.filter(file => file != null);
+
+        // Check that form data valid before sending request
+        if($("#title").val().trim()=="") {
+            $("#title-prompt").css("display","block");
+            formValid = false;
+        }
+        if($("#description").val().trim()=="") {
+            $("#description-prompt").css("display","block");
+            formValid = false;
+        }
+        if($("#reward").val().trim()=="") {
+            $("#reward-prompt").css("display","block");
+            formValid = false;
+        }
+        if($("#limit").val().trim()=="") {
+            $("#limit-prompt").css("display","block");
+            formValid = false;
+        }
+        if(nonNullSelectedFiles.length < 1) {
+            $("#file-upload-prompt").css("display","block");
+            formValid = false;
+        }
+
+        if(!formValid) {
+          return;
+        }
+        // Disable button to prevent multiple clicks
+        $("#submit_button").attr("disabled", true);
+
+        $("#description").val($("#description").val().trim())
+
+        let fileFormName = "newFeedbackForm";
+        let postAction = "/new-feedback-request/?tags="+encodeURIComponent(tags);
+        {% include "main/zipFiles.js" %}
+    });
+
+  });
+    </script>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'main/base.html' %}
+{% load multifor %}
+{% load static %}
+
+{% block content%}
+      <div id="main-container" style="background: #EDF1F4; padding: 30px; margin-top: -30px">
+      {% include "main/search-bar.html" %}
+      </div>
+      <p class="important-text" style="text-align: center; font-size: 2em; margin-top: 30px">Search Results</p>
+
+      <div id="main-container" style="margin-top: 30px;">
+      {% if not requests %}
+        <p class="important-text" style="text-align: center;">No feedback requests found</p>
+      {% else %}
+        {% for feedback_request in requests; curr_delta in time_deltas %}
+        <div class="feedback-request{% if feedback_request.premium%} premium-request {% endif %}">
+            <div style="margin-bottom: 18px">
+              <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px #ddd solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+              <span class="bold-p">{{ feedback_request.feedbackee }}</span>
+              <span class="bold-p" style="float: right; font-size: 1em;vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
+            </div>
+            <div class="border-top pt-4 mt-2"></div>
+
+            <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
+              <h3 style="font-weight: bold;" class="clickable-header"> {{ feedback_request.title }} </h3>
+              <p class="clickable-text cut-text"> {{ feedback_request.maintext }} </p>
+            </a>
+            <div class="border-top pt-2 mt-2 "></div>
+            <div style="display: flex; justify-content: space-between;">
+            <span>
+            </span>
+
+              <span style="white-space: nowrap;">
+                <span class="status-info noselect">
+                  <img src = "{% static 'main/img/pound_icon3.png'%}" style="height: 24px;  vertical-align: middle;" />
+                    £{{ feedback_request.reward }}
+                </span>
+                <span class="status-info noselect">
+                  <img src = "{% static 'main/img/time_icon3.png'%}" style="vertical-align: middle; height: 24px" />
+                  {{ feedback_request.time_limit }} days
+                </span>
+              </span>
+            </div>
+        </div>
+
+        {% endfor %}
+      {% endif %}
+      <!--https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-multiple-object/-->
+      {% if page_obj.has_other_pages %}
+          <div class="pagination middle-of-screen">
+              <span class="step-links" style="margin: 0 auto;">
+                  {% if page_obj.has_previous %}
+      <!-- Put parameters by setting ? in the url https://www.searchenginejournal.com/technical-seo/url-parameter-handling/#close-->
+                      <a class="btn btn-outline-info mb-4" href="{{request.path}}?q={{search}}&page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+                  {% endif %}
+
+                  {% for num in page_obj.paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          <a class="btn btn-info mb-4" href="{{request.path}}?q={{search}}&page={{ num }}">{{ num }}</a>
+                      <!--Show the 3 adjacent pages (from both sides)-->
+                      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          <a class="btn btn-outline-info mb-4" href="{{request.path}}?q={{search}}&page={{ num }}">{{ num }}</a>
+                      {% endif %}
+                  {% endfor %}
+
+                  {% if page_obj.has_next %}
+                      <a class="btn btn-outline-info mb-4" href="{{request.path}}?q={{search}}&page={{ page_obj.next_page_number }}">Next &gt;</a>
+                  {% endif %}
+              </span>
+        </div>
+
+      {% endif %}
+    </div>
+{% endblock%}

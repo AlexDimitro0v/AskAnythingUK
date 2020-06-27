@@ -1,0 +1,375 @@
+{% extends 'main/base.html' %}
+{% load multifor %}
+{% load static %}
+{% block content%}
+
+<style>
+/* Double slider styling*/
+
+ .ui-widget-content {
+      border-width: 0px;
+     border-radius: 25px;
+     height: 10px
+ }
+
+ .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+   border-width: 0px;
+   background: #1F4D8A;
+   cursor: pointer;
+   height: 18px;
+   width: 18px;
+   cursor: pointer;
+   border-radius: 100px;
+   z-index: 1;
+ }
+
+ .ui-state-default:active, .ui-widget-content:active .ui-state-default:active, .ui-widget-header:active .ui-state-default:active {
+   background: #4F4D8A;
+ }
+
+ .ui-widget-header {
+     border-width: 0px;
+     background: #dee2e6;
+ }
+</style>
+  <div id="main-container" style="background: #EDF1F4; padding: 30px; margin-top: -30px">
+  {% include "main/search-bar.html" %}
+  </div>
+    <div style="margin-top: 30px">
+      <div class="container-fluid">
+          <div class="row justify-content-center" id="requests-container">
+            {% if min_price or min_time %}
+              {% if min_price != max_price or min_time != max_time %}
+              <div class="col-4" style="padding: 0;" id="left-column">
+                <div class="floating-window">
+                  <div class="feedback-request" style="padding: 15px">
+                    {% if min_price != max_price %}
+                      <p class="important-text" style="margin-bottom: 5px">Price</p>
+                      <div id ="slider-price" style="margin-left: 10px; margin-right: 10px"></div>
+                      <form action="" method="POST" id="submitFeedbackForm" enctype="multipart/form-data" class="cf">
+                        {% if filtered_max_price %}
+                        <input name="min-price" value="£{{filtered_min_price}}" id="min-price" class="form-control" style="max-width: 100px; float: left; margin-left: 5px;">
+                        <input name="max-price" value="£{{filtered_max_price}}" id="max-price" class="form-control" style="max-width: 100px; float: right; margin-right: 5px">
+                        {% else %}
+                        <input name="min-price" value="£{{min_price}}" id="min-price" class="form-control" style="max-width: 100px; float: left; margin-left: 5px;">
+                        <input name="max-price" value="£{{max_price}}" id="max-price" class="form-control" style="max-width: 100px; float: right; margin-right: 5px">
+                        {% endif %}
+                      </form>
+                    {% endif %}
+                    {% if min_price != max_price and min_time != max_time %}
+                    <br>
+                    {% endif %}
+
+                    {% if min_time != max_time %}
+                      <p class="important-text" style="margin-bottom: 5px">Time limit</p>
+                      <div id ="slider-time" style="margin-left: 10px; margin-right: 10px"></div>
+                      <form action="" method="POST" id="submitFeedbackForm" enctype="multipart/form-data" class="cf">
+                        {% if filtered_max_time %}
+                        <input name="min-time" value="{{filtered_min_time}} days" id="min-time" class="form-control" style="max-width: 100px; float: left; margin-left: 5px;">
+                        <input name="max-time" value="{{filtered_max_time}} days" id="max-time" class="form-control" style="max-width: 100px; float: right; margin-right: 5px">
+                        {% else %}
+                        <input name="min-time" value="{{min_time}} days" id="min-time" class="form-control" style="max-width: 100px; float: left; margin-left: 5px;">
+                        <input name="max-time" value="{{max_time}} days" id="max-time" class="form-control" style="max-width: 100px; float: right; margin-right: 5px">
+                        {% endif %}
+                      </form>
+                    {% endif %}
+                    <br>
+                    <button class="btn btn-outline-info" id="submit_button" style="margin: 0 auto; display: block; margin-bottom: 10px">Filter</button>
+                    </div>
+                </div>
+              </div>
+              {% endif %}
+            {% endif %}
+    {% if not requests and not min_price %}
+    <div style="width: 400px; margin: 0 auto">
+    {% endif %}
+    <div id="right-column"
+    {% if min_price or min_time %}
+        {% if min_price != max_price or min_time != max_time %}
+          class="col-8"
+        {% endif %}
+    {% endif %}
+    >
+      <div class="col-middle">
+        {% if not requests %}
+          <p class="important-text" style="text-align: center;">No feedback requests</p>
+        {% elif tag_filter %}
+        <div style="display: inline-block; margin-top: 5px">
+          <span class="important-text">Filtering by tag </span>
+          <span class='tag light-tag' title="Click to revert filter" style="font-size: 30px; font-weight: 600; margin-left: 5px; ">{{ tag_filter }}</span>
+        </div>
+        {% else %}
+        <p class="important-text">Filter by popular tags</p>
+          {% if most_used_tags %}
+            <div style="display: inline-block;">
+            {% for tag in most_used_tags %}
+              <span class='tag inline-tag light-tag' id="{{ tag }}" title="Click to filter by tag" style="font-size: 1.2em; font-weight: 600;">{{ tag }}</span>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      {% for feedback_request in requests; curr_tags in tags; curr_delta in time_deltas; curr_premium in premium_requests; curr_new in new_requests %}
+      <div class="feedback-request main-menu-request {% if curr_premium %} premium-request {% endif %}">
+          <div class="two-columns margin-columns">
+              <span class="custom-column">
+                <img style="vertical-align:middle; width: 45px; height: 45px; margin-top: 0px; border-radius: 100px; border: 3px {% if curr_premium %} #e9ca6e {% else %} #ddd {% endif %} solid; margin-right: 5px" src="{{ feedback_request.feedbackee.userprofile.image.url }}">
+                <span class="bold-p name-next-to-image" style="font-size: 1.2em">{{ feedback_request.feedbackee }}</span>
+              </span>
+              <span class="bold-p custom-column" style="font-size: 1em; vertical-align: middle; line-height: 45px">Posted {{ curr_delta }} ago </span>
+          </div>
+          <div class="border-top pt-3 mt-2"></div>
+          {% if curr_new or curr_premium %}
+          <div style="margin-bottom: 8px">
+            {% if curr_premium %}
+            <span class="premium-badge noselect" style="font-size: 0.65em; margin-top: 0;">Premium</span>
+            {% endif %}
+            {% if curr_new %}
+            <span class="premium-badge noselect" style="font-size: 0.65em; margin-top: 0; border: 2px solid #1F4D8A; color: #1F4D8A">New</span>
+            {% endif %}
+          </div>
+          {% endif %}
+          <a href="{% url 'feedback-request-page' %}?request_id={{feedback_request.id}}" style="text-decoration:none;">
+            <h3 style="font-weight: bold;" class="clickable-header"> {{ feedback_request.title }} </h3>
+            <p class="clickable-text cut-text"> {{ feedback_request.maintext }} </p>
+          </a>
+          <div class="border-top pt-2 mt-2 "></div>
+          <div class="two-columns">
+            <span style="margin-top: 10px" class="custom-column">
+            {% if curr_tags.0 %}
+                {% for tag in curr_tags %}
+                    <span class='tag' id="{{ tag }}" title="Click to filter by tag" style=" white-space:nowrap; line-height: 50px">{{ tag }}</span>
+                {% endfor %}
+            {% endif %}
+            </span>
+            <span style="white-space: nowrap;"  class="custom-column">
+              <span class="status-info noselect">
+                <img src = "{% static 'main/img/pound_icon3.png'%}" style="height: 24px;  vertical-align: middle;" />
+                  £{{ feedback_request.reward }}
+              </span>
+              <span class="status-info noselect">
+                <img src = "{% static 'main/img/time_icon3.png'%}" style="vertical-align: middle; height: 24px" />
+                {{ feedback_request.time_limit }} days
+              </span>
+            </span>
+          </div>
+      </div>
+      {% endfor %}
+      <!--https://docs.djangoproject.com/en/3.0/ref/class-based-views/mixins-multiple-object/-->
+      {% if page_obj.has_other_pages %}
+          <div class="pagination middle-of-screen" style="margin-left: 20px;">
+              <span class="step-links" style="margin: 0 auto;">
+                  {% if page_obj.has_previous %}
+      <!-- Put parameters by setting ? in the url https://www.searchenginejournal.com/technical-seo/url-parameter-handling/#close-->
+
+                      {% if filtered_max_price %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.previous_page_number }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">&lt; Previous</a>
+                      {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.previous_page_number }}&tag-filter={{tag_filter}}">&lt; Previous</a>
+                      {% endif %}
+                  {% endif %}
+
+                  {% for num in page_obj.paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          {% if filtered_max_price %}
+                            <a class="btn btn-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% else %}
+                            <a class="btn btn-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% endif %}
+                      <!--Show the 3 adjacent pages (from both sides)-->
+                      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          {% if filtered_max_price %}
+                            <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% else %}
+                            <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ num }}&tag-filter={{tag_filter}}">{{ num }}</a>
+                          {% endif %}
+                      {% endif %}
+                  {% endfor %}
+
+                  {% if page_obj.has_next %}
+                      {% if filtered_max_price %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.next_page_number }}&min-price={{filtered_min_price}}&max-price={{filtered_max_price}}&min-time={{filtered_min_time}}&max-time={{filtered_max_time}}&tag-filter={{tag_filter}}">Next &gt;</a>
+                      {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{request.path}}?area-filter={{ area_filter_id }}&page={{ page_obj.next_page_number }}&tag-filter={{tag_filter}}">Next &gt;</a>
+                      {% endif %}
+                  {% endif %}
+              </span>
+          </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Hidden form for tag filtering -->
+    <form action="/" method="POST" id="tagFilterForm"> {% csrf_token %}</form>
+
+    <!-- Hidden form for price and time limit filtering -->
+    <form action="/" method="POST" id="filterForm"> {% csrf_token %}</form>
+
+    <script>
+    $(document).ready(function () {
+      $('.tag').click(function(e) {
+        let tagValue = e.target.id;
+        {% if min_price %}
+        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+encodeURIComponent(tagValue)+"&area-filter={{area_filter_id}}&min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
+        {% else %}
+        $('#tagFilterForm').attr("action","/feedback-requests/?tag-filter="+encodeURIComponent(tagValue)+"&area-filter={{area_filter_id}}");
+        {% endif %}
+        $('#tagFilterForm').submit();
+
+      });
+
+      {% if filtered_max_price %}
+        let currMinTime = {{filtered_min_time}};
+        let currMaxTime = {{filtered_max_time}};
+        let currMinPrice = {{filtered_min_price}};
+        let currMaxPrice = {{filtered_max_price}};
+      {% elif min_time %}
+        let currMinTime = {{min_time}};
+        let currMaxTime = {{max_time}};
+        let currMinPrice = {{min_price}};
+        let currMaxPrice = {{max_price}};
+      {% endif %}
+
+      {% if requests or min_price %}
+
+      $(function() {
+         $( "#slider-price" ).slider({
+            range:true,
+            min: {{min_price}},
+            max: {{max_price}},
+            {% if filtered_max_price %}
+            values: [ {{filtered_min_price}}, {{filtered_max_price}} ],
+            {% else %}
+            values: [ {{min_price}}, {{max_price}} ],
+            {% endif %}
+            slide: function( event, ui ) {
+              $( 'input[name=min-price]').val("£" + ui.values[ 0 ]);
+              $( 'input[name=max-price]').val("£" + ui.values[ 1 ]);
+              currMinPrice = ui.values[ 0 ];
+              currMaxPrice = ui.values[ 1 ];
+            }
+         });
+
+         $( "#slider-time" ).slider({
+            range:true,
+            min: {{min_time}},
+            max: {{max_time}},
+            {% if filtered_max_time %}
+            values: [ {{filtered_min_time}}, {{filtered_max_time}} ],
+            {% else %}
+            values: [ {{min_time}}, {{max_time}} ],
+            {% endif %}
+            slide: function( event, ui ) {
+               $( 'input[name=min-time]').val(ui.values[ 0 ] + " days");
+               $( 'input[name=max-time]').val(ui.values[ 1 ] + " days");
+               currMinTime = ui.values[ 0 ];
+               currMaxTime = ui.values[ 1 ];
+            }
+         });
+      })
+
+      $("#min-time").change(function() {
+          let maxTime = $("#slider-time").slider("values")[1];
+          if ( $(this).val() >= {{min_time}} && $(this).val() < {{max_time}}) {
+            $("#slider-time").slider("values", [$(this).val(),maxTime]);
+          }
+      });
+
+      $( "#min-time" ).focus(function() {
+        $(this).val($(this).val().substring(0,$(this).val().length - 5));
+      });
+
+      $( "#min-time" ).focusout(function() {
+        if ( $(this).val() >= {{min_time}} && $(this).val() < {{max_time}} ) {
+          currMinTime = $(this).val();
+          $(this).val($(this).val() + " days");
+        }
+        else {
+          $(this).val(currMinTime + " days");
+        }
+      });
+
+      $("#max-time").change(function() {
+          let minTime = $("#slider-time").slider("values")[0];
+          if ( $(this).val() > {{min_time}} && $(this).val() <= {{max_time}}) {
+            $("#slider-time").slider("values", [minTime,$(this).val()]);
+          }
+      });
+
+      $( "#max-time" ).focus(function() {
+        $(this).val($(this).val().substring(0,$(this).val().length - 5));
+      });
+
+      $( "#max-time" ).focusout(function() {
+        if ( $(this).val() > {{min_time}} && $(this).val() <= {{max_time}} ) {
+          currMaxTime = $(this).val();
+          $(this).val($(this).val() + " days");
+        }
+        else {
+          $(this).val(currMaxTime + " days");
+        }
+      });
+
+      $("#min-price").change(function() {
+          let maxprice = $("#slider-price").slider("values")[1];
+          if ( $(this).val() >= {{min_price}} && $(this).val() < {{max_price}}) {
+            $("#slider-price").slider("values", [$(this).val(),maxprice]);
+          }
+      });
+
+      $( "#min-price" ).focus(function() {
+        $(this).val($(this).val().substring(1,$(this).val().length));
+      });
+
+      $( "#min-price" ).focusout(function() {
+        if ( $(this).val() >= {{min_price}} && $(this).val() < {{max_price}} ) {
+          currMinprice = $(this).val();
+          $(this).val("£" + $(this).val());
+        }
+        else {
+          $(this).val("£" + currMinprice);
+        }
+      });
+
+      $("#max-price").change(function() {
+          let minprice = $("#slider-price").slider("values")[0];
+          if ( $(this).val() > {{min_price}} && $(this).val() <= {{max_price}}) {
+            $("#slider-price").slider("values", [minprice,$(this).val()]);
+          }
+      });
+
+      $( "#max-price" ).focus(function() {
+        $(this).val($(this).val().substring(1,$(this).val().length));
+      });
+
+      $( "#max-price" ).focusout(function() {
+        if ( $(this).val() > {{min_price}} && $(this).val() <= {{max_price}} ) {
+          currMaxprice = $(this).val();
+          $(this).val("£" + $(this).val());
+        }
+        else {
+          $(this).val("£" + currMaxprice);
+        }
+      });
+
+      {% endif %}
+
+      $('#submit_button').click(function() {
+          {% if tag_filter %}
+          $('#filterForm').attr("action","{{request.path}}?tag-filter={{ tag_filter }}&area-filter={{ area_filter_id }}&min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
+          {% else %}
+          $('#filterForm').attr("action","{{request.path}}?area-filter={{ area_filter_id }}&min-price="+currMinPrice+"&max-price="+currMaxPrice+"&min-time="+currMinTime+"&max-time="+currMaxTime);
+          {% endif %}
+          $('#filterForm').submit();
+      });
+    });
+
+    let maxLength = 500;
+    {% include "main/cutText.js" %}
+
+    </script>
+
+{% endblock%}

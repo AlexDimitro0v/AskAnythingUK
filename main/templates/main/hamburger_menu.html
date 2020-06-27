@@ -1,0 +1,34 @@
+<div class="overlay" id="overlay_hamburger"></div>
+<div class="d-flex toggled small-screen-only" id="wrapper" style="z-index: 100; position: fixed; top: 0">
+  <!-- Sidebar -->
+  <div class="bg-light border-right" id="sidebar-wrapper" >
+    <div class="list-group list-group-flush">
+      {% if not has_premium %}
+        <a href="{% url 'get-premium-page' %}" class="noselect"><button style="margin: 0 auto; display: block; margin-top: 15px" class="btn btn-outline-danger">Get Premium</button></a>
+        <div class="border-top pt-3 mt-3"></div>
+      {% else %}
+        <div style="margin-top: 10px"></div>
+      {% endif %}
+      <div class="header2-menu-text noselect">
+          <img class="photo-circle"  src="{{ user.userprofile.image.url }}"/>
+          <span class="noselect" style="margin-left: 10px; line-height: 45px; height: 45px; font-size: 1.2em; font-family: 'Lexend'"><strong>{{user}}</strong></span>
+      </div>
+      <a class="header2-menu-text noselect" href="{% url 'dashboard' %}?area-filter={{ area.id }}" style="text-decoration: none">
+          Dashboard
+      </a>
+      <a class="header2-menu-text noselect" href="{% url 'settings-page' %}?tab=account" style="text-decoration: none">
+          Settings
+      </a>
+      <a class="header2-menu-text noselect" href="{% url 'logout-page' %}?area-filter={{ area.id }}" style="text-decoration: none">
+          Log Out
+      </a>
+      <div class="border-top pt-2 mt-2"></div>
+
+      {% for area in areas %}
+          <a class="header2-menu-text noselect" href="{% url 'feedback-requests-page' %}?area-filter={{ area.id }}" style="text-decoration: none">
+              {{ area.name }}
+          </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>

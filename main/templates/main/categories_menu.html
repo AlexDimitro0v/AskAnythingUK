@@ -1,0 +1,21 @@
+{% load static %}
+
+<div class="noselect header header2 large-screen-only" id="categories-header">
+    {% for area in areas %}
+        <a class="header2-menu-text noselect" href="{% url 'feedback-requests-page' %}?area-filter={{ area.id }}" style="text-decoration: none; {% if area_filter_id == forloop.counter %} color: #1f4d8a; padding-bottom: 2px;  {% endif %}">
+            {{ area.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<script>
+  $( window ).scroll(function() {
+    let scrollTop = $( window ).scrollTop();
+    if (scrollTop > 0 && $("#categories-header").css("marginTop") == "65px" ) {
+      $("#categories-header").animate({ 'marginTop': '0px'}, 300);
+    }
+    else if (scrollTop == 0 && $("#categories-header").css("marginTop") == "0px") {
+      $("#categories-header").animate({ 'marginTop': '65px'}, 300);
+    }
+  });
+</script>

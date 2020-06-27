@@ -1,0 +1,483 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content%}
+<!--Credits: https://www.bootdey.com/snippets/view/bs4-Profile-Settings-page#html-->
+<!--Bootsrap Toggles-->
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<!--The code below is adjusted using Bootsrap4-->
+<script src="{% static 'main/js/card' %}"></script>
+
+<style>
+    #main-container {
+        margin-left: -10px;
+    }
+
+    .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0px 3px 5px #ccc;
+    }
+
+    .card {
+        position: relative;
+        opacity: 1;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #ffffff;
+        background-clip: border-box;
+        border: 1px solid #e5e9f2;
+        border-radius: .2rem;
+        width: 100%;
+        max-width: 750px;
+        height: auto;
+    }
+
+    .card-header:first-child {
+        border-radius: calc(.2rem - 1px) calc(.2rem - 1px) 0 0;
+    }
+
+    .card-header {
+        border-bottom-width: 1px;
+    }
+
+    .card-header {
+        padding: .75rem 1.25rem;
+        margin-bottom: 0;
+        color: inherit;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e5e9f2;
+    }
+
+    .list-group-item.active{
+        background-color: #43C2F0;
+        border-color: #43C2F0;
+    }
+
+    a:hover{
+        color: #777777
+    }
+
+    #id_private-info-gender{
+        text-align-last:center;
+    }
+
+    #div_id_private-info-gender{
+        margin-top:20px;
+    }
+
+    #div_id_profile-image-image{
+        display: none;
+    }
+
+    #tooltip{
+        display: inline;
+        position: relative;
+    }
+
+    #tooltip:hover:after{
+        background: #333;
+        background: rgba(0,0,0,.8);
+        border-radius: 5px;
+        bottom: 26px;
+        color: #fff;
+        font-family: 'Lexend';
+        font-size: 13px;
+        content: "This includes any feedback updates - new feedbacker candidate, submitted feedback, etc.";
+        left: 20%;
+        padding: 5px 15px;
+        position: absolute;
+        z-index: 98;
+        width: 220px;
+    }
+
+    .jp-card-unknown.jp-card .jp-card-front,
+    .jp-card-unknown.jp-card .jp-card-back {
+        background: #7f4b9e;
+    }
+</style>
+<div class="container p-0">
+    <div class="row">
+        <div class="col-md-5 col-xl-4">
+
+            <div class="card">
+                <div class="decorative-text-wrapper noselect">Profile Settings</div>
+
+                <div class="list-group list-group-flush" style=" margin-top: 50px; margin-left: -30px; margin-right: -30px; margin-bottom: -25px;">
+                    <a class="list-group-item {% if active == 'account' %}active{% endif %}" href="/settings/?tab=account">
+                      Account
+                    </a>
+                    <a class="list-group-item {% if active == 'password' %}active{% endif %}"  href="/settings/?tab=password">
+                      Security
+                    </a>
+                    <a class="list-group-item {% if active == 'billing' %}active{% endif %}"  href="/settings/?tab=billing">
+                      Billing Information
+                    </a>
+                    <a class="list-group-item {% if active == 'subscription' %}active{% endif %}" href="/settings/?tab=subscription">
+                      Subscription
+                    </a>
+                    <a class="list-group-item {% if active == 'notifications' %}active{% endif %}" href="/settings/?tab=notifications">
+                      Notifications
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-xl-8">
+            <div class="tab-content">
+                <div class="tab-pane fade {% if active == 'account' %}show active{% endif %}" id="account">
+
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Public info</div>
+                        <div class="cardbody">
+                            <form method="POST" action="/settings/?tab=account" enctype="multipart/form-data" id="profile_image_form" novalidate>
+                                {% csrf_token %}
+                                <div class="text-center" style="position: relative">
+                                  <label for="id_profile-image-image" id="image-change">
+                                    <img alt="{{user}}" src="{{user.userprofile.image.url}}" class="img-responsive" width="150" height="150" style="cursor: pointer">
+                                    <p class="centered-text" id="image-text">
+                                      Change profile image
+                                    </p>
+                                  </label>
+                                </div>
+                                <div class="form-group">
+                                    {{image_form|crispy }}
+                                </div>
+                            </form>
+
+                            <form method="POST" id="public_info_form" action="/settings/?tab=account" novalidate>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{public_info_form|crispy }}
+                                </div>
+                            </form>
+                            <form onsubmit="return false" style="margin-top: 15px;">
+                                Skills<br>
+                                <input id="tag-input" class="form-control" maxlength="30" style="max-width: 200px; margin-top: 0" >
+                            </form>
+
+                            <div style="margin-top: 10px;">
+                              <span id="tags">
+                                {% for skill in user_skills %}
+                                  <span class='tag' id='tagtag' style='line-height: 50px; white-space: nowrap'>{{ skill }}</span>
+                                {% endfor %}
+                              </span>
+                            </div>
+                            <button class="button-corner btn btn-outline-info custom-column small-screen-button" style="font-family: 'Lexend';" id="submit_button">Save changes</button>
+
+                        </div>
+                    </div>
+                    <!-- Too many tags overlay -->
+                    <div id=main-container">
+                    <div id="overlay_error_tags" class="full-screen overlay">
+                      <div class="full-screen">
+                      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+                        <div class="decorative-text-wrapper noselect">Error</div>
+                        <div class="cardbody"  style="margin-top:50px">
+                          <p id="max_tags_message" style="font-weight: 600; font-size: 1.2em; text-align: center">
+                            You can provide a maximum of 10 tags.
+                          </p>
+
+                          <div class="border-top pt-2 mt-3"></div>
+
+                          <div class="noselect button-corner">
+                            <button class="btn btn-outline-info" id="okay_tags">Okay</button>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Private info</div>
+                        <div class="cardbody" style="margin-top:50px;">
+                             <form method="POST" novalidate>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label class="col-form-label" for="disabled">Email address</label><br>
+                                    <input maxlength="200" id="email_private_info_form" class="textinput textInput form-control"  name="disabled" value="{{email}}" disabled>
+                                    {{private_info_form|crispy }}
+                                </div>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="private-info">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade {% if active == 'password' %}show active{% endif %}" id="password">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Password</div>
+
+                        <div class="cardbody" style="margin-top:35px;">
+
+                            <form method="POST" action="/settings/?tab=password" novalidate>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{change_password_form.old_password|as_crispy_field}}
+                                    <small><a style="text-decoration: underline; color: #0056b3;" href="{% url 'password_reset' %}">Forgot your password?</a></small>
+                                    {{ change_password_form.new_password1|as_crispy_field }}
+                                    {{ change_password_form.new_password2|as_crispy_field }}
+                                </div>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="password-change">Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade {% if active == 'billing' %}show active{% endif %}" id="billing">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Billing</div>
+
+                        <div class="cardbody">
+                            <div class='card-wrapper'></div>
+                            <form id="card" method="POST" action="/settings/?tab=billing{% if next_link%}&next=/get-premium/{%endif %}">
+                                {% csrf_token %}
+                                <div style="margin-bottom: 1rem">
+                                    <label class="col-form-label">Card Number</label><br>
+                                    <input maxlength="200" id="card_number" class="textinput textInput form-control" name="number" placeholder="Card Number" required>
+                                    <label style="margin-top: 15px;" class="col-form-label">Cardholder Name</label><br>
+                                    <input maxlength="30" id="name" class="textinput textInput form-control" name="name" required>
+                                    <label style="margin-top: 15px;" class="col-form-label">Expiry Date</label><br>
+                                    <input maxlength="200" id="card_expiry" class="textinput textInput form-control" name="expiry" placeholder="MM / YY" required>
+                                    <label style="margin-top: 15px;" class="col-form-label">CCV</label><br>
+                                    <input maxlength="200" id="ccv" class="textinput textInput form-control" name="cvc" placeholder="CCV" required>
+                                    <input name="{% if next_link%}premium{%endif %}" value="True" hidden>
+                                </div>
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="billing">Save changes</button>
+                            </form>
+                            <script>
+                                $('#card').card({
+                                    container: '.card-wrapper', // *required*
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade {% if active == 'subscription' %}show active{% endif %}" id="subscription">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Subscription</div>
+
+                        <div class="cardbody">
+                            {% if is_premium %}
+                                <p style="font-family: 'Lexend';">You are currently on a premium plan. We will automatically renew your monthly subscription on {{ next_billing_date|date:"F d, Y"}} and charge you £9.99.</p>
+                                <form id="cancel" method="POST" action="/settings/?tab=subscription">
+                                    {% csrf_token %}
+                                    <input name="cancel-subscription" hidden>
+                                </form>
+                                <button id="cancel-subscription" type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button">Cancel Subscription</button>
+                                <div id="overlay_apply" class="full-screen overlay">
+                                  <div class="full-screen">
+                                      <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+                                        <div class="decorative-text-wrapper noselect">Are you sure?</div>
+                                        <div class="cardbody"  style="margin-top:50px">
+                                          <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                                            Are you sure you want to cancel your subscription?
+                                          </p>
+                                          {% if not trial_used%}
+                                              <p style="font-weight: 500; font-size: 1em; text-align: center">
+                                                  You will lose all of your perks.
+                                                  <br>
+                                                  You will not be able to use the 1 month free trial period again.
+                                              </p>
+                                          {% endif %}
+                                          <div class="border-top pt-2 mt-3"></div>
+
+                                          <div class="noselect button-corner">
+                                            <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">No</button>
+                                            <button class="btn btn-outline-info" id="yes">Yes</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                </div>
+                            {% else %}
+                                <p style="font-family: 'Lexend';">You don't currently have a premium plan. Get a monthly automatically-billed premium account for £9.99.{% if not trial_used %} The first month is on us.{%endif%}</p>
+                                <form method="POST" action="/get-premium/">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button" name="subscription">More Information</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade {% if active == 'notifications' %}show active{% endif %}" id="notifications">
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Email Notifications</div>
+
+                        <div class="cardbody" style="margin-top: 35px">
+
+                            <form method="POST" action="/settings/?tab=notifications" novalidate>
+                                {% csrf_token %}
+                                <label class="col-form-label">Messages</label><br>
+                                <input data-size="small" type="checkbox" {% if new_messages %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="Messages">
+                                <br>
+                                <label class="col-form-label">Feedback Updates</label>
+                                <span id="tooltip" class="fa fa-question-circle"></span>
+                                <br>
+                                <input data-size="small" type="checkbox" {% if feedback_updates %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="FeedbackUpdates">
+                                <br>
+                                <label class="col-form-label">Smart Recommendations</label><br>
+                                <input data-size="small" type="checkbox" {% if smart_recommendations %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="SmartRecommendations">
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="notifications" >Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="decorative-text-wrapper noselect" style="font-size: 16px;">Real-Time Notifications</div>
+
+                        <div class="cardbody" style="margin-top: 35px">
+                            <p style="font-size: 13px; font-family: 'Lexend';">For important updates regarding your AskAnything activity, certain notifications cannot be disabled.</p>
+                            <form method="POST" action="/settings/?tab=notifications" novalidate>
+                                {% csrf_token %}
+                                <label class="col-form-label">Messages</label><br>
+                                <input data-size="small" type="checkbox" {% if new_messages2 %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="Messages2">
+                                <br>
+                                <label class="col-form-label">Smart Recommendations</label><br>
+                                <input data-size="small" type="checkbox" {% if smart_recommendations2 %} checked {% else %} unchecked {% endif %} data-toggle="toggle" data-onstyle="success" data-offstyle="danger" name="SmartRecommendations2">
+                                <button type="submit" class="button-corner btn btn-outline-info custom-column small-screen-button"  name="notifications2" >Save changes</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- HIDDEN MODAL TO CROP THE IMAGE (taken from here https://simpleisbetterthancomplex.com/tutorial/2017/03/02/how-to-crop-images-in-a-django-application.html) -->
+               <div class="bootstrap">                      <!-- Uses Isolated Bootstrap 3-->
+                <div class="modal fade" role="dialog" id="modalCrop">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Crop the photo</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      <div class="modal-body">
+                        <img src="" id="image" style="max-width: 100%;">
+                      </div>
+                      <div class="modal-footer">
+                        <div class="btn-group pull-left" role="group">
+                          <button type="button" class="btn btn-default js-zoom-in">
+                            <span class="fa fa-search-plus"></span>
+                          </button>
+                          <button type="button" class="btn btn-default js-zoom-out">
+                            <span class="fa fa-search-minus"></span>
+                          </button>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Go back</button>
+                        <button type="button" class="btn btn-primary js-crop-and-upload">Crop</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+               </div>
+                <script>
+                  $(document).ready(function () {
+
+                        let maxTags = 10;
+                        let tags = {{ user_skills|safe }};
+                        let numOfTags = {{ user_skills|length }};
+
+                        {% include "main/tags.js" %}
+
+                        /* SCRIPT TO POST TO THE SERVER */
+                        $('#submit_button').click(function() {
+                            $("#public_info_form").attr('action',"/settings/?tab=account&tags="+encodeURIComponent(tags));
+                            $("#public_info_form").submit();
+                        });
+                    });
+
+                    $(function () {
+                      /* SCRIPT TO OPEN THE IMAGE CROPPER MODAL WITH THE PREVIEW */
+                      $("#id_profile-image-image").change(function () {
+                        if (this.files && this.files[0]) {
+                          var reader = new FileReader();
+                          reader.onload = function (e) {
+                            $("#image").attr("src", e.target.result);
+                            $("#modalCrop").modal("show");
+                            $('#imageCropped').css('display','none');
+                          }
+                          reader.readAsDataURL(this.files[0]);
+                        }
+                      });
+
+                      /* SCRIPTS TO HANDLE THE CROPPER BOX */
+                      var $image = $("#image");
+                      var cropBoxData;
+                      var canvasData;
+                      $("#modalCrop").on("shown.bs.modal", function () {
+                        $image.cropper({
+                          viewMode: 1,
+                          aspectRatio: 1/1,
+                          minCropBoxWidth: 100,
+                          minCropBoxHeight: 100,
+                          ready: function () {
+                            $image.cropper("setCanvasData", canvasData);
+                            $image.cropper("setCropBoxData", cropBoxData);
+                          }
+                        });
+                      }).on("hidden.bs.modal", function () {
+                        cropBoxData = $image.cropper("getCropBoxData");
+                        canvasData = $image.cropper("getCanvasData");
+                        $image.cropper("destroy");
+                      });
+
+                      $(".js-zoom-in").click(function () {
+                        $image.cropper("zoom", 0.1);
+                      });
+
+                      $(".js-zoom-out").click(function () {
+                        $image.cropper("zoom", -0.1);
+                      });
+
+                      /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
+                      $(".js-crop-and-upload").click(function () {
+                        var cropData = $image.cropper("getData");
+                        $("#id_profile-image-x").val(cropData["x"]);
+                        $("#id_profile-image-y").val(cropData["y"]);
+                        $("#id_profile-image-height").val(cropData["height"]);
+                        $("#id_profile-image-width").val(cropData["width"]);
+                        $("#profile_image_form").submit();
+                      });
+                    });
+
+                </script>
+        </div>
+    </div>
+
+</div>
+
+<script>$('#id_public-info-description').attr('placeholder', 'Write something about yourself...');</script>
+<script>
+    $(document).ready(function () {
+      $('#yes').click(function(e) {
+        $('#cancel').submit();
+      });
+    });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#cancel-subscription').click(function(e) {
+      $('#overlay_apply').css("display","block");
+      $('body').css("overflow","hidden");
+
+    });
+    $('#no_apply').click(function(e) {
+      $('#overlay_apply').css("display","none");
+      $('body').css("overflow","visible");
+    });
+  });
+</script>
+{% endblock %}

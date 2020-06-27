@@ -1,0 +1,119 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content%}
+<div>
+  <div style="padding: 40px; background: #f4f9fa; margin-top: -30px">
+  <h1 class="large-header" style="color: #AB5468">Get a Premium Account</h1>
+  <p class="center-p" style="color: #333">Premium accounts offer a range of perks and benefits for both feedbackees and feedbackers to help you make the most out of using AskAnything.</p>
+  </div>
+  <div class="full-screen-image" style=" background-image: url({% static 'main/img/home-bg.jpg' %}); background-color: rgba(255,255,255,0.5); padding: 20px; padding-bottom: 80px;">
+    <div class="container">
+        <div class="row justify-content-md-center" >
+            <div class="col-sm premium-card" style="text-align: center; max-width: 400px; right: 0;">
+                <img src="{% static 'main/img/test-icon.png' %}" style="height: 200px; text-align: center"/>
+                <h3 style="margin-top: 10px; font-weight: 600">Feedbackee Perks</h3>
+                <div class="border-top pt-4"></div>
+                <div style="margin-bottom: 18px; text-align: left">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
+                  <span>Prominent position of feedback requests</span>
+                </div>
+                <div style="margin-bottom: 18px; text-align: left">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
+                  <span>Unlimited file size</span>
+                </div>
+                <div style="margin-bottom: 18px; text-align: left">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
+                  <span>Premium badge on feedback requests</span>
+                </div>
+            </div>
+            <div class="col-sm premium-card" style="text-align: center; max-width: 400px">
+                <img src="{% static 'main/img/test-icon.png' %}" style="height: 200px"/>
+                <h3 style="margin-top: 10px; font-weight: 600">Feedbacker Perks</h3>
+                <div class="border-top pt-4"></div>
+                <div style="margin-bottom: 18px; text-align: left; ">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
+                  <span>Apply to new feedback requests 24 hours before everybody else</span>
+                </div>
+                <div style="margin-bottom: 18px; text-align: left">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
+                  <span>Unlimited number of applications at a time</span>
+                </div>
+                <div style="margin-bottom: 18px; text-align: left">
+                  <img style="vertical-align:middle; width:28px; height: 28px; margin-top: -5px" src="{% static 'main/img/tick4.png' %}">
+                  <span>Premium badge on profile</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="background: #222233; padding: 40px; border-top: 1px #ccc solid;">
+  {% if not trial_used%}
+      <h1 class="large-header" style="color: #AB5468">Get One Month Free</h1>
+      <p class="center-p" style="color: white">The first month is on us! Then just £9.99 a month.</p>
+  {% else %}
+      <h1 class="large-header" style="color: #AB5468">Get the Perks Now</h1>
+      <p class="center-p" style="color: white">Just £9.99 a month.</p>
+  {% endif %}
+
+    <form action="{% url 'try-premium-page' %}" method="POST" id="get-premium" enctype="multipart/form-data">
+        {% csrf_token %}
+    </form>
+    <button id="try-premium" class="btn btn-outline-danger" style="margin: 0 auto; display: block; border-width: 2px; font-size: 1.5em; margin-top: 20px; padding-left: 20px; padding-right: 20px">Try Premium</button>
+
+</div>
+</div>
+
+    <div id="overlay_apply" class="full-screen overlay">
+      <div class="full-screen">
+          <div class="large-area" style="max-width: 750px; box-shadow: 0 0 0;">
+                <div class="decorative-text-wrapper noselect">Are you sure?</div>
+                <div class="cardbody"  style="margin-top:50px">
+                  <p style="font-weight: 600; font-size: 1.2em; text-align: center">
+                    Are you sure you want to become a premium user?
+                  </p>
+                  {% if trial_used%}
+                      <p style="font-weight: 500; font-size: 1em; text-align: center">
+                          You will be automatically billed monthly starting from now.
+                          <br>
+                          Cancellation possible at any time.
+                      </p>
+                  {% else %}
+                      <p style="font-weight: 500; font-size: 1em; text-align: center">
+                          The first month is on us! Then you will be automatically billed monthly.
+                          <br>
+                          Cancellation possible at any time.
+                      </p>
+                  {% endif %}
+                  <div class="border-top pt-2 mt-3"></div>
+
+                  <div class="noselect button-corner">
+                    <button class="btn btn-outline-info" id="no_apply" style="margin-right: 10px">No</button>
+                    <button class="btn btn-outline-info" id="yes">Yes</button>
+                  </div>
+                </div>
+          </div>
+      </div>
+    </div>
+
+<script>
+$(document).ready(function () {
+  $('#yes').click(function(e) {
+    $('#get-premium').submit();
+  });
+});
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#try-premium').click(function(e) {
+      $('#overlay_apply').css("display","block");
+      $('body').css("overflow","hidden");
+
+    });
+    $('#no_apply').click(function(e) {
+      $('#overlay_apply').css("display","none");
+      $('body').css("overflow","visible");
+    });
+  });
+</script>
+{% endblock%}
