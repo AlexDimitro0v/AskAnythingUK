@@ -15,19 +15,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import django_heroku
-import json
-# Load the file that contains the sensitive information
-# with open('config.json') as config_file:
-#     config = json.load(config_file)
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-LOGIN_REDIRECT_URL = 'home-page'  # By default when logged in Django looks for a route in accounts/profile
-LOGIN_URL = 'login-page'          # Useful when login_required decorator is used; by default Django looks for a route in accounts/login
-LOGOUT_REDIRECT_URL = 'landing-page'
+LOGIN_REDIRECT_URL = 'home-page'
+LOGIN_URL = 'home-page'
+LOGOUT_REDIRECT_URL = 'home-page'
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -35,35 +30,17 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['django-ask-anything.herokuapp.com', 'localhost', '127.0.0.1']
 
-
-# Application definition
-# By default Django looks for a template subdir in each of our installed aps !!!
-# That's why anytime we create a new app we should add it to the list, so that Django can correctly search for templates
-# and modules (which deal with the databases)
 INSTALLED_APPS = [
-    'crispy_forms',              # used to make forms more beautiful
-    'phonenumber_field',         # used to ensure real numbers are provided
-    'sweetify',                  # used for the alerts
-    'django_cleanup',            # to auto-delete old media files (like old profile images)
-    'users.apps.UsersConfig',
-    'main.apps.MainConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mailer',                    # used for the sending of emails
-    'multiforloop',              # allows having nested loops
-    'django_elasticsearch_dsl',  # wrapper used for searching
-    'django_user_agents',        # used for fraud prevention
-    'coverage',                  # used for testing
-    'django_nose',               # allows to run a specific test
-    'storages',                  # allows us to store static files (files and images) on AWS
 ]
 
 
@@ -112,21 +89,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AskAnything.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'AskAnything',
-        'USER': 'postgres',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),    # Note that you should use the password you set for your DB !!!!!!!
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -161,69 +123,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-
-
-# Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
-# In order to website can find the media when we try to view them from within the browser, adjust:
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    # where Django will store uploaded files (in the base dir -> media dir)
-MEDIA_URL = '/media/'                           # how we will access our media through the browser
-
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'     # Crispy Forms will be using Bootstrap for styling
-SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
-
-
-# Email Server (Using Gmail SMTP)
-# EMAIL_BACKEND = "mailer.backend.DbBackend"
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-# EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
-
-
-# Email Server (Using MailGun)
-MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = 'smtp.mailgun.org'
-# EMAIL_HOST = 'smt p.mailgun.org'
-# EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
-# EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
-EMAIL_FROM = "noreply@askanything.co"
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-
-
-# Braintree Payment Gateway Keys
-BRAINTREE_PUBLIC_KEY = os.environ.get('BRAINTREE_PUBLIC_KEY')
-BRAINTREE_PRIVATE_KEY = os.environ.get('BRAINTREE_PRIVATE_KEY')
-BRAINTREE_MERCHANT_KEY = os.environ.get('BRAINTREE_MERCHANT_KEY')
-
-
-# AWS Keys
-# Used to store all of the media files (profile images and files) on AWS
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
-AWS_S3_FILE_OVERWRITE = False                                       # DO NOT OVERWRITE FILES WITH THE SAME NAMES
-AWS_DEFAULT_ACL = None
-
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'   # To upload the media files to S3 directly
 django_heroku.settings(locals())
