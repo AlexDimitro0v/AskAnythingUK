@@ -1,7 +1,7 @@
 Django==2.1.11
 django-crispy-forms==1.7.2
 django-multiforloop==0.2.1
-Pillow==6.2.2
+Pillow==8.3.2
 certifi==2019.6.16
 chardet==3.0.4
 idna==2.8
