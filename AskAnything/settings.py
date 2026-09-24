@@ -25,7 +25,7 @@ import json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-LOGIN_REDIRECT_URL = 'home-page'  # By default when logged in Django looks for a route in accounts/profile
+LOGIN_REDIRECT_URL = 'home-page'  # By default when logged in Django looks for a route in accounts/profiles
 LOGIN_URL = 'login-page'          # Useful when login_required decorator is used; by default Django looks for a route in accounts/login
 LOGOUT_REDIRECT_URL = 'landing-page'
 
